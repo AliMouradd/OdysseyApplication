@@ -8,9 +8,12 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer initialRouteName="Example">
+    <NavigationContainer initialRouteName="Questionnaire">
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Example" component={ExampleScreen} />
+        <Stack.Screen
+          name="Questionnaire"
+          component={QuestionnaireStartScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

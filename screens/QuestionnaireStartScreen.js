@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Button } from "react-native";
+import { StyleSheet, View, Button, Text } from "react-native";
 
 export default function QuestionnaireStartScreen() {
   return (
@@ -24,5 +24,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  nextButton: {},
 });
