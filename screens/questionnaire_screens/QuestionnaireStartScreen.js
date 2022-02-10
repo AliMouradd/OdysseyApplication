@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Button, Text } from "react-native";
 
-export default function QuestionnaireStartScreen() {
+export default function QuestionnaireStartScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text>Welcome to the Odyssey Questionnaire!</Text>
@@ -9,10 +9,7 @@ export default function QuestionnaireStartScreen() {
         Here we will ask you a series of questions about your trip in order to
         help you with your vacation.
       </Text>
-      <Button
-        title="Next"
-        onPress={console.log("Next button pressed")}
-      ></Button>
+      <Button title="Next" onPress={() => navigation.navigate("Question 1")} />
     </View>
   );
 }
