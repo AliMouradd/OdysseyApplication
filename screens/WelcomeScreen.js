@@ -7,15 +7,20 @@ import {
   Image,
 } from "react-native";
 
-const WelcomeScreen = () => {
+const WelcomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.h1}>Odyssey</Text>
       <Image style={styles.logo} source={require("../assets/logo.png")} />
       <TouchableOpacity style={styles.btn}>
-        <Text style={styles.p}>Log In</Text>
+        <Text style={styles.p} onPress={() => navigation.navigate("Log In")}>
+          Log In
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btn}>
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => navigation.navigate("Sign Up")}
+      >
         <Text style={styles.p}>Sign Up</Text>
       </TouchableOpacity>
     </SafeAreaView>
