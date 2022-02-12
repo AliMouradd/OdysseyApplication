@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Button } from "react-native";
 
 function Question1Screen({ navigation }) {
