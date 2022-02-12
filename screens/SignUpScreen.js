@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The SignUpScreen displays a screen for a user to create an account.
+ * It takes input from an user, validates and submits information,
+ * and navigates the user to another screen.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState } from "react";
 import {
   StyleSheet,

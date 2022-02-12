@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The LoginScreen displays a screen for a user to log in.
+ * It takes input from an user, validates information,
+ * and navigates the user to another screen.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState } from "react";
 import {
   StyleSheet,

@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The WelcomeScreen displays a screen to give users some information
+ * about the mobile application. It also gives an user the option to
+ * sign up for an account or log in to an existing account.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
   StyleSheet,
