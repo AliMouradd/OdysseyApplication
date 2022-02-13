@@ -8,20 +8,57 @@
  * Built by: Quacky Coders
  */
 
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
+  View,
   Text,
   TouchableOpacity,
   Image,
 } from "react-native";
 
+import Carousel, { Pagination } from "react-native-snap-carousel";
+
 const WelcomeScreen = ({ navigation }) => {
+  const [index, setIndex] = useState(0);
+
+  //placeholder data
+  let data = [
+    {
+      title: "Text 1",
+    },
+    {
+      title: "Text 2",
+    },
+    {
+      title: "Text 3",
+    },
+  ];
+
+  CarouselItem = ({ item, index }) => {
+    return (
+      <View>
+        <Image style={styles.logo} source={require("../assets/logo.png")} />
+        <Text style={styles.title}>{item.title}</Text>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.h1}>Odyssey</Text>
-      <Image style={styles.logo} source={require("../assets/logo.png")} />
+
+      <Carousel
+        data={data}
+        renderItem={CarouselItem}
+        sliderWidth={275}
+        itemWidth={275}
+        onSnapToItem={(index) => setIndex(index)}
+      />
+      <Pagination dotsLength={data.length} activeDotIndex={index} />
+
+      <Text style={styles.text}>Don't know where to go? We can help!</Text>
       <TouchableOpacity style={styles.btn}>
         <Text style={styles.p} onPress={() => navigation.navigate("Log In")}>
           Log In
@@ -39,7 +76,6 @@ const WelcomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
@@ -59,6 +95,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFD56D",
     padding: 10,
     width: "50%",
+  },
+  text: {
+    marginBottom: 10,
   },
   p: {
     textAlign: "center",
