@@ -34,6 +34,114 @@ const survey = [
     placeholderText: "Enter budget in dollars here...",
   },
   {
+    questionType: "MultipleSelectionGroup",
+    questionText: "What are your methods of travel?",
+    questionId: "travelMethods",
+    questionSettings: {
+      maxMultiSelect: 4,
+      minMultiSelect: 1,
+    },
+    options: [
+      {
+        optionText: "Car",
+        value: "car",
+      },
+      {
+        optionText: "Train",
+        value: "train",
+      },
+      {
+        optionText: "Bike",
+        value: "bike",
+      },
+    ],
+    placeholderText: "Please select your methods....",
+  },
+  {
+    questionType: "MultipleSelectionGroup",
+    questionText: "What are your interests?",
+    questionId: "interests",
+    questionSettings: {
+      maxMultiSelect: 8,
+      minMultiSelect: 1,
+    },
+    options: [
+      {
+        optionText: "Nature",
+        value: "nature",
+      },
+      {
+        optionText: "Sports",
+        value: "sports",
+      },
+      {
+        optionText: "Exercise",
+        value: "exercise",
+      },
+      {
+        optionText: "Photography",
+        value: "photography",
+      },
+      {
+        optionText: "Music",
+        value: "music",
+      },
+      {
+        optionText: "Visual Arts",
+        value: "visualArts",
+      },
+      {
+        optionText: "Cooking",
+        value: "cooking",
+      },
+      {
+        optionText: "History",
+        value: "history",
+      },
+    ],
+    placeholderText: "Please select your interests...",
+  },
+  {
+    questionType: "MultipleSelectionGroup",
+    questionText: "What are your food interests?",
+    questionId: "foodInterests",
+    questionSettings: {
+      maxMultiSelect: 8,
+      minMultiSelect: 1,
+    },
+    options: [
+      {
+        optionText: "Spicy",
+        value: "spicy",
+      },
+      {
+        optionText: "Savory",
+        value: "savory",
+      },
+      {
+        optionText: "Aromatic",
+        value: "aromatic",
+      },
+      {
+        optionText: "Unique",
+        value: "unique",
+      },
+      {
+        optionText: "Noodles",
+        value: "noodles",
+      },
+      {
+        optionText: "Sour",
+        value: "sour",
+      },
+      {
+        optionText: "Curry",
+        value: "curry",
+      },
+    ],
+    placeholderText: "Please select your food interests",
+  },
+  {
     questionType: "Info",
     questionText:
       "That is all for the questionnaire, tap finish to go to your homepage.",
@@ -104,6 +212,23 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  renderButton(data, index, isSelected, onPress) {
+    return (
+      <View
+        key={`selection_button_view_${index}`}
+        style={{ marginTop: 5, marginBottom: 5, justifyContent: "flex-start" }}
+      >
+        <Button
+          title={data.optionText}
+          onPress={onPress}
+          color={isSelected ? "grey" : "dodgerblue"}
+          style={isSelected ? { fontWeight: "bold" } : {}}
+          key={`button_${index}`}
+        />
+      </View>
+    );
+  }
+
   onSurveyFinished(answers) {
     console.log("User finished questionnaire!");
     //TODO: send answers to database
@@ -162,7 +287,7 @@ export default class SurveyScreen extends Component {
           renderNext={this.renderNextButton.bind(this)}
           renderFinished={this.renderFinishedButton.bind(this)}
           renderQuestionText={this.renderQuestionText}
-          //renderSelector={this.renderButton.bind(this)} for selection buttons
+          renderSelector={this.renderButton.bind(this)} // for selection buttons
           onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
           onAnswerSubmitted={(answer) => this.onAnswerSubmitted(answer)}
           renderTextInput={this.renderTextBox}
