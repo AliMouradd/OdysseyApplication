@@ -16,12 +16,14 @@ export default function App() {
         initialRouteName="Welcome"
         screenOptions={{ headerShown: true }}
       >
-        <Stack.Screen name="GoalList" component={GoalListScreen} />
-        {/*
+        {/*        
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
-        */}
+        <Stack.Screen name="GoalList" component={GoalListScreen} />
+         */}
+         
+        <Stack.Screen name="GoalList" component={GoalListScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
