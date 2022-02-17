@@ -5,6 +5,7 @@ import ExampleScreen from "./screens/ExampleScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
+import GoalListScreen from "./screens/GoalListScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,10 +16,12 @@ export default function App() {
         initialRouteName="Welcome"
         screenOptions={{ headerShown: true }}
       >
-        <Stack.Screen name="Example" component={ExampleScreen} />
+        <Stack.Screen name="GoalList" component={GoalListScreen} />
+        {/*
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
+        */}
       </Stack.Navigator>
     </NavigationContainer>
   );
