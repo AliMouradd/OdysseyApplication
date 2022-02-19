@@ -13,3 +13,5 @@ package-lock.json
 
 # macOS
 .DS_Store
+firebase/config.js
+config.js
