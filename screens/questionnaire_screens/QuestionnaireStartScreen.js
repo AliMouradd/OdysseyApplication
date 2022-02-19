@@ -1,15 +1,22 @@
 import React from "react";
-import { StyleSheet, View, Button, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 export default function QuestionnaireStartScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text>Welcome to the Odyssey Questionnaire!</Text>
-      <Text>
-        Here we will ask you a series of questions about your trip in order to
-        help you with your vacation.
+      <Text style={styles.welcomeTitle}>
+        Welcome to the Odyssey Questionnaire!
       </Text>
-      <Button title="Next" onPress={() => navigation.navigate("Question 1")} />
+      <Text style={styles.welcomeInfo}>
+        Here we'll ask you a series of questions about your trip and interests
+        in order to help you with your vacation.
+      </Text>
+      <TouchableOpacity
+        style={styles.nextButton}
+        onPress={() => navigation.navigate("Questionnaire")}
+      >
+        <Text style={{ fontSize: 16 }}>Start Questionnaire</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -18,7 +25,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
+  },
+  welcomeTitle: {
+    fontWeight: "bold",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  welcomeInfo: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10,
+    //backgroundColor: "gray",
+  },
+  nextButton: {
+    color: "#FFD56D",
+    alignItems: "center",
+    backgroundColor: "#FFD56D",
+    padding: 15,
+    width: 250,
+    borderRadius: 10,
   },
 });

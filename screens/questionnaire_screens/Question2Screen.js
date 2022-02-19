@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+// this file now obsolete
 
 function Question2Screen({ navigation }) {
   const [text, onChangeText] = React.useState(null);

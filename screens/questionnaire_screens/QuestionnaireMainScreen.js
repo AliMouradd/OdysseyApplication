@@ -6,36 +6,33 @@ import {
   Text,
   TextInput,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
 
 // this will contain all questions and possible answers
 const survey = [
   {
-    questionType: "Info",
-    questionText: "Welcome to the Odyssey Questionnaire! Tap next to continue:",
-  },
-  {
     questionType: "TextInput",
-    questionText: "What is the start date of your vacation?",
+    questionText: "Question 1 of 6:\nWhen is the start date of your vacation?",
     questionId: "startDate",
     placeholderText: "MM/DD/YYYY",
   },
   {
     questionType: "TextInput",
-    questionText: "What is the end date of your vacation?",
+    questionText: "Question 2 of 6:\nWhen is the end date of your vacation?",
     questionId: "endDate",
     placeholderText: "MM/DD/YYYY",
   },
   {
     questionType: "TextInput", // maybe make this numberinput
-    questionText: "What is your budget for your vacation?",
+    questionText: "Question 3 of 6:\nWhat is your budget for your vacation?",
     questionId: "budget",
     placeholderText: "Enter budget in dollars here...",
   },
   {
     questionType: "MultipleSelectionGroup",
-    questionText: "What are your methods of travel?",
+    questionText: "Question 4 of 6:\nWhat are your methods of travel?",
     questionId: "travelMethods",
     questionSettings: {
       maxMultiSelect: 4,
@@ -59,7 +56,7 @@ const survey = [
   },
   {
     questionType: "MultipleSelectionGroup",
-    questionText: "What are your interests?",
+    questionText: "Question 5 of 6:\nWhat are your interests?",
     questionId: "interests",
     questionSettings: {
       maxMultiSelect: 8,
@@ -103,7 +100,7 @@ const survey = [
   },
   {
     questionType: "MultipleSelectionGroup",
-    questionText: "What are your food interests?",
+    questionText: "Question 6 of 6:\nWhat are your food interests?",
     questionId: "foodInterests",
     questionSettings: {
       maxMultiSelect: 8,
@@ -144,7 +141,7 @@ const survey = [
   {
     questionType: "Info",
     questionText:
-      "That is all for the questionnaire, tap finish to go to your homepage.",
+      "That's all for the questionnaire, tap finish to go to your homepage.",
   },
 ];
 
@@ -159,13 +156,13 @@ export default class SurveyScreen extends Component {
       <View
         style={{ flexGrow: 1, maxWidth: 100, marginTop: 10, marginBottom: 10 }}
       >
-        <Button
-          //color={{ color: "dodgerblue" }}
+        <TouchableOpacity
+          style={styles.surveyNavButton}
           onPress={onPress}
           disabled={!enabled}
-          backgroundColor={{ color: "dodgerblue" }}
-          title={"Previous"}
-        />
+        >
+          <Text style={{ fontSize: 16 }}>Previous</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -175,13 +172,16 @@ export default class SurveyScreen extends Component {
       <View
         style={{ flexGrow: 1, maxWidth: 100, marginTop: 10, marginBottom: 10 }}
       >
-        <Button
-          //color={{ color: "dodgerblue" }}
+        <TouchableOpacity
+          style={
+            enabled ? styles.surveyNavButton : styles.surveyNavButtonDisabled
+          }
           onPress={onPress}
           disabled={!enabled}
-          backgroundColor={{ color: "dodgerblue" }}
-          title={"Next"}
-        />
+          activeOpacity={!enabled ? 1 : 0.5}
+        >
+          <Text style={{ fontSize: 16 }}>Next</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -191,13 +191,13 @@ export default class SurveyScreen extends Component {
       <View
         style={{ flexGrow: 1, maxWidth: 100, marginTop: 10, marginBottom: 10 }}
       >
-        <Button
-          //color={{ color: "dodgerblue" }}
+        <TouchableOpacity
+          style={styles.surveyNavButton}
           onPress={onPress}
           disabled={!enabled}
-          backgroundColor={{ color: "dodgerblue" }}
-          title={"Finished"}
-        />
+        >
+          <Text style={{ fontSize: 16 }}>Finished</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -205,6 +205,7 @@ export default class SurveyScreen extends Component {
   renderQuestionText(questionText) {
     return (
       <View style={{ marginLeft: 10, marginRight: 10 }}>
+        {/* add a question counter here with states? (text with variable) */}
         <Text numLines={1} style={styles.questionText}>
           {questionText}
         </Text>
@@ -218,13 +219,17 @@ export default class SurveyScreen extends Component {
         key={`selection_button_view_${index}`}
         style={{ marginTop: 5, marginBottom: 5, justifyContent: "flex-start" }}
       >
-        <Button
-          title={data.optionText}
+        <TouchableOpacity
           onPress={onPress}
-          color={isSelected ? "grey" : "dodgerblue"}
-          style={isSelected ? { fontWeight: "bold" } : {}}
+          style={
+            isSelected
+              ? styles.selectionButtonSelected
+              : styles.selectionButtonUnselected
+          }
           key={`button_${index}`}
-        />
+        >
+          <Text>{data.optionText}</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -263,7 +268,7 @@ export default class SurveyScreen extends Component {
 
   renderInfoText(infoText) {
     return (
-      <View style={{ marginLeft: 10, marginRight: 10 }}>
+      <View style={styles.infoContainer}>
         <Text style={styles.infoText}>{infoText}</Text>
       </View>
     );
@@ -271,7 +276,7 @@ export default class SurveyScreen extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <SimpleSurvey
           ref={(s) => {
             this.surveyRef = s;
@@ -314,20 +319,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    minWidth: "70%",
-    maxWidth: "90%",
-    alignItems: "stretch",
+    // main parent view
+    width: "100%",
+    alignItems: "center",
     justifyContent: "center",
     //borderRadius: 10,
     flex: 1,
   },
   answersContainer: {
     width: "100%",
-    maxHeight: "50%",
-    marginTop: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginBottom: 20,
+    height: "30%",
+    marginTop: 5,
+    marginBottom: 5,
+    paddingHorizontal: 5,
     backgroundColor: "white",
     elevation: 10,
     borderRadius: 10,
@@ -338,68 +342,105 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignContent: "center",
     padding: 5,
-    flexGrow: 1,
+    height: "70%",
+    //flex: 1,
+    //flexGrow: 1,
     //elevation: 20,
   },
   selectionGroupContainer: {
-    flexDirection: "column",
+    flexDirection: "row",
     backgroundColor: "white",
-    alignContent: "flex-end",
+    justifyContent: "center",
+    alignContent: "space-between",
+    flexWrap: "wrap",
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 20,
+  },
+  selectionButtonUnselected: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#70889F",
+    padding: 2,
+    marginHorizontal: 10,
+    height: 45,
+    width: 150,
+    borderRadius: 10,
+    //elevation: 3
+  },
+  selectionButtonSelected: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "lightgrey",
+    padding: 2,
+    marginHorizontal: 10,
+    height: 45,
+    width: 150,
+    borderRadius: 10,
+    //elevation: 3
   },
   navButtonText: {
     margin: 10,
     fontSize: 20,
     color: "black",
-
     width: "auto",
   },
-  answers: {
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-  navigationButton: {
-    minHeight: 40,
-    backgroundColor: "dodgerblue",
-    padding: 0,
-    borderRadius: 100,
-    marginTop: 5,
-    justifyContent: "center",
+  surveyNavButton: {
     alignItems: "center",
+    backgroundColor: "#FFD56D",
+    padding: 15,
+    width: 100, //maybe make these 150 and fix formatting
+    borderRadius: 10,
+    //elevation: 3,
   },
-
-  background: {
-    flex: 1,
-    justifyContent: "center",
+  surveyNavButtonDisabled: {
     alignItems: "center",
+    backgroundColor: "lightgray",
+    padding: 15,
+    width: 100,
+    borderRadius: 10,
+    //elevation: 3,
   },
   questionText: {
-    marginBottom: 20,
+    marginTop: 20,
+    marginBottom: 30,
     fontSize: 20,
   },
   textBox: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "rgba(204,204,204,1)",
     backgroundColor: "white",
-    borderRadius: 5,
+    borderRadius: 10,
 
     padding: 10,
     textAlignVertical: "top",
     marginLeft: 10,
     marginRight: 10,
+    marginBottom: 10,
   },
   numericInput: {
     borderWidth: 1,
     borderColor: "rgba(204,204,204,1)",
     backgroundColor: "white",
     borderRadius: 10,
+
     padding: 10,
     textAlignVertical: "top",
     marginLeft: 10,
     marginRight: 10,
   },
-  infoText: {
-    marginBottom: 20,
+  infoContainer: {
+    justifyContent: "center",
+    alignContent: "center",
+    height: "75%",
+    margin: 10,
+    padding: 5,
     fontSize: 20,
-    marginLeft: 10,
+    backgroundColor: "white",
+  },
+  infoText: {
+    textAlign: "center",
+    fontSize: 20,
   },
 });
