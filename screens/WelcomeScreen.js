@@ -8,99 +8,67 @@
  * Built by: Quacky Coders
  */
 
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   SafeAreaView,
   View,
   Text,
   TouchableOpacity,
-  Image,
 } from "react-native";
 
-import Carousel, { Pagination } from "react-native-snap-carousel";
+import CarouselComponent from "../components/CarouselComponent";
+
+import Background from "../assets/blob-haikei2.svg";
+import BackgroundTwo from "../assets/blob-haikei3.svg";
 
 const WelcomeScreen = ({ navigation }) => {
-  const [index, setIndex] = useState(0);
-
-  //placeholder data
-  let data = [
-    {
-      title: "Text 1",
-    },
-    {
-      title: "Text 2",
-    },
-    {
-      title: "Text 3",
-    },
-  ];
-
-  CarouselItem = ({ item, index }) => {
-    return (
-      <View>
-        <Image style={styles.logo} source={require("../assets/logo.png")} />
-        <Text style={styles.title}>{item.title}</Text>
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={styles.container}>
+      <Background style={{ position: "absolute" }} />
+      <BackgroundTwo style={{ position: "absolute" }} />
       <Text style={styles.h1}>Odyssey</Text>
-
-      <Carousel
-        data={data}
-        renderItem={CarouselItem}
-        sliderWidth={275}
-        itemWidth={275}
-        onSnapToItem={(index) => setIndex(index)}
-      />
-      <Pagination dotsLength={data.length} activeDotIndex={index} />
-
-      <Text style={styles.text}>Don't know where to go? We can help!</Text>
-      <TouchableOpacity style={styles.btn}>
-        <Text style={styles.p} onPress={() => navigation.navigate("Log In")}>
-          Log In
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.btn}
-        onPress={() => navigation.navigate("Sign Up")}
-      >
-        <Text style={styles.p}>Sign Up</Text>
-      </TouchableOpacity>
+      <CarouselComponent />
+      <View style={styles.buttons}>
+        <TouchableOpacity style={[styles.btn, styles.btnBigger]}>
+          <Text onPress={() => navigation.navigate("Log In")}>Log In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Sign Up")}
+        >
+          <Text>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
+    flex: 1,
+    backgroundColor: "white",
     justifyContent: "center",
-    width: "100%",
   },
   h1: {
-    color: "black",
+    textAlign: "center",
     fontSize: 32,
-    marginBottom: 10,
+    fontWeight: "bold",
   },
-  logo: {
-    width: 250,
-    height: 200,
+  buttons: {
+    alignItems: "center",
   },
   btn: {
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 15,
     backgroundColor: "#FFD56D",
     padding: 10,
-    width: "50%",
+    paddingLeft: 25,
+    paddingRight: 25,
   },
-  text: {
-    marginBottom: 10,
-  },
-  p: {
-    textAlign: "center",
+  btnBigger: {
+    paddingLeft: 30,
+    paddingRight: 30,
   },
 });
 
