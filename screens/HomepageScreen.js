@@ -10,12 +10,12 @@ import {
 import { getAuth } from "firebase/auth";
 
 const HomepageScreen = ({ navigation, route }) => {
-  console.log("email: " + route.params.email);
+  //console.log("email: " + route.params.email);
 
   return (
     <View>
       <Text>Welcome to Odyssey!</Text>
-      <Text>{route.params.email}</Text>
+      {/*<Text>{route.params.email}</Text>*/}
       <Button title="Explore"></Button>
       <Button title="Create"></Button>
       <Button title="Questionnaire"></Button>
