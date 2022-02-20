@@ -12,75 +12,128 @@ import React, { useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
+  View,
   TextInput,
   Text,
   TouchableOpacity,
+  Image,
 } from "react-native";
+
+import { app } from "../Config";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+import Background from "../assets/blob-haikei.svg";
 
 const LoginScreen = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = () => {
-    //todo
-  };
+  const login = () => {};
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.logo}>Odyssey</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(value) => setUserName(value)}
-        value={username}
-        placeholder="Username"
-      />
-      <TouchableOpacity style={styles.btn}>
-        <Text>Forgot Your Username?</Text>
-      </TouchableOpacity>
-      <TextInput
-        style={styles.input}
-        onChangeText={(value) => setPassword(value)}
-        value={password}
-        placeholder="Password"
-      />
-      <TouchableOpacity style={styles.btn}>
-        <Text>Forgot Password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => login()} style={styles.submit}>
-        <Text>Log In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.btn}>
-        <Text>New to Odyssey? Sign Up Here!</Text>
-      </TouchableOpacity>
+      <Background style={{ position: "absolute" }} />
+      <View style={styles.logo}>
+        <Image style={styles.img} source={require("../assets/logo.png")} />
+      </View>
+
+      <View style={styles.titleWrapper}>
+        <Text style={styles.title}>Login</Text>
+        <Text style={styles.subtitle}>Please sign in to continue.</Text>
+      </View>
+
+      <View style={styles.inputs}>
+        <TextInput
+          style={styles.input}
+          onChangeText={(value) => setUserName(value)}
+          value={username}
+          placeholder="Username"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={(value) => setPassword(value)}
+          value={password}
+          placeholder="Password"
+        />
+      </View>
+
+      <View style={styles.btns}>
+        <TouchableOpacity style={styles.btn}>
+          <Text>Forgot Password?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => login()} style={styles.submit}>
+          <Text>Log In</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity>
+          <Text>
+            New to Odyssey? <Text style={styles.link}>Sign Up Here!</Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: "100%",
-    alignItems: "center",
+    backgroundColor: "white",
   },
   logo: {
-    fontSize: 20,
+    marginTop: 30,
+    alignItems: "center",
+  },
+  img: {
+    height: 195,
+    width: 195,
+  },
+  titleWrapper: {
+    marginTop: -15,
+    paddingLeft: 70,
+  },
+  title: {
+    fontSize: 32,
+    marginBottom: 5,
     fontWeight: "bold",
   },
+  subtitle: {
+    opacity: 0.65,
+    marginBottom: 5,
+  },
+  inputs: {
+    alignItems: "center",
+  },
   input: {
-    backgroundColor: "#D3D3D3",
-    borderColor: "#D3D3D3",
     width: "66%",
     marginBottom: 10,
     borderWidth: 1,
-    padding: 10,
+    padding: 5,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+  },
+  btns: {
+    alignItems: "center",
   },
   btn: {
-    marginBottom: 10,
+    marginBottom: 20,
+    paddingTop: 10,
+    paddingLeft: 150,
+  },
+  link: {
+    color: "#0000EE",
+    textDecorationLine: "underline",
   },
   submit: {
     borderRadius: 10,
-    marginBottom: 10,
-    backgroundColor: "#ACABD6",
+    marginBottom: 25,
+    backgroundColor: "#FFD56D",
     padding: 10,
+    paddingLeft: 55,
+    paddingRight: 55,
   },
 });
 
