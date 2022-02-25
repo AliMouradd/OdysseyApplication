@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const GoalScreen = ()=>{
     const [textInput, setTextInput]  = React.useState('');
     const [todos,setTodos] = React.useState([]);
+    const [toggleSubmit, setToggleSubmit] = useState(true);
+    const [isEditItem, setIsEditItem] = useState(null);
     
     React.useEffect(() => {
         getTodosFromUserDevice();
@@ -41,24 +43,34 @@ const GoalScreen = ()=>{
             </TouchableOpacity>
             
         
-            {/* Attempt at edit. 
+            {/* Attempt at edit. */}
             <TouchableOpacity style = {[styles.actionIcon]} onPress = {()=> editTodo(todo?.id)}>
                 <Icon name = "edit" size = {20} color = "black"/>
-                <TextInput
-                        onChangeText={newText => setTextInput(newText)}
-                />
             </TouchableOpacity>
-            */}
+            {/**/}
 
         </View>
         );
     };
 
-    {/*Add todo, mark todo done, and delete todo functions*/}
+    {/*Add todo, mark todo done, edit todo, and delete todo functions*/}
     const addTodo = () => {
         if(textInput == ""){
             Alert.alert("Error", "Please input a goal");
-        }else{
+        } if (textInput && !toggleSubmit){
+            setTodos(
+                todos.map((todo) => {
+                    if(todo.id === isEditItem){
+                        return{...todo,task:textInput}
+                    }
+                    return todo;
+                })
+            );
+            setToggleSubmit(true);
+            setTextInput('');
+            setIsEditItem(null);
+        }
+        if (toggleSubmit){
             const newTodo = {
                 id:Math.random(),
                 task: textInput,
@@ -106,22 +118,14 @@ const GoalScreen = ()=>{
         setTodos(newTodos);
     }
 
-{/*   Attempt at Edit. Edits text but cant grab user input for it. newText becomes the todo's new text. However cant grab user input to change it.
-    const editTodo = (todoId, newText) => {
-        //const filteredTodos = todos.filter(item => item.id != todoId);
-        //const selectedTodo = todos.find(item => item.id == todoId);
-
-        //alert(this.state.text);
-        const newTodos = todos.map((item) => {
-            if(item.id == todoId){
-                return{...item,task:newText}
-            }
-            return item;
+    const editTodo= (todoId) => {
+        let newEditItem = todos.find((todo) => {
+            return todo.id === todoId
         });
-        setTodos(newTodos);
+        setToggleSubmit(false);
+        setTextInput(newEditItem.task);
+        setIsEditItem(todoId);
     };
-*/}
-
 
     return( 
     <SafeAreaView
@@ -130,12 +134,13 @@ const GoalScreen = ()=>{
                 <Text style={styles.sectionTitle}> To-Do List</Text>
             </View>
 
-            <FlatList 
+            <FlatList
                 showsVerticalScrollIndicator = {false}
                 contentContainerStyle = {{padding: 20, paddingBottom: 100}}
                 data = {todos} 
                 renderItem = {({item}) => <ListItem todo = {item}/>}
             />
+            
 
             <View style = {styles.footer}>
                 <View style = {styles.inputContainer}>
