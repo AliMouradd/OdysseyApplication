@@ -16,13 +16,23 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const login = () => {
-    //todo
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, username, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        navigation.navigate("Travel Questionnaire"); //change to home screen
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
   };
 
   return (

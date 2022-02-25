@@ -1,7 +1,6 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ExampleScreen from "./screens/ExampleScreen";
 
 import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
@@ -18,7 +17,6 @@ export default function App() {
         initialRouteName="Welcome"
         screenOptions={{ headerShown: true }}
       >
-        <Stack.Screen name="Example" component={ExampleScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
