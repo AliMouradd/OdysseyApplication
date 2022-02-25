@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   StyleSheet,
-  Button,
   ScrollView,
   Text,
   TextInput,
@@ -9,6 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 // this will contain all questions and possible answers
 const survey = [
@@ -237,10 +238,27 @@ export default class SurveyScreen extends Component {
   onSurveyFinished(answers) {
     console.log("User finished questionnaire!");
     //TODO: send answers to database
+    const infoQuestionsRemoved = [...answers];
+
+    // convert from array to object:
+    const answersAsObject = {};
+    for (const elem of infoQuestionsRemoved) {
+      answersAsObject[elem.questionId] = elem.value;
+    }
+
+    // setup for getting current user's ID:
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const uid = user.uid;
+
+    console.log("finished, user id is: ", uid);
+    //await setDoc(doc(db, "users", userid, "q_answers"), {});
+
     //this.props.navigation.navigate("HomeScreen"); something like this to go to homepage
   }
 
   onAnswerSubmitted(answer) {
+    //can do input verification here
     this.setState({
       answersSoFar: JSON.stringify(this.surveyRef.getAnswers(), 2),
     });
