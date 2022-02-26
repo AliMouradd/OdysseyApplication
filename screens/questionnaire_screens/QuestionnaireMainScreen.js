@@ -8,8 +8,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { db } from "./../../Config";
+import { getAuth } from "firebase/auth";
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  addDoc,
+} from "firebase/firestore";
 
 // this will contain all questions and possible answers
 const survey = [
@@ -86,7 +94,7 @@ const survey = [
       },
       {
         optionText: "Visual Arts",
-        value: "visualArts",
+        value: "visual arts",
       },
       {
         optionText: "Cooking",
@@ -235,15 +243,16 @@ export default class SurveyScreen extends Component {
     );
   }
 
-  onSurveyFinished(answers) {
+  async onSurveyFinished(answers) {
     console.log("User finished questionnaire!");
-    //TODO: send answers to database
     const infoQuestionsRemoved = [...answers];
 
     // convert from array to object:
     const answersAsObject = {};
     for (const elem of infoQuestionsRemoved) {
       answersAsObject[elem.questionId] = elem.value;
+      console.log(elem.questionId);
+      console.log(elem.value[0]); //[0].value
     }
 
     // setup for getting current user's ID:
@@ -251,14 +260,66 @@ export default class SurveyScreen extends Component {
     const user = auth.currentUser;
     const uid = user.uid;
 
-    console.log("finished, user id is: ", uid);
-    //await setDoc(doc(db, "users", userid, "q_answers"), {});
+    //console.log("finished, user id is: ", uid);
+
+    console.log(answersAsObject.startDate);
+    console.log(answersAsObject.travelMethods);
+    console.log(answersAsObject.travelMethods[0].value);
+
+    var travelMethodsArrayLength = answersAsObject.travelMethods.length;
+    var interestsArrayLength = answersAsObject.interests.length;
+    var foodInterestsArrayLength = answersAsObject.foodInterests.length;
+
+    // create the doc / reset the doc
+    // TEST TO SEE IF DOCUMENT REWRITES WHEN RUN AGAIN
+
+    const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
+
+    // maybe add user ID's to documents?
+    const docData = {
+      startDate: answersAsObject.startDate,
+      endDate: answersAsObject.endDate,
+      budget: answersAsObject.budget,
+      travelMethods: [],
+      interests: [],
+      foodInterests: [],
+    };
+
+    setDoc(userAnswersDocRef, docData)
+      .then(() => {
+        alert("Document Created");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+
+    // loop through the multiple selection answers array, adding them to the database
+    for (var i = 0; i < travelMethodsArrayLength; i++) {
+      console.log(answersAsObject.travelMethods[i].value);
+      await updateDoc(userAnswersDocRef, {
+        travelMethods: arrayUnion(answersAsObject.travelMethods[i].value),
+      });
+    }
+
+    for (var i = 0; i < interestsArrayLength; i++) {
+      console.log(answersAsObject.interests[i].value);
+      await updateDoc(userAnswersDocRef, {
+        interests: arrayUnion(answersAsObject.interests[i].value),
+      });
+    }
+
+    for (var i = 0; i < foodInterestsArrayLength; i++) {
+      console.log(answersAsObject.foodInterests[i].value);
+      await updateDoc(userAnswersDocRef, {
+        foodInterests: arrayUnion(answersAsObject.foodInterests[i].value),
+      });
+    }
 
     //this.props.navigation.navigate("HomeScreen"); something like this to go to homepage
   }
 
   onAnswerSubmitted(answer) {
-    //can do input verification here
+    // can do input verification here (eventually)
     this.setState({
       answersSoFar: JSON.stringify(this.surveyRef.getAnswers(), 2),
     });
