@@ -10,6 +10,7 @@ import QuestionnaireAnswersTest from "./screens/questionnaire_screens/Questionna
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
+import GoalScreen from "./screens/GoalListScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,7 @@ export default function App() {
           component={QuestionnaireMainScreen}
         />
         <Stack.Screen name="Answers" component={QuestionnaireAnswersTest} />
+        <Stack.Screen name="Goals" component={GoalScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
