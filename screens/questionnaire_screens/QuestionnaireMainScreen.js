@@ -315,7 +315,7 @@ export default class SurveyScreen extends Component {
       });
     }
 
-    //this.props.navigation.navigate("HomeScreen"); something like this to go to homepage
+    this.props.navigation.navigate("Answers");
   }
 
   onAnswerSubmitted(answer) {

@@ -13,7 +13,7 @@ export default function QuestionnaireStartScreen({ navigation }) {
       </Text>
       <TouchableOpacity
         style={styles.nextButton}
-        onPress={() => navigation.navigate("Questionnaire")}
+        onPress={() => navigation.navigate("Answers")} // go to "Questionnaire" for survey, "Answers" for test read
       >
         <Text style={{ fontSize: 16 }}>Start Questionnaire</Text>
       </TouchableOpacity>

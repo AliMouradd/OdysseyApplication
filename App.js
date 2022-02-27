@@ -6,6 +6,7 @@ import { firebaseConfig } from "./Config";
 
 import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
+import QuestionnaireAnswersTest from "./screens/questionnaire_screens/QuestionnaireAnswersTest";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -30,6 +31,7 @@ export default function App() {
           name="Questionnaire"
           component={QuestionnaireMainScreen}
         />
+        <Stack.Screen name="Answers" component={QuestionnaireAnswersTest} />
       </Stack.Navigator>
     </NavigationContainer>
   );
