@@ -13,10 +13,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import COLORS from "../consts/colors";
-import places from "../consts/places";
+import COLORS from "../components/colors";
+import places from "../components/places";
 const {width} = Dimensions.get('screen');
-const HomeScreen = ({navigation}) => {
+
+const ItineraryScreen = ({navigation}) => {
   const categoryIcons = [
     <Icon name="flight" size={25} color={COLORS.primary} />,
     <Icon name="beach-access" size={25} color={COLORS.primary} />,
@@ -64,7 +65,7 @@ const HomeScreen = ({navigation}) => {
               </Text>
             </View>
             <View style={{flexDirection: 'row'}}>
-              <Icon name="star" size={20} color={COLORS.white} />
+              <Icon name="star" size={20} color={COLORS.dark} />
               <Text style={{marginLeft: 5, color: COLORS.white}}>5.0</Text>
             </View>
           </View>
@@ -72,7 +73,7 @@ const HomeScreen = ({navigation}) => {
       </TouchableOpacity>
     );
   };
-
+  
   const RecommendedCard = ({place}) => {
     return (
       <ImageBackground style={style.rmCardImage} source={place.image}>
@@ -111,10 +112,10 @@ const HomeScreen = ({navigation}) => {
     );
   };
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.dark}}>
-      <StatusBar translucent={false} backgroundColor={COLORS.primary} />
+    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+      <StatusBar translucent={false} backgroundColor={COLORS.dark} />
       <View style={style.header}>
-        <Icon name="sort" size={28} color={COLORS.white} />
+        <Icon name="sms" size={28} color={COLORS.white} />
         <Icon name="notifications-none" size={28} color={COLORS.white} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -222,4 +223,4 @@ const style = StyleSheet.create({
     padding: 10,
   },
 });
-export default HomeScreen;
+export default ItineraryScreen;

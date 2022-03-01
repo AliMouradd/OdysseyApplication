@@ -5,7 +5,8 @@ import ExampleScreen from "./screens/ExampleScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
-import HomeScreen from "./screens/HomeScreen";
+import ItineraryScreen from "./screens/ItineraryScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,7 @@ export default function App() {
         initialRouteName="Example"
         screenOptions={{ headerShown: true }}
       >
-        <Stack.Screen name="Example" component={HomeScreen} />
+        <Stack.Screen name="Example" component={ItineraryScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
