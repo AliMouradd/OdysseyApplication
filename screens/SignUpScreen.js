@@ -9,7 +9,11 @@
  */
 
 import React, { useState } from "react";
+
 import { app } from "../Config";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+
 import {
   StyleSheet,
   SafeAreaView,
@@ -19,7 +23,9 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const SignUpScreen = () => {
   const [fullName, setfullName] = useState("");
@@ -27,14 +33,18 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const auth = getAuth();
-
-  const signup = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-      })
-      .catch((error) => alert(error.essage));
+  const signup = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        name: fullName,
+        email: email,
+        likes: 0,
+        followers: 0,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
