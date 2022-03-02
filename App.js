@@ -5,8 +5,9 @@ import ExampleScreen from "./screens/ExampleScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
-import ItineraryScreen from "./screens/ItineraryScreen";
+// import ItineraryScreen from "./screens/ItineraryScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import ItineraryScreen from "./screens/ItineraryScreen";
 
 const Stack = createNativeStackNavigator();
 
