@@ -5,7 +5,19 @@ import React, {useState} from 'react';
 import { Platform, StyleSheet,Text,View,TextInput, KeyboardAvoidingView, Keyboard, TouchableOpacity, ScrollView, FlatList, Alert} from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { db } from "../Config";
+import { getAuth } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  addDoc,
+  Firestore,
+  getDoc,
+} from "firebase/firestore";
 
 
 const GoalScreen = ()=>{
@@ -13,14 +25,34 @@ const GoalScreen = ()=>{
     const [todos,setTodos] = React.useState([]);
     const [toggleSubmit, setToggleSubmit] = useState(true);
     const [isEditItem, setIsEditItem] = useState(null);
+    const [userDoc, setUserDoc] = useState(null);
+    const [text, setText] = useState("");
+
     
-    React.useEffect(() => {
-        getTodosFromUserDevice();
-      }, []);
-    
-      React.useEffect(() => {
-        saveTodoToUserDevice(todos);
-      }, [todos]);
+    //const myDoc = doc(db, "Goals", uid);
+
+    //save current goals to myDoc first.
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const uid = user.uid;
+    //const myDoc = doc(db, "Goals", uid);
+
+    const docRef = doc(db, "Goals", uid);
+
+    //checks if doc exists
+
+    // getDoc(docRef)
+    //     .then((doc) => {  
+    //         if (!doc.exists) {
+    //             console.log('No such document!');
+    //             const myDoc = doc(db, "Goals", uid);
+    //         } else {
+    //             //console.log('Document data:', doc.data());
+    //             const myDoc = doc;
+    //             console.log(myDoc.data());
+    //         }
+    //     })
 
     const ListItem = ({todo}) => {
         return (
@@ -55,8 +87,14 @@ const GoalScreen = ()=>{
 
     {/*Add todo, mark todo done, edit todo, and delete todo functions*/}
     const addTodo = () => {
+        //updateDoc(docRef, {todos:todos}, {merge:true});
+        //gets users doc then updates it after user adds a todo.
+        const docRef = doc(db, "Goals", uid);
+        updateDoc(docRef, {todos:todos}, {merge:true});
+        
         if(textInput == ""){
             Alert.alert("Error", "Please input a goal");
+        //For editing todo
         } if (textInput && !toggleSubmit){
             setTodos(
                 todos.map((todo) => {
@@ -70,36 +108,28 @@ const GoalScreen = ()=>{
             setTextInput('');
             setIsEditItem(null);
         }
+        //adding brand new todo
         if (toggleSubmit){
             const newTodo = {
                 id:Math.random(),
                 task: textInput,
                 completed: false,
             };
-            setTodos([...todos,newTodo])
+            setTodos([...todos,newTodo]);
             setTextInput('');
+            const recentTodoList = [...todos,newTodo];
+
+            getDoc(docRef)
+            .then((doc) => {  
+                if (!doc.exists) {
+                    console.log('No such document!');
+                } else {
+                    updateDoc(docRef, {todos: recentTodoList}, {merge:true});
+                }
+            })
         }
+        updateDoc(docRef, {todos:todos}, {merge:true});
     };
-
-    const saveTodoToUserDevice = async todos => {
-        try {
-          const stringifyTodos = JSON.stringify(todos);
-          await AsyncStorage.setItem('todos', stringifyTodos);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      const getTodosFromUserDevice = async () => {
-        try {
-          const todos = await AsyncStorage.getItem('todos');
-          if (todos != null) {
-            setTodos(JSON.parse(todos));
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
 
     const markTodoComplete = (todoId) => {
         //finds selected todo and markes it as complete, which crosses it out
@@ -110,12 +140,14 @@ const GoalScreen = ()=>{
             return item;
         });
         setTodos(newTodos);
+        updateDoc(docRef, {todos: newTodos}, {merge:true});
     };
 
     const deleteTodo = (todoId) => {
         //filters out selected todo and removes it
         const newTodos = todos.filter(item => item.id != todoId);
         setTodos(newTodos);
+        updateDoc(docRef, {todos: newTodos}, {merge:true});
     }
 
     const editTodo= (todoId) => {
@@ -125,6 +157,8 @@ const GoalScreen = ()=>{
         setToggleSubmit(false);
         setTextInput(newEditItem.task);
         setIsEditItem(todoId);
+        setTodos(todos);
+        updateDoc(docRef, {todos:todos}, {merge:true});
     };
 
     return( 
