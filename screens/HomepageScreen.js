@@ -1,46 +1,47 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-  Button,
-  Image
-} from "react-native";
-import { getAuth } from "firebase/auth";
+import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 
 const HomepageScreen = ({ navigation, route }) => {
   //console.log("email: " + route.params.email);
 
   return (
-    <View style = {styles.container}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require("../assets/logo.png")} style={styles.img} />
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Profile", { id: route.params.id })
+          }
+        >
+          <Image source={require("../assets/icon.png")} style={styles.img} />
+        </TouchableOpacity>
+      </View>
 
-    <Image 
-      style = {styles.image}
-      source = {require("../assets/Flyingkite_Flatline.png")}
-      
+      <Text style={styles.h1}>Welcome!</Text>
+
+      <Image
+        style={styles.image}
+        source={require("../assets/Flyingkite_Flatline.png")}
       />
-    
+
       {/*<Text>{route.params.email}</Text>*/}
-      <View style = {styles.buttonsContainer}>
-      <TouchableOpacity style={styles.btn}>
-        <Text>Explore</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.btn}>
-        <Text>Create</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.btn}>
+          <Text>Explore</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn}>
+          <Text>Create</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style = {styles.buttonsContainer}>
-      <TouchableOpacity style={styles.btn}>
-        <Text>Questionaire</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.btn}>
-        <Text>Schedules</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.btn}>
+          <Text>Questionaire</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn}>
+          <Text>Schedules</Text>
+        </TouchableOpacity>
       </View>
-      
     </View>
   );
 };
@@ -49,9 +50,28 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    textAlign:"center",
-    marginTop: 75,
-    flex: 1
+    textAlign: "center",
+    flex: 1,
+    backgroundColor: "white",
+  },
+  header: {
+    flexDirection: "row",
+    marginTop: 15,
+  },
+  img: {
+    height: 75,
+    width: 75,
+    borderRadius: 100,
+    borderColor: "white",
+    backgroundColor: "white",
+    borderWidth: 5,
+    marginRight: 85,
+    marginLeft: 85,
+  },
+  h1: {
+    textAlign: "center",
+    fontSize: 32,
+    fontWeight: "bold",
   },
   btn: {
     borderRadius: 10,
@@ -60,18 +80,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFD56D",
     padding: 10,
     textAlign: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
-  buttonsContainer:{
-    flexDirection: "row"
-   
+  buttonsContainer: {
+    flexDirection: "row",
   },
-
-  image:{
+  image: {
     height: 250,
     width: 250,
-    marginBottom: 50
-  }
+    marginBottom: 50,
+  },
 });
 
 export default HomepageScreen;
