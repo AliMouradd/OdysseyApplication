@@ -20,15 +20,41 @@ import {
 } from "react-native";
 
 import { app } from "../Config";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signInAnonymously,
+} from "firebase/auth";
 
 import Background from "../assets/blob-haikei.svg";
 
-const LoginScreen = () => {
+const auth = getAuth(app);
+
+const LoginScreen = ({ navigation }) => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = () => {};
+  const login = () => {
+    signInWithEmailAndPassword(auth, username, password)
+      .then((userCredential) => {
+        navigation.navigate("Home", { id: auth.currentUser.uid });
+      })
+      .catch((error) => {
+        if (error.code === "auth/user-not-found") {
+          alert("User not found. Please Try again.");
+        } else if (error.code === "auth/wrong-password") {
+          alert("Wrong Password. Please try again.");
+        } else {
+          alert(error.message);
+        }
+      });
+  };
+
+  const loginAnon = () => {
+    signInAnonymously(auth).then(() => {
+      navigation.navigate("Home", { id: 0 });
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,9 +92,18 @@ const LoginScreen = () => {
           <Text>Log In</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Sign Up")}
+          style={{ marginBottom: 5 }}
+        >
           <Text>
             New to Odyssey? <Text style={styles.link}>Sign Up Here!</Text>
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => loginAnon()}>
+          <Text>
+            Log in as <Text style={styles.link}>guest.</Text>
           </Text>
         </TouchableOpacity>
       </View>
