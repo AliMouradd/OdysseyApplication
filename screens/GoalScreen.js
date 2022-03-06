@@ -52,25 +52,59 @@ const GoalScreen = ()=>{
         )
     };
 
-    // const createDoc = () => {
-    //     getDoc(docRef)
-    //     .then((docRef) => {  
-    //         if (!docRef == '') {
-    //             //addDoc('todos',todos);
-    //             addDoc(docRef,{todos:todos},{merge:true});
-    //         }else{
-                
-    //         }
-    //     })
-    // };
+    const createDoc = () => {
+        getDoc(docRef)
+        .then((docRef) => {  
+            if (!docRef == '') {
+                //addDoc('todos',todos);
+                console.log("ran");
+                // const docRef = doc(db, "Goals", uid)
+                // setDoc(docRef);
+                // db.collection('Goals').doc(todos), {merge: true});
+
+                const docRef = doc(db, "Goals", uid);
+                const docData = {
+                    todos:[]
+                  };
+
+                setDoc(docRef,docData);
+
+                return null;
+            }else{
+                return null;
+            }
+        })
+    };
+
+    // const instantiateDoc = () => {
+    //     const docRef = doc(db, "Goals", uid);
+    //     if (!docRef == '') {
+    //         //addDoc('todos',todos);
+    //         console.log("ran");
+    //         // const docRef = doc(db, "Goals", uid)
+    //         // setDoc(docRef);
+    //         // db.collection('Goals').doc(todos), {merge: true});
+
+    //         const docRef = doc(db, "Goals", uid);
+    //         const docData = {
+    //             todos:[]
+    //         };
+
+    //         setDoc(docRef,docData);
+    //     };
+    // }
 
 
     React.useEffect(() => {
         addPreviousTodos()
       }, [])
 
+      React.useEffect(() => {
+        createDoc()
+      }, [])
+
     //   React.useEffect(() => {
-    //     createDoc()
+    //     instantiateDoc()
     //   }, [])
 
 
@@ -112,7 +146,7 @@ const GoalScreen = ()=>{
     {/*Add todo, mark todo done, edit todo, and delete todo functions*/}
     const addTodo = () => {
         //gets users doc then updates it after user adds a todo.
-        const docRef = doc(db, "Goals", uid);
+        //const docRef = doc(db, "Goals", uid);
         
         if(textInput == ""){
             Alert.alert("Error", "Please input a goal");
@@ -142,14 +176,15 @@ const GoalScreen = ()=>{
 
             //makes sure todo gets added to database as it is also added to app
             const recentTodoList = [...todos,newTodo];
-            getDoc(docRef)
-            .then((doc) => {  
-                if (!doc.exists) {
-                    console.log('No such document!');
-                } else {
-                    updateDoc(docRef, {todos: recentTodoList}, {merge:true});
-                }
-            })
+            // getDoc(docRef)
+            // .then((doc) => {  
+            //     if (!doc.exists) {
+            //         console.log('No such document!');
+            //     } else {
+            //         updateDoc(docRef, {todos: recentTodoList}, {merge:true});
+            //     }
+            // })
+            updateDoc(docRef, {todos: recentTodoList}, {merge:true});
         }
     };
 
