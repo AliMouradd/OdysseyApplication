@@ -27,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, username, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        navigation.navigate("Goal Screen"); //change to home screen
+        navigation.navigate("Goal Screen");
       })
       .catch((error) => {
         const errorCode = error.code;

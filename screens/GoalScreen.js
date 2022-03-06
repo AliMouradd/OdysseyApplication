@@ -29,68 +29,69 @@ const GoalScreen = ()=>{
     const [text, setText] = useState("");
 
     
-    //const myDoc = doc(db, "Goals", uid);
 
     //save current goals to myDoc first.
-
     const auth = getAuth();
     const user = auth.currentUser;
     const uid = user.uid;
-    //const myDoc = doc(db, "Goals", uid);
-
     const docRef = doc(db, "Goals", uid);
 
-    //checks if doc exists
+    const addPreviousTodos = () => {
+        console.log("ran");
+        getDoc(docRef)
+        .then((doc) => {  
+            if (!doc.exists) {
+                console.log('No such document!');
+                const myDoc = doc(db, "Goals", uid);
+            } else if (doc.exists){
+                setTodos(doc.get("todos"));
+            }
+        })
+    };
 
-    // getDoc(docRef)
-    //     .then((doc) => {  
-    //         if (!doc.exists) {
-    //             console.log('No such document!');
-    //             const myDoc = doc(db, "Goals", uid);
-    //         } else {
-    //             //console.log('Document data:', doc.data());
-    //             const myDoc = doc;
-    //             console.log(myDoc.data());
-    //         }
-    //     })
+    React.useEffect(() => {
+        addPreviousTodos()
+      }, [])
+
+    //set current todos to past todos...
+    //save from firebase doc to local
+    //setTodos(docRef.data());
 
     const ListItem = ({todo}) => {
         return (
         <View style = {styles.listItem}>
             <View style = {{flex: 1}}>
+                {/* Draws line across completed todo */}
                 <Text style = {{fontWeight: "bold", fontSize: 15, color: "#000", textDecorationLine: todo?.completed ? 'line-through' : 'none',}}>
                     {todo?.task}
                 </Text>
             </View>
 
-            {/*Done and Delete buttons*/}
+            {/* Mark complete button */}
             {!todo?.completed && (
                 <TouchableOpacity style = {[styles.actionIcon]} onPress = {()=> markTodoComplete(todo?.id)}>
                     <Icon name = "done" size = {20} color = "black"/>
                 </TouchableOpacity>
             )}
 
-            <TouchableOpacity style = {[styles.actionIcon]} onPress={()=>deleteTodo(todo?.id)}>
+            {/* Delete button */}
+            <TouchableOpacity style = {[styles.actionIcon]} onPress = {()=>deleteTodo(todo?.id)}>
                 <Icon name = "delete" size = {20} color = "black"/>
             </TouchableOpacity>
             
         
-            {/* Attempt at edit. */}
+            {/* Edit button */}
             <TouchableOpacity style = {[styles.actionIcon]} onPress = {()=> editTodo(todo?.id)}>
                 <Icon name = "edit" size = {20} color = "black"/>
             </TouchableOpacity>
-            {/**/}
-
         </View>
         );
     };
 
     {/*Add todo, mark todo done, edit todo, and delete todo functions*/}
     const addTodo = () => {
-        //updateDoc(docRef, {todos:todos}, {merge:true});
         //gets users doc then updates it after user adds a todo.
         const docRef = doc(db, "Goals", uid);
-        updateDoc(docRef, {todos:todos}, {merge:true});
         
         if(textInput == ""){
             Alert.alert("Error", "Please input a goal");
@@ -108,8 +109,8 @@ const GoalScreen = ()=>{
             setTextInput('');
             setIsEditItem(null);
         }
-        //adding brand new todo
-        if (toggleSubmit){
+        //For adding brand new todo
+        if (textInput && toggleSubmit){
             const newTodo = {
                 id:Math.random(),
                 task: textInput,
@@ -117,8 +118,9 @@ const GoalScreen = ()=>{
             };
             setTodos([...todos,newTodo]);
             setTextInput('');
-            const recentTodoList = [...todos,newTodo];
 
+            //makes sure todo gets added to database as it is also added to app
+            const recentTodoList = [...todos,newTodo];
             getDoc(docRef)
             .then((doc) => {  
                 if (!doc.exists) {
@@ -128,7 +130,6 @@ const GoalScreen = ()=>{
                 }
             })
         }
-        updateDoc(docRef, {todos:todos}, {merge:true});
     };
 
     const markTodoComplete = (todoId) => {
@@ -157,8 +158,6 @@ const GoalScreen = ()=>{
         setToggleSubmit(false);
         setTextInput(newEditItem.task);
         setIsEditItem(todoId);
-        setTodos(todos);
-        updateDoc(docRef, {todos:todos}, {merge:true});
     };
 
     return( 
