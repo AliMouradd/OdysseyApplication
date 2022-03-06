@@ -39,79 +39,36 @@ const GoalScreen = ()=>{
 
     const addPreviousTodos = () => {
         getDoc(docRef)
-        // .then((doc) => {  
-        //     if (!doc.exists) {
-        //         console.log('No such document!');
-        //     } else if (doc.exists){
-        //         setTodos(doc.get("todos"));
-        //     }
-        // })
         .then((doc) => {  
             setTodos(doc.get("todos"));
             }
         )
     };
 
-    const createDoc = () => {
-        getDoc(docRef)
-        .then((docRef) => {  
-            if (!docRef == '') {
-                //addDoc('todos',todos);
-                console.log("ran");
-                // const docRef = doc(db, "Goals", uid)
-                // setDoc(docRef);
-                // db.collection('Goals').doc(todos), {merge: true});
-
-                const docRef = doc(db, "Goals", uid);
-                const docData = {
-                    todos:[]
-                  };
-
-                setDoc(docRef,docData);
-
-                return null;
-            }else{
-                return null;
-            }
-        })
-    };
-
-    // const instantiateDoc = () => {
-    //     const docRef = doc(db, "Goals", uid);
-    //     if (!docRef == '') {
-    //         //addDoc('todos',todos);
-    //         console.log("ran");
-    //         // const docRef = doc(db, "Goals", uid)
-    //         // setDoc(docRef);
-    //         // db.collection('Goals').doc(todos), {merge: true});
-
-    //         const docRef = doc(db, "Goals", uid);
-    //         const docData = {
-    //             todos:[]
-    //         };
-
-    //         setDoc(docRef,docData);
-    //     };
-    // }
-
+    //If doesnt work on new account, relog.
+    //Issue is snap.exists is always true.
+    //Issue is that when doc is created it can not be written too right away. User has to interact with app in another way first or restart.
+    const createDoc = async () => {
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) {
+          const docRef = doc(db, "Goals", uid);
+          const docData = {
+            todos: [],
+          };
+          setDoc(docRef, docData);
+        }
+      };
 
     React.useEffect(() => {
         addPreviousTodos()
       }, [])
 
-      React.useEffect(() => {
+    React.useEffect(() => {
         createDoc()
       }, [])
 
-    //   React.useEffect(() => {
-    //     instantiateDoc()
-    //   }, [])
-
-
     //set current todos to past todos...
     //save from firebase doc to local
-    //setTodos(docRef.data());
-
     const ListItem = ({todo}) => {
         return (
         <View style = {styles.listItem}>
@@ -146,8 +103,6 @@ const GoalScreen = ()=>{
     {/*Add todo, mark todo done, edit todo, and delete todo functions*/}
     const addTodo = () => {
         //gets users doc then updates it after user adds a todo.
-        //const docRef = doc(db, "Goals", uid);
-        
         if(textInput == ""){
             Alert.alert("Error", "Please input a goal");
         //For editing todo
@@ -176,14 +131,6 @@ const GoalScreen = ()=>{
 
             //makes sure todo gets added to database as it is also added to app
             const recentTodoList = [...todos,newTodo];
-            // getDoc(docRef)
-            // .then((doc) => {  
-            //     if (!doc.exists) {
-            //         console.log('No such document!');
-            //     } else {
-            //         updateDoc(docRef, {todos: recentTodoList}, {merge:true});
-            //     }
-            // })
             updateDoc(docRef, {todos: recentTodoList}, {merge:true});
         }
     };
