@@ -36,22 +36,43 @@ const GoalScreen = ()=>{
     const uid = user.uid;
     const docRef = doc(db, "Goals", uid);
 
+
     const addPreviousTodos = () => {
-        console.log("ran");
         getDoc(docRef)
+        // .then((doc) => {  
+        //     if (!doc.exists) {
+        //         console.log('No such document!');
+        //     } else if (doc.exists){
+        //         setTodos(doc.get("todos"));
+        //     }
+        // })
         .then((doc) => {  
-            if (!doc.exists) {
-                console.log('No such document!');
-                const myDoc = doc(db, "Goals", uid);
-            } else if (doc.exists){
-                setTodos(doc.get("todos"));
+            setTodos(doc.get("todos"));
             }
-        })
+        )
     };
+
+    // const createDoc = () => {
+    //     getDoc(docRef)
+    //     .then((docRef) => {  
+    //         if (!docRef == '') {
+    //             //addDoc('todos',todos);
+    //             addDoc(docRef,{todos:todos},{merge:true});
+    //         }else{
+                
+    //         }
+    //     })
+    // };
+
 
     React.useEffect(() => {
         addPreviousTodos()
       }, [])
+
+    //   React.useEffect(() => {
+    //     createDoc()
+    //   }, [])
+
 
     //set current todos to past todos...
     //save from firebase doc to local
