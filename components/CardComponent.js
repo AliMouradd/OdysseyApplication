@@ -1,3 +1,22 @@
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  ImageBackground,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import COLORS from '../components/colors';
+import places from "../components/places";
+const {width} = Dimensions.get('screen');
+
 const CardComponent = ({place}) => {
     return (
       <TouchableOpacity
@@ -35,5 +54,56 @@ const CardComponent = ({place}) => {
       </TouchableOpacity>
     );
   };
+
+  const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.white
+    },
+    header: {
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        backgroundColor: COLORS.primary
+    },
+    scrollHeader: {
+        backgroundColor: COLORS.primary,
+        height: 120,
+        paddingHorizontal: 20
+    },
+    headerTitle: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+        fontSize: 23
+    },
+    inputContainer:{
+        height: 40,
+        width: '100%',
+        backgroundColor: COLORS.white,
+        borderRadius: 10,
+        position: 'absolute',
+        top: 90,
+        flexDirection: 'row',
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        elevation: 12,
+    },
+    sectionTitle: {
+        marginHorizontal: 20,
+        marginVertical: 20,
+        fontWeight: 'bold',
+        fontSize: 20
+    },
+    cardImage: {
+        width: width - 40,
+        height: 200,
+        marginRight: 20,
+        borderRadius: 10,
+        padding: 10,
+        overflow: 'hidden'
+      }
+
+});
 
   export default CardComponent;
