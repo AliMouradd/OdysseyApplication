@@ -15,7 +15,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../components/colors';
 import places from "../components/places";
-import CardComponent from "../components/CardComponent";
+import CardComponent from "../components/CardComponent"
 import PopularPlacesCardComponent from "../components/PopularPlacesCardComponents";
 
 const {width} = Dimensions.get('screen');
