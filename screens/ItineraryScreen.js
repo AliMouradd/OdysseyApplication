@@ -15,7 +15,8 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../components/colors';
 import places from "../components/places";
-import CardComponent from "../components/CardComponent"
+import CardComponent from "../components/CardComponent";
+import PopularPlacesCardComponent from "../components/PopularPlacesCardComponents";
 
 const {width} = Dimensions.get('screen');
 const ItineraryScreen = ({navigation}) => {
@@ -26,7 +27,7 @@ const ItineraryScreen = ({navigation}) => {
         <SafeAreaView style ={style.container}> 
 
             <View style = {style.header}> 
-                <Icon name="back" size={28} color={COLORS.white} />
+                <Icon name="arrow-back" size={28} color={COLORS.white} />
                 <Icon name="home" size={28} color={COLORS.white} />
             </View>
 
@@ -50,10 +51,22 @@ const ItineraryScreen = ({navigation}) => {
                     <FlatList
                     snapToInterval={width -20}
                     contentContainerStyle ={{paddingLeft:20, paddingBottom:20}}
-                    showsHorizontalScrollIndicator = {true}
+                    showsHorizontalScrollIndicator = {false}
                     horizontal
                     data = {places}
                     renderItem = {({item}) => <CardComponent place = {item}/>}
+                    />
+                </View>
+
+                <Text style={style.sectionTitle}>Popular Plans</Text>
+                <View>
+                    <FlatList
+                    snapToInterval={width -20}
+                    contentContainerStyle ={{paddingLeft:20, paddingBottom:20}}
+                    showsHorizontalScrollIndicator = {false}
+                    horizontal
+                    data = {places}
+                    renderItem = {({item}) => <PopularPlacesCardComponent place = {item}/>}
                     />
                 </View>
             </ScrollView>
