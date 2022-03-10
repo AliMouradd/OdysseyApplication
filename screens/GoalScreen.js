@@ -164,38 +164,38 @@ const GoalScreen = ()=>{
     };
 
     return( 
-    <SafeAreaView
-        style= {{flex: 1, backgroundColor: "#fff",}}>
-            <View style = {styles.header}>
-                <Text style={styles.sectionTitle}> To-Do List</Text>
-            </View>
-
-            <FlatList
-                showsVerticalScrollIndicator = {false}
-                contentContainerStyle = {{padding: 20, paddingBottom: 100}}
-                data = {todos} 
-                renderItem = {({item}) => <ListItem todo = {item}/>}
-            />
-            
-
-            <View style = {styles.footer}>
-                <View style = {styles.inputContainer}>
-                    <TextInput
-                        value={textInput}
-                        placeholder = "Write a Goal"
-                        onChangeText={text => setTextInput(text)}
-                    />
+        <SafeAreaView
+            style= {{flex: 1, backgroundColor: "#fff",}}>
+                <View style = {styles.header}>
+                    <Text style={styles.sectionTitle}> To-Do List</Text>
                 </View>
-                <TouchableOpacity onPress={addTodo}>
-                    <View style = {styles.iconContainer}>
-                        <Text style={styles.addText}> + </Text>
+    
+                <FlatList
+                    showsVerticalScrollIndicator = {false}
+                    contentContainerStyle = {{padding: 20, paddingBottom: 100}}
+                    data = {todos} 
+                    renderItem = {({item}) => <ListItem todo = {item}/>}
+                />
+                
+    
+                <View style = {styles.footer}>
+                    <View style = {styles.inputContainer}>
+                        <TextInput
+                            value={textInput}
+                            placeholder = "Write a Goal"
+                            onChangeText={text => setTextInput(text)}
+                        />
                     </View>
-                </TouchableOpacity>
-            </View>
-
-
-    </SafeAreaView>
-    );
+                    <TouchableOpacity onPress={addTodo}>
+                        <View style = {styles.iconContainer}>
+                            <Text style={styles.addText}> + </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+    
+    
+        </SafeAreaView>
+        );
 };
   
 const styles = StyleSheet.create({

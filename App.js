@@ -8,6 +8,7 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import GoalScreen from "./screens/GoalScreen";
+import AddPlacesScreen from "./screens/AddPlacesScreen";
 
 const Stack = createNativeStackNavigator();
 
