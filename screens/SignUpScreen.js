@@ -43,7 +43,15 @@ const SignUpScreen = () => {
         followers: 0,
       });
     } catch (error) {
-      console.log(error.message);
+      if (error.code === "auth/weak-password") {
+        alert(
+          "Weak Password. Password needs to be at least 6 characters long. Please try again."
+        );
+      } else if (error.code === "auth/email-already-in-use") {
+        alert("Email is already in use. Please try again.");
+      } else {
+        alert(error.message);
+      }
     }
   };
 
