@@ -18,9 +18,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-<<<<<<< HEAD
 import { app } from "../Config";
 import {
   getAuth,
@@ -32,17 +30,14 @@ import Background from "../assets/blob-haikei.svg";
 
 const auth = getAuth(app);
 
-=======
->>>>>>> origin/GoalListScreen
 const LoginScreen = ({ navigation }) => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const login = () => {
-<<<<<<< HEAD
     signInWithEmailAndPassword(auth, username, password)
       .then((userCredential) => {
-        navigation.navigate("Home", { id: auth.currentUser.uid });
+        navigation.navigate("Goal Screen", { id: auth.currentUser.uid });
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
@@ -59,18 +54,6 @@ const LoginScreen = ({ navigation }) => {
     signInAnonymously(auth).then(() => {
       navigation.navigate("Home", { id: 0 });
     });
-=======
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, username, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        navigation.navigate("Goal Screen");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
->>>>>>> origin/GoalListScreen
   };
 
   return (

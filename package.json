@@ -28,12 +28,9 @@
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-snap-carousel": "^3.9.1",
-<<<<<<< HEAD
     "react-native-svg": "12.1.1",
     "react-native-svg-transformer": "^1.0.0",
-=======
     "react-native-vector-icons": "^9.1.0",
->>>>>>> origin/GoalListScreen
     "react-native-web": "0.17.1"
   },
   "devDependencies": {

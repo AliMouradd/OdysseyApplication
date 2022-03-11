@@ -1,13 +1,10 @@
-//npm install @react-native-async-storage/async-storage
-//npm install --save react-native-vector-icons
-
 import React, {useState} from 'react';
 import { Platform, StyleSheet,Text,View,TextInput, KeyboardAvoidingView, Keyboard, TouchableOpacity, ScrollView, FlatList, Alert} from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+//import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   collection,
   doc,

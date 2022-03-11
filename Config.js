@@ -1,10 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-<<<<<<< HEAD
-
-=======
 import { getFirestore } from "firebase/firestore";
->>>>>>> origin/GoalListScreen
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,13 +18,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-<<<<<<< HEAD
-const app = initializeApp(firebaseConfig);
-
-export default app;
-=======
 export const app = initializeApp(firebaseConfig);
 
 // Firestore database
 export const db = getFirestore();
->>>>>>> origin/GoalListScreen
