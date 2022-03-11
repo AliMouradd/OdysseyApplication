@@ -27,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, username, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        navigation.navigate("MapView"); //change to home screen
+        navigation.navigate("Generate Route"); //change to home screen
       })
       .catch((error) => {
         const errorCode = error.code;

@@ -35,7 +35,7 @@ export default function App() {
         />
         <Stack.Screen name="Answers" component={QuestionnaireAnswersTest} />
         <Stack.Screen name="Goals" component={GoalScreen} />
-        <Stack.Screen name="MapView" component={MapViewScreen} />
+        <Stack.Screen name="Generate Route" component={MapViewScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

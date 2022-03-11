@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import MapView from "react-native-maps";
 import polyline from "@mapbox/polyline";
-import { StyleSheet, Text, View, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
 const MapViewScreen = ({ navigation }) => {
   const [coords, setCoords] = useState([]);
+  const [origintext, onChangeOrigin] = useState("");
+  const [destinationtext, onChangeDestination] = useState("");
 
   async function getDirections(startLoc, destinationLoc) {
     try {
@@ -31,6 +39,18 @@ const MapViewScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.origininput}
+        onChangeText={onChangeOrigin}
+        value={origintext}
+        placeholder="Origin..."
+      />
+      <TextInput
+        style={styles.destinationinput}
+        onChangeText={onChangeDestination}
+        value={destinationtext}
+        placeholder="Destination..."
+      />
       <MapView
         style={styles.mapstyle}
         initialRegion={{
@@ -46,11 +66,12 @@ const MapViewScreen = ({ navigation }) => {
           strokeColor="red"
         />
       </MapView>
-      <Button
+      <TouchableOpacity
         style={styles.button}
-        title="Press to generate route"
-        onPress={() => getDirections("Los Angeles, CA", "Long Beach, CA")}
-      ></Button>
+        onPress={() => getDirections(origintext, destinationtext)}
+      >
+        <Text style={{ fontSize: 16 }}>Press to generate route</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -63,10 +84,36 @@ const styles = StyleSheet.create({
     //justifyContent: "center",
   },
   mapstyle: {
-    height: "80%",
+    height: "75%",
     width: "100%",
   },
-  button: {},
+  button: {
+    color: "#FFD56D",
+    alignItems: "center",
+    backgroundColor: "#FFD56D",
+    padding: 15,
+    marginVertical: 10,
+    width: 250,
+    borderRadius: 10,
+  },
+  origininput: {
+    backgroundColor: "gainsboro",
+    height: 40,
+    width: "90%",
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  destinationinput: {
+    backgroundColor: "gainsboro",
+    height: 40,
+    width: "90%",
+    padding: 10,
+    //marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
 });
 
 export default MapViewScreen;
