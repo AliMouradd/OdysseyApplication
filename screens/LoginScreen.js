@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
   const login = () => {
     signInWithEmailAndPassword(auth, username, password)
       .then((userCredential) => {
-        navigation.navigate("Goal Screen", { id: auth.currentUser.uid });
+        navigation.navigate("Home", { id: auth.currentUser.uid });
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
