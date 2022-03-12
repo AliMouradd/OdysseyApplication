@@ -13,6 +13,10 @@ import { getAuth } from "firebase/auth";
 const HomepageScreen = ({ navigation, route }) => {
   //console.log("email: " + route.params.email);
 
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
+
   return (
     <View style = {styles.container}>
 
@@ -24,11 +28,12 @@ const HomepageScreen = ({ navigation, route }) => {
     
       {/*<Text>{route.params.email}</Text>*/}
       <View style = {styles.buttonsContainer}>
-      <TouchableOpacity style={styles.btn}>
-        <Text>Explore</Text>
+
+      <TouchableOpacity style={styles.btn} onPress = {() => navigation.navigate("Itinerary", {  id: uid })}>
+        <Text>Itinerary</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btn}>
-        <Text>Create</Text>
+      <TouchableOpacity style={styles.btn} onPress = {() => navigation.navigate("Add Places", {  id: uid })}>
+        <Text>Add Places</Text>
       </TouchableOpacity>
       </View>
 
@@ -38,6 +43,13 @@ const HomepageScreen = ({ navigation, route }) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.btn}>
         <Text>Schedules</Text>
+      </TouchableOpacity>
+      </View>
+
+
+      <View style = {styles.buttonsContainer}>
+      <TouchableOpacity style={styles.btn} onPress = {() => navigation.navigate("Goal Screen", {  id: uid })}>
+        <Text>To-Dos</Text>
       </TouchableOpacity>
       </View>
       

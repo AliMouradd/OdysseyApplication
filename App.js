@@ -7,6 +7,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import HomepageScreen from "./screens/HomepageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ItineraryScreen from "./screens/ItineraryScreen";
+import AddPlacesScreen from "./screens/AddPlacesScreen";
 import GoalScreen
  from "./screens/GoalScreen";
 const Stack = createNativeStackNavigator();
@@ -16,7 +17,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Log In"
+        initialRouteName="Welcome"
         screenOptions={{ headerShown: true }}
       >
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
@@ -25,6 +26,7 @@ export default function App() {
         <Stack.Screen name="Goal Screen" component={GoalScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
+        <Stack.Screen name="Add Places" component={AddPlacesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
