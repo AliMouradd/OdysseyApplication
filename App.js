@@ -12,6 +12,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import GoalScreen from "./screens/GoalListScreen";
 import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
+import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,7 @@ export default function App() {
         <Stack.Screen name="Answers" component={QuestionnaireAnswersTest} />
         <Stack.Screen name="Goals" component={GoalScreen} />
         <Stack.Screen name="Generate Route" component={MapViewScreen} />
+        <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -13,6 +13,7 @@ const MapViewScreen = ({ navigation }) => {
   const [coords, setCoords] = useState([]);
   const [origintext, onChangeOrigin] = useState("");
   const [destinationtext, onChangeDestination] = useState("");
+  const [apisteps, setAPISteps] = useState([]);
 
   async function getDirections(startLoc, destinationLoc) {
     try {
@@ -30,6 +31,7 @@ const MapViewScreen = ({ navigation }) => {
         };
       });
       setCoords(coordinates);
+      setAPISteps(responseJson.routes[0].legs[0].steps);
       return coordinates;
     } catch (error) {
       alert(error);
@@ -66,12 +68,20 @@ const MapViewScreen = ({ navigation }) => {
           strokeColor="red"
         />
       </MapView>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => getDirections(origintext, destinationtext)}
-      >
-        <Text style={{ fontSize: 16 }}>Press to generate route</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonscontainer}>
+        <TouchableOpacity
+          style={styles.routebutton}
+          onPress={() => getDirections(origintext, destinationtext)}
+        >
+          <Text style={{ fontSize: 16 }}>Press to generate route</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.stepsbutton}
+          onPress={() => navigation.navigate("Route Steps", { apisteps })}
+        >
+          <Text style={{ fontSize: 16 }}>View steps</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -83,17 +93,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     //justifyContent: "center",
   },
+  buttonscontainer: {
+    alignItems: "flex-start",
+    width: "100%",
+    flexDirection: "row",
+  },
   mapstyle: {
     height: "75%",
     width: "100%",
   },
-  button: {
+  routebutton: {
     color: "#FFD56D",
     alignItems: "center",
     backgroundColor: "#FFD56D",
     padding: 15,
-    marginVertical: 10,
+    margin: 10,
     width: 250,
+    borderRadius: 10,
+  },
+  stepsbutton: {
+    color: "#FFD56D",
+    alignItems: "center",
+    backgroundColor: "#FFD56D",
+    padding: 15,
+    margin: 10,
+    width: 120,
     borderRadius: 10,
   },
   origininput: {
