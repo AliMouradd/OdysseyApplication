@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+  Image
+} from "react-native";
+import { getAuth } from "firebase/auth";
 
 const HomepageScreen = ({ navigation, route }) => {
   //console.log("email: " + route.params.email);
