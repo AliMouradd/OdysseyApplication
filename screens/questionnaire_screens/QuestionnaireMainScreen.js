@@ -315,7 +315,7 @@ export default class SurveyScreen extends Component {
       });
     }
 
-    this.props.navigation.navigate("Answers");
+    this.props.navigation.navigate("Home");
   }
 
   onAnswerSubmitted(answer) {
