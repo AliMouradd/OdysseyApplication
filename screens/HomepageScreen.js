@@ -58,7 +58,7 @@ const HomepageScreen = ({ navigation, route }) => {
           style={styles.btn}
           onPress={() => navigation.navigate("Travel Questionnaire")}
         >
-          <Text>Questionaire</Text>
+          <Text>Questionnaire</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn}>
           <Text>Schedules</Text>
@@ -71,6 +71,12 @@ const HomepageScreen = ({ navigation, route }) => {
           onPress={() => navigation.navigate("Goal Screen", { id: uid })}
         >
           <Text>To-Dos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Generate Route")}
+        >
+          <Text>Routes</Text>
         </TouchableOpacity>
       </View>
     </View>
