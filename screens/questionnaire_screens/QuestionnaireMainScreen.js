@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
 import {
@@ -24,32 +23,25 @@ import {
 const survey = [
   {
     questionType: "TextInput",
-    questionText:
-      "Question 1 of 7:\nFirst of all, where do you plan on going for your vacation?",
-    questionId: "vacationLocation",
-    placeholderText: "Enter city...",
-  },
-  {
-    questionType: "TextInput",
-    questionText: "Question 2 of 7:\nWhen is the start date of your vacation?",
+    questionText: "Question 1 of 6:\nWhen is the start date of your vacation?",
     questionId: "startDate",
     placeholderText: "MM/DD/YYYY",
   },
   {
     questionType: "TextInput",
-    questionText: "Question 3 of 7:\nWhen is the end date of your vacation?",
+    questionText: "Question 2 of 6:\nWhen is the end date of your vacation?",
     questionId: "endDate",
     placeholderText: "MM/DD/YYYY",
   },
   {
     questionType: "TextInput", // maybe make this numberinput
-    questionText: "Question 4 of 7:\nWhat is your budget for your vacation?",
+    questionText: "Question 3 of 6:\nWhat is your budget for your vacation?",
     questionId: "budget",
     placeholderText: "Enter budget in dollars here...",
   },
   {
     questionType: "MultipleSelectionGroup",
-    questionText: "Question 5 of 7:\nWhat are your methods of travel?",
+    questionText: "Question 4 of 6:\nWhat are your methods of travel?",
     questionId: "travelMethods",
     questionSettings: {
       maxMultiSelect: 4,
@@ -73,7 +65,7 @@ const survey = [
   },
   {
     questionType: "MultipleSelectionGroup",
-    questionText: "Question 6 of 7:\nWhat are your interests?",
+    questionText: "Question 5 of 6:\nWhat are your interests?",
     questionId: "interests",
     questionSettings: {
       maxMultiSelect: 8,
@@ -117,7 +109,7 @@ const survey = [
   },
   {
     questionType: "MultipleSelectionGroup",
-    questionText: "Question 7 of 7:\nWhat are your food interests?",
+    questionText: "Question 6 of 6:\nWhat are your food interests?",
     questionId: "foodInterests",
     questionSettings: {
       maxMultiSelect: 8,
@@ -285,7 +277,6 @@ export default class SurveyScreen extends Component {
 
     // maybe add user ID's to documents?
     const docData = {
-      vacationLocation: answersAsObject.vacationLocation,
       startDate: answersAsObject.startDate,
       endDate: answersAsObject.endDate,
       budget: answersAsObject.budget,
@@ -335,55 +326,23 @@ export default class SurveyScreen extends Component {
   }
 
   renderTextBox(onChange, value, placeholder, onBlur) {
-    if (placeholder == "Enter city...") {
-      return (
-        // return google maps auto complete here
-        <View>
-          <GooglePlacesAutocomplete
-            placeholder={placeholder}
-            styles={{
-              textInputContainer: {
-                backgroundColor: "grey",
-              },
-              textInput: {
-                height: 38,
-                color: "#5d5d5d",
-                fontSize: 16,
-              },
-              predefinedPlacesDescription: {
-                color: "#1faadb",
-              },
-            }}
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              console.log(data, details);
-            }}
-            query={{
-              key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
-              language: "en",
-            }}
-          />
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <TextInput
-            style={styles.textBox}
-            onChangeText={(text) => onChange(text)}
-            numberOfLines={1}
-            underlineColorAndroid={"white"}
-            placeholder={placeholder}
-            placeholderTextColor={"rgba(184,184,184,1)"}
-            value={value}
-            multiline
-            onBlur={onBlur}
-            blurOnSubmit
-            returnKeyType="done"
-          />
-        </View>
-      );
-    }
+    return (
+      <View>
+        <TextInput
+          style={styles.textBox}
+          onChangeText={(text) => onChange(text)}
+          numberOfLines={1}
+          underlineColorAndroid={"white"}
+          placeholder={placeholder}
+          placeholderTextColor={"rgba(184,184,184,1)"}
+          value={value}
+          multiline
+          onBlur={onBlur}
+          blurOnSubmit
+          returnKeyType="done"
+        />
+      </View>
+    );
   }
 
   renderInfoText(infoText) {
@@ -538,11 +497,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
-  },
-  autocompleteTextBox: {
-    backgroundColor: "gray",
-    width: "100%",
-    height: 50,
   },
   numericInput: {
     borderWidth: 1,
