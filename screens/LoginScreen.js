@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import { app } from "../Config";
 import {

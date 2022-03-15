@@ -8,8 +8,9 @@ import HomepageScreen from "./screens/HomepageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ItineraryScreen from "./screens/ItineraryScreen";
 import AddPlacesScreen from "./screens/AddPlacesScreen";
-import GoalScreen
- from "./screens/GoalScreen";
+import GoalScreen from "./screens/GoalScreen";
+import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
+import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
 const Stack = createNativeStackNavigator();
 
 
@@ -27,6 +28,14 @@ export default function App() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Add Places" component={AddPlacesScreen} />
+        <Stack.Screen
+          name="Travel Questionnaire"
+          component={QuestionnaireStartScreen}
+        />
+        <Stack.Screen
+          name="Questionnaire"
+          component={QuestionnaireMainScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
