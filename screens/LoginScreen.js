@@ -18,14 +18,13 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-import { app } from "../Config";
 import {
   getAuth,
   signInWithEmailAndPassword,
   signInAnonymously,
 } from "firebase/auth";
+
+import { app } from "../Config";
 
 import Background from "../assets/blob-haikei.svg";
 
@@ -38,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
   const login = () => {
     signInWithEmailAndPassword(auth, username, password)
       .then((userCredential) => {
-        navigation.navigate("Home", {id: auth.currentUser.uid});
+        navigation.navigate("Home", { id: auth.currentUser.uid });
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {

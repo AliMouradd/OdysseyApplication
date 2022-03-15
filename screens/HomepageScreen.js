@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
   Button,
-  Image
+  Image,
 } from "react-native";
 import { getAuth } from "firebase/auth";
 
@@ -54,7 +54,10 @@ const HomepageScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Travel Questionnaire")}
+        >
           <Text>Questionaire</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn}>
