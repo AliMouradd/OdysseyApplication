@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
 import {
@@ -21,6 +22,13 @@ import {
 
 // this will contain all questions and possible answers
 const survey = [
+  {
+    questionType: "TextInput",
+    questionText:
+      "Question 1 of 7:\nFirst of all, where do you plan on going for your vacation?",
+    questionId: "vacationLocation",
+    placeholderText: "Enter city...",
+  },
   {
     questionType: "TextInput",
     questionText: "Question 1 of 6:\nWhen is the start date of your vacation?",
@@ -277,6 +285,7 @@ export default class SurveyScreen extends Component {
 
     // maybe add user ID's to documents?
     const docData = {
+      vacationLocation: answersAsObject.vacationLocation,
       startDate: answersAsObject.startDate,
       endDate: answersAsObject.endDate,
       budget: answersAsObject.budget,
@@ -326,23 +335,55 @@ export default class SurveyScreen extends Component {
   }
 
   renderTextBox(onChange, value, placeholder, onBlur) {
-    return (
-      <View>
-        <TextInput
-          style={styles.textBox}
-          onChangeText={(text) => onChange(text)}
-          numberOfLines={1}
-          underlineColorAndroid={"white"}
-          placeholder={placeholder}
-          placeholderTextColor={"rgba(184,184,184,1)"}
-          value={value}
-          multiline
-          onBlur={onBlur}
-          blurOnSubmit
-          returnKeyType="done"
-        />
-      </View>
-    );
+    if (placeholder == "Enter city...") {
+      return (
+        // return google maps auto complete here
+        <View style={{ padding: 10, flex: 2, backgroundColor: "red" }}>
+          <GooglePlacesAutocomplete
+            placeholder={placeholder}
+            styles={{
+              textInputContainer: {
+                backgroundColor: "grey",
+              },
+              textInput: {
+                height: 38,
+                color: "#5d5d5d",
+                fontSize: 16,
+              },
+              predefinedPlacesDescription: {
+                color: "#1faadb",
+              },
+            }}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              console.log(data, details);
+            }}
+            query={{
+              key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
+              language: "en",
+            }}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <TextInput
+            style={styles.textBox}
+            onChangeText={(text) => onChange(text)}
+            numberOfLines={1}
+            underlineColorAndroid={"white"}
+            placeholder={placeholder}
+            placeholderTextColor={"rgba(184,184,184,1)"}
+            value={value}
+            multiline
+            onBlur={onBlur}
+            blurOnSubmit
+            returnKeyType="done"
+          />
+        </View>
+      );
+    }
   }
 
   renderInfoText(infoText) {
