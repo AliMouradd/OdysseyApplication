@@ -338,29 +338,71 @@ export default class SurveyScreen extends Component {
     if (placeholder == "Enter city...") {
       return (
         // return google maps auto complete here
-        <View style={{ padding: 10, flex: 2, backgroundColor: "red" }}>
+        <View style={{ padding: 5, flex: 1 }}>
           <GooglePlacesAutocomplete
             placeholder={placeholder}
-            styles={{
-              textInputContainer: {
-                backgroundColor: "grey",
-              },
-              textInput: {
-                height: 38,
-                color: "#5d5d5d",
-                fontSize: 16,
-              },
-              predefinedPlacesDescription: {
-                color: "#1faadb",
-              },
-            }}
             onPress={(data, details = null) => {
               // 'details' is provided when fetchDetails = true
-              console.log(data, details);
+              console.log("data", data);
+              console.log("details", details);
             }}
             query={{
               key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
               language: "en",
+            }}
+            debounce={1000}
+            styles={{
+              container: {
+                flex: 1,
+              },
+              textInputContainer: {
+                flexDirection: "row",
+              },
+              textInput: {
+                borderColor: "rgba(204,204,204,1)",
+                backgroundColor: "white",
+                height: 44,
+                borderRadius: 10,
+                borderWidth: 2,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                fontSize: 15,
+                elevation: 0,
+                flex: 1,
+              },
+              poweredContainer: {
+                //styles for the "powered by Google" row
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottomRightRadius: 5,
+                borderBottomLeftRadius: 5,
+                borderColor: "#c8c7cc",
+                borderTopWidth: 0.5,
+              },
+              powered: {},
+              listView: {
+                flex: 1,
+                borderColor: "rgba(204,204,204,1)",
+                borderWidth: 2,
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10,
+              },
+              row: {
+                backgroundColor: "#FFFFFF",
+                padding: 13,
+                height: 44,
+                flexDirection: "row",
+              },
+              separator: {
+                height: 1,
+                backgroundColor: "#c8c7cc",
+              },
+              description: {},
+              loader: {
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                height: 20,
+              },
             }}
           />
         </View>
@@ -420,10 +462,10 @@ export default class SurveyScreen extends Component {
           renderInfo={this.renderInfoText}
         />
 
-        <ScrollView style={styles.answersContainer}>
+        {/*<ScrollView style={styles.answersContainer}>
           <Text style={{ textAlign: "center" }}>JSON output</Text>
           <Text>{this.state.answersSoFar}</Text>
-        </ScrollView>
+        </ScrollView>*/}
       </View>
     );
   }
@@ -442,7 +484,7 @@ const styles = StyleSheet.create({
     // main parent view
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     //borderRadius: 10,
     flex: 1,
   },
@@ -463,7 +505,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     padding: 5,
     height: "70%",
-    //flex: 1,
+    flex: 1,
     //flexGrow: 1,
     //elevation: 20,
   },
