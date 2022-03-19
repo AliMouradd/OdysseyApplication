@@ -1,34 +1,19 @@
 import React, { Component } from "react";
 import {
   StyleSheet,
-  ScrollView,
   Text,
   TextInput,
   View,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
-import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  addDoc,
-} from "firebase/firestore";
+import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 // this will contain all questions and possible answers
 const survey = [
-  {
-    questionType: "TextInput",
-    questionText:
-      "Question 1 of 7:\nFirst of all, where do you plan on going for your vacation?",
-    questionId: "vacationLocation",
-    placeholderText: "Enter city...",
-  },
   {
     questionType: "TextInput",
     questionText: "Question 1 of 6:\nWhen is the start date of your vacation?",
@@ -260,7 +245,7 @@ export default class SurveyScreen extends Component {
     for (const elem of infoQuestionsRemoved) {
       answersAsObject[elem.questionId] = elem.value;
       console.log(elem.questionId);
-      console.log(elem.value[0]); //[0].value
+      console.log(elem.value[0]);
     }
 
     // setup for getting current user's ID:
@@ -278,14 +263,11 @@ export default class SurveyScreen extends Component {
     var interestsArrayLength = answersAsObject.interests.length;
     var foodInterestsArrayLength = answersAsObject.foodInterests.length;
 
-    // create the doc / reset the doc
-    // TEST TO SEE IF DOCUMENT REWRITES WHEN RUN AGAIN
-
+    // doc reference
     const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
 
     // maybe add user ID's to documents?
     const docData = {
-      vacationLocation: answersAsObject.vacationLocation,
       startDate: answersAsObject.startDate,
       endDate: answersAsObject.endDate,
       budget: answersAsObject.budget,
@@ -294,9 +276,10 @@ export default class SurveyScreen extends Component {
       foodInterests: [],
     };
 
-    setDoc(userAnswersDocRef, docData)
+    // update the doc
+    setDoc(userAnswersDocRef, docData, { merge: true })
       .then(() => {
-        alert("Document Created");
+        ToastAndroid.show("Document Updated", ToastAndroid.SHORT);
       })
       .catch((error) => {
         alert(error.message);
@@ -335,97 +318,23 @@ export default class SurveyScreen extends Component {
   }
 
   renderTextBox(onChange, value, placeholder, onBlur) {
-    if (placeholder == "Enter city...") {
-      return (
-        // return google maps auto complete here
-        <View style={{ padding: 5, flex: 1 }}>
-          <GooglePlacesAutocomplete
-            placeholder={placeholder}
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              console.log("data", data);
-              console.log("details", details);
-            }}
-            query={{
-              key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
-              language: "en",
-            }}
-            debounce={1000}
-            styles={{
-              container: {
-                flex: 1,
-              },
-              textInputContainer: {
-                flexDirection: "row",
-              },
-              textInput: {
-                borderColor: "rgba(204,204,204,1)",
-                backgroundColor: "white",
-                height: 44,
-                borderRadius: 10,
-                borderWidth: 2,
-                paddingVertical: 5,
-                paddingHorizontal: 10,
-                fontSize: 15,
-                elevation: 0,
-                flex: 1,
-              },
-              poweredContainer: {
-                //styles for the "powered by Google" row
-                justifyContent: "flex-end",
-                alignItems: "center",
-                borderBottomRightRadius: 5,
-                borderBottomLeftRadius: 5,
-                borderColor: "#c8c7cc",
-                borderTopWidth: 0.5,
-              },
-              powered: {},
-              listView: {
-                flex: 1,
-                borderColor: "rgba(204,204,204,1)",
-                borderWidth: 2,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-              },
-              row: {
-                backgroundColor: "#FFFFFF",
-                padding: 13,
-                height: 44,
-                flexDirection: "row",
-              },
-              separator: {
-                height: 1,
-                backgroundColor: "#c8c7cc",
-              },
-              description: {},
-              loader: {
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                height: 20,
-              },
-            }}
-          />
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <TextInput
-            style={styles.textBox}
-            onChangeText={(text) => onChange(text)}
-            numberOfLines={1}
-            underlineColorAndroid={"white"}
-            placeholder={placeholder}
-            placeholderTextColor={"rgba(184,184,184,1)"}
-            value={value}
-            multiline
-            onBlur={onBlur}
-            blurOnSubmit
-            returnKeyType="done"
-          />
-        </View>
-      );
-    }
+    return (
+      <View>
+        <TextInput
+          style={styles.textBox}
+          onChangeText={(text) => onChange(text)}
+          numberOfLines={1}
+          underlineColorAndroid={"white"}
+          placeholder={placeholder}
+          placeholderTextColor={"rgba(184,184,184,1)"}
+          value={value}
+          multiline
+          onBlur={onBlur}
+          blurOnSubmit
+          returnKeyType="done"
+        />
+      </View>
+    );
   }
 
   renderInfoText(infoText) {
