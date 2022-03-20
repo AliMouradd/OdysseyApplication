@@ -7,6 +7,7 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const PlacesComponent = (props) => {
   const [name, setName] = useState(props.place.name);
@@ -23,6 +24,12 @@ const PlacesComponent = (props) => {
         })
       }
     >
+      <TouchableOpacity
+        style={styles.delBtn}
+        onPress={() => props.delFunction(props.place.number)}
+      >
+        <Icon name="delete" size={20} color="red" />
+      </TouchableOpacity>
       <Image style={styles.img} source={require("../assets/logo.png")} />
       <View style={styles.content}>
         <Text>{name}</Text>
@@ -48,14 +55,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     backgroundColor: "white",
   },
+  delBtn: {
+    width: "10%",
+    justifyContent: "center",
+  },
   img: {
-    width: "40%",
+    width: "35%",
     height: 100,
     width: 100,
     marginRight: 10,
   },
   content: {
-    width: "50%",
+    width: "45%",
   },
   order: {
     width: "10%",

@@ -63,6 +63,11 @@ const PlacesListScreen = ({ navigation }) => {
     setPlaces(filteredPlaces);
   };
 
+  const deletePlace = (num) => {
+    const newPlaces = [...places].filter((p) => p.number !== num);
+    setPlaces(newPlaces);
+  };
+
   const getPlacesTest = () => {
     let sampleData = [
       {
@@ -180,6 +185,7 @@ const PlacesListScreen = ({ navigation }) => {
               key={place.number}
               place={place}
               navigation={navigation}
+              delFunction={deletePlace}
             />
           ))}
         </View>
