@@ -9,7 +9,6 @@ import {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 const RouteInputScreen = ({ navigation, route }) => {
-  const [text, setText] = useState("");
   const ref = useRef();
 
   return (
@@ -17,14 +16,14 @@ const RouteInputScreen = ({ navigation, route }) => {
       <GooglePlacesAutocomplete
         ref={ref}
         placeholder={"Search for a location..."}
-        // this doesnt work, navigates before text box is updated (try using the actual data returned instead of gettting from text box)
-        // onPress={() => {
-        //   navigation.navigate({
-        //     name: "Generate Route",
-        //     params: { locationtext: ref.current?.getAddressText() },
-        //     merge: true,
-        //   });
-        // }}
+        onPress={(data) => {
+          // gets autocomplete result and passes back to mapview screen
+          navigation.navigate({
+            name: "Generate Route",
+            params: { locationtext: data.description },
+            merge: true,
+          });
+        }}
         query={{
           key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
           language: "en",

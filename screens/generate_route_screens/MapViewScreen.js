@@ -11,7 +11,7 @@ import {
 
 const MapViewScreen = ({ navigation, route }) => {
   const [coords, setCoords] = useState([]);
-  const [origintext, onChangeOrigin] = useState("");
+  const [origintext, onChangeOrigin] = useState(route.params?.locationtext);
   const [destinationtext, onChangeDestination] = useState("");
   const [apisteps, setAPISteps] = useState([]);
 
@@ -41,15 +41,14 @@ const MapViewScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Location: {route.params?.locationtext}</Text>
       <TextInput
         style={styles.origininput}
         onChangeText={onChangeOrigin}
-        value={origintext}
+        //value={origintext}
+        value={route.params?.locationtext}
         placeholder="Search for origin..."
         onFocus={() => navigation.navigate("Route Input")}
         showSoftInputOnFocus={false}
-        defaultValue={route.params?.locationtext}
       />
       <TextInput
         style={styles.destinationinput}
