@@ -150,7 +150,7 @@ const survey = [
 export default class SurveyScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { backgroundColor: "black", answersSoFar: "" };
+    this.state = { answersSoFar: "" };
   }
 
   renderPreviousButton(onPress, enabled) {
@@ -311,7 +311,13 @@ export default class SurveyScreen extends Component {
   }
 
   onAnswerSubmitted(answer) {
-    // can do input verification here (eventually)
+    // do input validation here
+    console.log(answer);
+
+    // if (answer.questionId == "startDate" || "endDate") {
+    //   this.renderNextButton()
+    // }
+
     this.setState({
       answersSoFar: JSON.stringify(this.surveyRef.getAnswers(), 2),
     });

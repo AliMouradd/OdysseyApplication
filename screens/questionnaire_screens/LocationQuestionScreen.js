@@ -24,23 +24,30 @@ const LocationQuestionScreen = ({ navigation }) => {
     const user = auth.currentUser;
     const uid = user.uid;
 
+    // initializing doc data
     const docData = {
       vacationLocation: ref.current?.getAddressText(),
     };
 
-    const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
+    // check if doc data is empty (no input)
+    if (docData.vacationLocation == "") {
+      alert("Please enter a location.");
+    } else {
+      // initializing doc reference:
+      const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
 
-    // creates the doc and adds vacationLocation (check for updating and overwriting)
-    // maybe delete or revert doc if user backs out from this screen?
-    setDoc(userAnswersDocRef, docData)
-      .then(() => {
-        ToastAndroid.show("Document Created", ToastAndroid.SHORT);
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+      // creates the doc and adds vacationLocation (check for updating and overwriting)
+      // maybe delete or revert doc if user backs out from this screen?
+      setDoc(userAnswersDocRef, docData)
+        .then(() => {
+          ToastAndroid.show("Document Created", ToastAndroid.SHORT);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
 
-    navigation.navigate("Questionnaire");
+      navigation.navigate("Questionnaire");
+    }
   };
 
   return (
@@ -54,17 +61,17 @@ const LocationQuestionScreen = ({ navigation }) => {
       </Text>
       <GooglePlacesAutocomplete
         ref={ref}
-        placeholder={"Enter a city..."}
+        placeholder={"Search for a city..."}
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
-          console.log("data", data);
-          console.log("details", details);
+          //console.log("data", data);
+          //console.log("details", details);
         }}
         query={{
           key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
           language: "en",
         }}
-        debounce={1000}
+        debounce={500}
         styles={{
           container: {
             flex: 1,
