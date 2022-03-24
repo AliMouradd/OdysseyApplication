@@ -74,7 +74,7 @@ const HomepageScreen = ({ navigation, route }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => navigation.navigate("Route Input")}
+          onPress={() => navigation.navigate("Generate Route")}
         >
           <Text>Routes</Text>
         </TouchableOpacity>

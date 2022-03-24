@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const MapViewScreen = ({ navigation }) => {
+const MapViewScreen = ({ navigation, route }) => {
   const [coords, setCoords] = useState([]);
   const [origintext, onChangeOrigin] = useState("");
   const [destinationtext, onChangeDestination] = useState("");
@@ -41,17 +41,21 @@ const MapViewScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text>Location: {route.params?.locationtext}</Text>
       <TextInput
         style={styles.origininput}
         onChangeText={onChangeOrigin}
         value={origintext}
-        placeholder="Origin..."
+        placeholder="Search for origin..."
+        onFocus={() => navigation.navigate("Route Input")}
+        showSoftInputOnFocus={false}
+        defaultValue={route.params?.locationtext}
       />
       <TextInput
         style={styles.destinationinput}
         onChangeText={onChangeDestination}
         value={destinationtext}
-        placeholder="Destination..."
+        placeholder="Search for destination..."
       />
       <MapView
         style={styles.mapstyle}
