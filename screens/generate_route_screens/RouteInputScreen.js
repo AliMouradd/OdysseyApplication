@@ -18,14 +18,22 @@ const RouteInputScreen = ({ navigation, route }) => {
         placeholder={"Search for a location..."}
         onPress={(data) => {
           // gets autocomplete result and passes back to mapview screen
-          navigation.navigate({
-            name: "Generate Route",
-            params: { locationtext: data.description },
-            merge: true,
-          });
+          if (route.params?.navigateFrom == "origininput") {
+            navigation.navigate({
+              name: "Generate Route",
+              params: { originparam: data.description },
+              merge: true,
+            });
+          } else if (route.params?.navigateFrom == "destinationinput") {
+            navigation.navigate({
+              name: "Generate Route",
+              params: { destinationparam: data.description },
+              merge: true,
+            });
+          }
         }}
         query={{
-          key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
+          key: "INSERTKEYHERE",
           language: "en",
         }}
         debounce={500}

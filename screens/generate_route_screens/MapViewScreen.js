@@ -11,14 +11,16 @@ import {
 
 const MapViewScreen = ({ navigation, route }) => {
   const [coords, setCoords] = useState([]);
-  const [origintext, onChangeOrigin] = useState(route.params?.locationtext);
-  const [destinationtext, onChangeDestination] = useState("");
+  const [origintext, onChangeOrigin] = useState(route.params?.originparam);
+  const [destinationtext, onChangeDestination] = useState(
+    route.params?.destinationparam
+  );
   const [apisteps, setAPISteps] = useState([]);
 
   async function getDirections(startLoc, destinationLoc) {
     try {
       let response = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o`
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=INSERTKEYHERE`
       );
       let responseJson = await response.json();
       let points = polyline.decode(
@@ -41,23 +43,8 @@ const MapViewScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.origininput}
-        onChangeText={onChangeOrigin}
-        //value={origintext}
-        value={route.params?.locationtext}
-        placeholder="Search for origin..."
-        onFocus={() => navigation.navigate("Route Input")}
-        showSoftInputOnFocus={false}
-      />
-      <TextInput
-        style={styles.destinationinput}
-        onChangeText={onChangeDestination}
-        value={destinationtext}
-        placeholder="Search for destination..."
-      />
       <MapView
-        style={styles.mapstyle}
+        style={styles.mapcontainer}
         initialRegion={{
           latitude: 34.0522,
           longitude: -118.2437,
@@ -71,6 +58,32 @@ const MapViewScreen = ({ navigation, route }) => {
           strokeColor="red"
         />
       </MapView>
+      <View style={styles.inputscontainer}>
+        <TextInput
+          style={styles.origininput}
+          onChangeText={onChangeOrigin}
+          //value={origintext}
+          value={route.params?.originparam}
+          placeholder="Search for origin..."
+          onFocus={() =>
+            navigation.navigate("Route Input", { navigateFrom: "origininput" })
+          }
+          showSoftInputOnFocus={false}
+        />
+        <TextInput
+          style={styles.destinationinput}
+          onChangeText={onChangeDestination}
+          //value={destinationtext}
+          value={route.params?.destinationparam}
+          placeholder="Search for destination..."
+          onFocus={() =>
+            navigation.navigate("Route Input", {
+              navigateFrom: "destinationinput",
+            })
+          }
+          showSoftInputOnFocus={false}
+        />
+      </View>
       <View style={styles.buttonscontainer}>
         <TouchableOpacity
           style={styles.routebutton}
@@ -92,25 +105,38 @@ const MapViewScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
     //justifyContent: "center",
   },
-  buttonscontainer: {
-    alignItems: "flex-start",
-    width: "100%",
-    flexDirection: "row",
-  },
-  mapstyle: {
+  mapcontainer: {
+    flex: 4,
     height: "75%",
     width: "100%",
+  },
+  inputscontainer: {
+    flex: 0.9,
+    width: "100%",
+    alignItems: "center",
+    padding: 5,
+    backgroundColor: "purple",
+  },
+  buttonscontainer: {
+    flex: 0.5,
+    alignItems: "flex-start",
+    paddingTop: 10,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "dodgerblue",
   },
   routebutton: {
     color: "#FFD56D",
     alignItems: "center",
     backgroundColor: "#FFD56D",
     padding: 15,
-    margin: 10,
+    //margin: 10,
     width: 250,
     borderRadius: 10,
   },
@@ -119,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFD56D",
     padding: 15,
-    margin: 10,
+    //margin: 10,
     width: 120,
     borderRadius: 10,
   },

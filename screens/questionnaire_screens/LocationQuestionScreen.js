@@ -61,7 +61,7 @@ const LocationQuestionScreen = ({ navigation }) => {
           console.log("details", details);
         }}
         query={{
-          key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
+          key: "INSERTKEYHERE",
           language: "en",
         }}
         debounce={1000}
