@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const MapViewScreen = ({ navigation, route }) => {
   const [coords, setCoords] = useState([]);
@@ -58,7 +59,10 @@ const MapViewScreen = ({ navigation, route }) => {
           strokeColor="red"
         />
       </MapView>
-      <View style={styles.inputscontainer}>
+      <View style={styles.inputscontainertop}>
+        <View style={styles.inputiconcontainer}>
+          <Icon name="gps-not-fixed" size={20} color="black" />
+        </View>
         <TextInput
           style={styles.origininput}
           onChangeText={onChangeOrigin}
@@ -70,6 +74,11 @@ const MapViewScreen = ({ navigation, route }) => {
           }
           showSoftInputOnFocus={false}
         />
+      </View>
+      <View style={styles.inputscontainerbottom}>
+        <View style={styles.inputiconcontainer}>
+          <Icon name="place" size={20} color="black" />
+        </View>
         <TextInput
           style={styles.destinationinput}
           onChangeText={onChangeDestination}
@@ -86,16 +95,22 @@ const MapViewScreen = ({ navigation, route }) => {
       </View>
       <View style={styles.buttonscontainer}>
         <TouchableOpacity
-          style={styles.routebutton}
-          onPress={() => getDirections(origintext, destinationtext)}
-        >
-          <Text style={{ fontSize: 16 }}>Press to generate route</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           style={styles.stepsbutton}
           onPress={() => navigation.navigate("Route Steps", { apisteps })}
         >
+          <View style={styles.routeiconcontainer}>
+            <Icon name="list" size={24} color="black" />
+          </View>
           <Text style={{ fontSize: 16 }}>View steps</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.routebutton}
+          onPress={() => getDirections(origintext, destinationtext)}
+        >
+          <View style={styles.routeiconcontainer}>
+            <Icon name="navigation" size={20} color="black" />
+          </View>
+          <Text style={{ fontSize: 16, color: "black" }}>Find route</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -108,64 +123,92 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#fff",
     alignItems: "center",
-    //justifyContent: "center",
   },
   mapcontainer: {
     flex: 4,
     height: "75%",
     width: "100%",
   },
-  inputscontainer: {
-    flex: 0.9,
+  inputscontainertop: {
+    flex: 0.35,
+    flexDirection: "row",
+    flexWrap: "wrap",
     width: "100%",
     alignItems: "center",
-    padding: 5,
-    backgroundColor: "purple",
+    justifyContent: "flex-start",
+    paddingTop: 15,
+    borderTopWidth: 2.5,
+    borderTopColor: "#FFD56D",
+    //backgroundColor: "blue",
+  },
+  inputscontainerbottom: {
+    flex: 0.35,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingBottom: 5,
+    //backgroundColor: "purple",
+  },
+  inputiconcontainer: {
+    paddingVertical: 10,
+    paddingLeft: 18,
+    paddingRight: 10,
+    //backgroundColor: "dodgerblue",
   },
   buttonscontainer: {
-    flex: 0.5,
-    alignItems: "flex-start",
-    paddingTop: 10,
-    width: "100%",
+    flex: 0.46,
     flexDirection: "row",
-    justifyContent: "space-around",
-    backgroundColor: "dodgerblue",
+    alignItems: "flex-start",
+    justifyContent: "space-evenly",
+    paddingTop: 5,
+    paddingBottom: 5,
+    width: "100%",
+    //backgroundColor: "dodgerblue",
   },
   routebutton: {
-    color: "#FFD56D",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFD56D",
-    padding: 15,
-    //margin: 10,
-    width: 250,
+    paddingLeft: 55,
+    height: 51,
+    width: 230,
     borderRadius: 10,
   },
+  routeiconcontainer: {
+    paddingHorizontal: 5,
+  },
   stepsbutton: {
-    color: "#FFD56D",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFD56D",
-    padding: 15,
-    //margin: 10,
-    width: 120,
+    paddingLeft: 4,
+    height: 51,
+    width: 130,
     borderRadius: 10,
   },
   origininput: {
-    backgroundColor: "gainsboro",
+    backgroundColor: "white",
     height: 40,
-    width: "90%",
-    padding: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  destinationinput: {
-    backgroundColor: "gainsboro",
-    height: 40,
-    width: "90%",
+    width: "80%",
     padding: 10,
     //marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+    //marginBottom: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "gainsboro",
+  },
+  destinationinput: {
+    backgroundColor: "white",
+    height: 40,
+    width: "80%",
+    padding: 10,
+    //marginTop: 10,
+    //marginBottom: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "gainsboro",
   },
 });
 

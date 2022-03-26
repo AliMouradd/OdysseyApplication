@@ -44,7 +44,11 @@ export default function App() {
           name="Questionnaire"
           component={QuestionnaireMainScreen}
         />
-        <Stack.Screen name="Generate Route" component={MapViewScreen} />
+        <Stack.Screen
+          name="Generate Route"
+          component={MapViewScreen}
+          options={{ title: "Find Routes" }}
+        />
         <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
         <Stack.Screen name="Route Input" component={RouteInputScreen} />
       </Stack.Navigator>

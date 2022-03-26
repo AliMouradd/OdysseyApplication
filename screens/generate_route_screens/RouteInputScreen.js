@@ -1,11 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 const RouteInputScreen = ({ navigation, route }) => {
@@ -64,10 +58,9 @@ const RouteInputScreen = ({ navigation, route }) => {
           },
           powered: {},
           listView: {
-            //elevation: 5,
             borderRadius: 10,
-            // backgroundColor: "red",
             marginBottom: 10,
+            // backgroundColor: "red",
           },
           row: {
             backgroundColor: "#FFFFFF",
@@ -90,15 +83,6 @@ const RouteInputScreen = ({ navigation, route }) => {
           },
         }}
       />
-
-      <View style={styles.buttonscontainer}>
-        <TouchableOpacity
-          style={styles.routebutton}
-          //onPress={() => getDirections(origintext, destinationtext)}
-        >
-          <Text style={{ fontSize: 16 }}>Press to generate route</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
