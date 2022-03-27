@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   ScrollView,
   View,
-  Modal,
-  TouchableWithoutFeedback,
-  TextInput,
 } from "react-native";
 import PlacesComponent from "./PlacesComponent";
 import Icon from "react-native-vector-icons/MaterialIcons";
+
+import DraggableFlatList, {
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import ScheduleNameInputModal from "../modals/ScheduleNameInputModal";
+import ScheduleDescriptionInputModal from "../modals/ScheduleDescriptionInputModal";
+import ListSortModal from "../modals/ListSortModal";
+import ListFilterModal from "../modals/ListFilterModal";
 
 const PlacesListScreen = ({ navigation }) => {
   const [scheduleName, setScheduleName] = useState("Name of the Schedule");
@@ -27,6 +33,22 @@ const PlacesListScreen = ({ navigation }) => {
   useEffect(() => {
     getPlacesTest();
   }, []);
+
+  const toggleNameInputModalVisible = () => {
+    setNameInputModalVisible(!nameInputModalVisible);
+  };
+
+  const toggleDescriptionInputModalVisible = () => {
+    setDescriptionModalVisible(!descriptionModalVisible);
+  };
+
+  const toggleSortModalVisible = () => {
+    setSortModalVisible(!sortModalVisible);
+  };
+
+  const toggleFilterModalVisible = () => {
+    setFilterModalVisible(!filterModalVisible);
+  };
 
   const sortPlacesAsc = () => {
     const sortedPlaces = [...places].sort(function (a, b) {
@@ -123,8 +145,23 @@ const PlacesListScreen = ({ navigation }) => {
     setPlaces(sampleData);
   };
 
+  const _renderItem = ({ item, drag, isActive }) => {
+    return (
+      <ScaleDecorator>
+        <TouchableOpacity onLongPress={drag} disabled={isActive}>
+          <PlacesComponent
+            key={item.number}
+            place={item}
+            navigation={navigation}
+            delFunction={deletePlace}
+          />
+        </TouchableOpacity>
+      </ScaleDecorator>
+    );
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <GestureHandlerRootView>
       <ScrollView>
         <View style={styles.background}>
           <View style={styles.btns}>
@@ -164,9 +201,6 @@ const PlacesListScreen = ({ navigation }) => {
           >
             Schedule
           </Text>
-          <TouchableOpacity>
-            <Icon name="edit" size={20} color="black" />
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setSortModalVisible(!sortModalVisible)}
           >
@@ -179,160 +213,51 @@ const PlacesListScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.wrapper}>
-          {places.map((place) => (
-            <PlacesComponent
-              key={place.number}
-              place={place}
-              navigation={navigation}
-              delFunction={deletePlace}
-            />
-          ))}
+        <View style={{ width: "90%", alignSelf: "center" }}>
+          <DraggableFlatList
+            data={places}
+            onDragEnd={({ data }) => setPlaces(data)}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={_renderItem}
+            scrollEnabled={false}
+          />
         </View>
+        <View style={styles.bar}>
+          <TouchableOpacity style={styles.btn}>
+            <Text style={{ fontWeight: "bold", fontSize: 16 }}>Generate</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScheduleNameInputModal
+          toggleNameInputModalVisible={toggleNameInputModalVisible}
+          scheduleName={scheduleName}
+          onChangeText={(text) => setScheduleName(text)}
+          nameInputModalVisible={nameInputModalVisible}
+        />
+
+        <ScheduleDescriptionInputModal
+          toggleDescriptionInputModalVisible={
+            toggleDescriptionInputModalVisible
+          }
+          description={description}
+          onChangeText={(text) => setDescription(text)}
+          descriptionModalVisible={descriptionModalVisible}
+        />
+
+        <ListSortModal
+          toggleSortModalVisible={toggleSortModalVisible}
+          sortModalVisible={sortModalVisible}
+          sortPlacesAsc={sortPlacesAsc}
+          sortPlacesDes={sortPlacesDes}
+        />
+
+        <ListFilterModal
+          toggleFilterModalVisible={toggleFilterModalVisible}
+          filterModalVisible={filterModalVisible}
+          filterPlaces={(text) => filterPlaces(text)}
+        />
       </ScrollView>
-      <View style={styles.bar}>
-        <TouchableOpacity style={styles.btn}>
-          <Text style={{ fontWeight: "bold", fontSize: 16 }}>Generate</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Modal
-        transparent={true}
-        visible={nameInputModalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setNameInputModalVisible(!nameInputModalVisible);
-        }}
-      >
-        <TouchableWithoutFeedback
-          onPress={() => setNameInputModalVisible(!nameInputModalVisible)}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <TextInput value={scheduleName} onChangeText={setScheduleName} />
-              <View>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() =>
-                    setNameInputModalVisible(!nameInputModalVisible)
-                  }
-                >
-                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>Okay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() =>
-                    setNameInputModalVisible(!nameInputModalVisible)
-                  }
-                >
-                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-
-      <Modal
-        transparent={true}
-        visible={descriptionModalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setDescriptionModalVisible(!descriptionModalVisible);
-        }}
-      >
-        <TouchableWithoutFeedback
-          onPress={() => setDescriptionModalVisible(!descriptionModalVisible)}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <TextInput value={description} onChangeText={setDescription} />
-              <View>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() =>
-                    setDescriptionModalVisible(!descriptionModalVisible)
-                  }
-                >
-                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>Okay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.btn}
-                  onPress={() =>
-                    setDescriptionModalVisible(!descriptionModalVisible)
-                  }
-                >
-                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-
-      <Modal
-        transparent={true}
-        visible={sortModalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setSortModalVisible(!sortModalVisible);
-        }}
-      >
-        <TouchableWithoutFeedback
-          onPress={() => setSortModalVisible(!sortModalVisible)}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>Sort By</Text>
-              <TouchableOpacity onPress={() => sortPlacesAsc()}>
-                <Text style={styles.modalText}>A to Z</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => sortPlacesDes()}>
-                <Text style={styles.modalText}>Z to A</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-
-      <Modal
-        transparent={true}
-        visible={filterModalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setFilterModalVisible(!filterModalVisible);
-        }}
-      >
-        <TouchableWithoutFeedback
-          onPress={() => setFilterModalVisible(!filterModalVisible)}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>Filter By</Text>
-              <TouchableOpacity onPress={() => filterPlaces("All")}>
-                <Text style={styles.modalText}>All</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => filterPlaces("Park")}>
-                <Text style={styles.modalText}>Park</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => filterPlaces("Restaurant")}>
-                <Text style={styles.modalText}>Restaurant</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => filterPlaces("Store")}>
-                <Text style={styles.modalText}>Store</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => filterPlaces("Attraction")}>
-                <Text style={styles.modalText}>Attraction</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -371,30 +296,6 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 50,
     paddingRight: 50,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  modalView: {
-    alignItems: "center",
-    backgroundColor: "white",
-    elevation: 5,
-    paddingLeft: 25,
-    paddingRight: 25,
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  modalTitle: {
-    marginBottom: 5,
-    fontSize: 18,
-    borderBottomWidth: 2,
-    borderColor: "black",
-  },
-  modalText: {
-    fontSize: 16,
   },
 });
 

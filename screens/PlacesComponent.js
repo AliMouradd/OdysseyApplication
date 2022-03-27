@@ -15,7 +15,7 @@ const PlacesComponent = (props) => {
   const [number, setNumber] = useState(props.place.number);
 
   return (
-    <TouchableOpacity
+    <View
       style={styles.container}
       onPress={() =>
         props.navigation.navigate("PlacesFullDetailScreen", {
@@ -42,7 +42,7 @@ const PlacesComponent = (props) => {
       <View style={styles.order}>
         <Text style={styles.num}>{number}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
