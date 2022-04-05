@@ -79,6 +79,14 @@ const HomepageScreen = ({ navigation, route }) => {
           <Text>Routes</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("User Itinerary", { id: uid })}
+        >
+          <Text>User Itinerary</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
