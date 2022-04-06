@@ -1,68 +1,67 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 
+const timeToString = (time) => {
+  const date = new Date(time);
+  return date.toISOString().split("T")[0];
+};
+
 const ItineraryMainScreen = ({ route, navigation }) => {
+  const [items, setItems] = useState([]);
+
+  const loadItems = (day) => {
+    setTimeout(() => {
+      for (let i = -15; i < 85; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+        if (!items[strTime]) {
+          items[strTime] = [];
+          const numItems = Math.floor(Math.random() * 3 + 1);
+          for (let j = 0; j < numItems; j++) {
+            items[strTime].push({
+              name: "Item for " + strTime + " #" + j,
+              height: Math.max(50, Math.floor(Math.random() * 150)),
+            });
+          }
+        }
+      }
+      const newItems = {};
+      Object.keys(items).forEach((key) => {
+        newItems[key] = items[key];
+      });
+      setItems(newItems);
+    }, 1000);
+  };
+
+  const renderItem = (item) => {
+    return (
+      <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }}>
+        <Card>
+          <Card.Content>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Text>{item.name}</Text>
+              <Avatar.Text label="J" />
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.maincontainer}>
       <Agenda
-        // the list of items that have to be displayed in agenda. If you want to render item as empty date
-        // the value of date key kas to be an empty array []. If there exists no value for date key it is
-        // considered that the date in question is not yet loaded
-        items={this.props.planList}
-        renderItem={(item, firstItemInDay) =>
-          this.renderItem(item, firstItemInDay)
-        }
-        renderDay={(day, item) => this.renderItemDay(day, item)}
-        renderEmptyDate={() => this.renderEmptyDate()}
-        rowHasChanged={(r1, r2) => this.rowHasChanged(r1, r2)}
-        onDayPress={this.onDaySelected.bind(this)}
-        minDate={
-          this.props.minDate
-            ? this.props.minDate
-            : Moment(today).format("YYYY-MM-DD")
-        }
-        maxDate={
-          this.props.maxDate
-            ? this.props.maxDate
-            : Moment(today).format("YYYY-MM-DD")
-        }
-        renderKnob={() => {
-          return (
-            <View style={{ height: 14, padding: 4 }}>
-              <View
-                style={{
-                  height: "100%",
-                  width: 40,
-                  backgroundColor: "#DCDCDC",
-                  borderRadius: 4,
-                  borderWidth: 1,
-                  borderColor: "#DCDCDC",
-                }}
-              />
-            </View>
-          );
-        }}
-        //markedDates={}
-        theme={{
-          backgroundColor: "#ffffff",
-          calendarBackground: "#f8f5f0",
-          selectedDayBackgroundColor: "#E0D2BC",
-          selectedDayTextColor: "#000000",
-          todayTextColor: "#000000",
-          textDisabledColor: "#888888",
-          dayTextColor: "#000000",
-          agendaKnobColor: "#DCDCDC",
-          dotColor: COLORS.GREEN,
-          selectedDotColor: COLORS.PRIMARY,
-          "stylesheet.calendar.header": {
-            week: {
-              marginTop: Platform.OS == "ios" ? 6 : 2,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            },
-          },
-        }}
+        items={items}
+        loadItemsForMonth={loadItems}
+        selected={"2017-05-16"}
+        renderItem={renderItem}
       />
     </View>
   );

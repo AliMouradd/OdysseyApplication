@@ -20,10 +20,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName="User Itinerary"
         screenOptions={{ headerShown: true }}
       >
-        <Stack.Screen name="Sign Up" component={SignUpScreen} />
+        {/* <Stack.Screen name="Sign Up" component={SignUpScreen} />
         <Stack.Screen name="Home" component={HomepageScreen} />
         <Stack.Screen name="Itinerary" component={ItineraryScreen} />
         <Stack.Screen name="Goal Screen" component={GoalScreen} />
@@ -39,7 +39,7 @@ export default function App() {
           component={QuestionnaireMainScreen}
         />
         <Stack.Screen name="Generate Route" component={MapViewScreen} />
-        <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
+  <Stack.Screen name="Route Steps" component={RouteStepsScreen} /> */}
         <Stack.Screen name="User Itinerary" component={ItineraryMainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
