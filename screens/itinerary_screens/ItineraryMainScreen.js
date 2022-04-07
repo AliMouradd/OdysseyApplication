@@ -1,68 +1,41 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Button } from "react-native";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
-
-const timeToString = (time) => {
-  const date = new Date(time);
-  return date.toISOString().split("T")[0];
-};
+import CalendarStrip from "react-native-calendar-strip";
 
 const ItineraryMainScreen = ({ route, navigation }) => {
   const [items, setItems] = useState([]);
 
-  const loadItems = (day) => {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = timeToString(time);
-        if (!items[strTime]) {
-          items[strTime] = [];
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              name: "Item for " + strTime + " #" + j,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-            });
-          }
-        }
-      }
-      const newItems = {};
-      Object.keys(items).forEach((key) => {
-        newItems[key] = items[key];
-      });
-      setItems(newItems);
-    }, 1000);
-  };
-
-  const renderItem = (item) => {
-    return (
-      <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }}>
-        <Card>
-          <Card.Content>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Text>{item.name}</Text>
-              <Avatar.Text label="J" />
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <View style={styles.maincontainer}>
-      <Agenda
-        items={items}
-        loadItemsForMonth={loadItems}
-        selected={"2017-05-16"}
-        renderItem={renderItem}
+      <CalendarStrip
+        scrollable={true}
+        calendarAnimation={{ type: "sequence", duration: 30 }}
+        daySelectionAnimation={{
+          type: "background",
+          duration: 300,
+          highlightColor: "#9265DC",
+        }}
+        style={{ height: 100, paddingTop: 20, paddingBottom: 10 }}
+        calendarHeaderStyle={{ color: "white" }}
+        calendarColor={"#3343CE"}
+        dateNumberStyle={{ color: "white" }}
+        dateNameStyle={{ color: "white", fontSize: 12 }}
+        iconContainer={{ flex: 0.1 }}
+        //customDatesStyles={this.state.customDatesStyles}
+        highlightDateNameStyle={{ color: "white" }}
+        highlightDateNumberStyle={{ color: "yellow" }}
+        highlightDateContainerStyle={{ backgroundColor: "black" }}
+        //markedDates={this.state.markedDates}
+        //datesBlacklist={this.datesBlacklistFunc}
+        //selectedDate={this.state.selectedDate}
+        //onDateSelected={this.onDateSelected}
+        useIsoWeekday={false}
       />
+
+      <Text style={{ fontSize: 24 }}>
+        {/* Selected Date: {this.state.formattedDate} */}
+      </Text>
     </View>
   );
 };
