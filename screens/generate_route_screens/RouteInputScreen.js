@@ -34,46 +34,50 @@ const RouteInputScreen = ({ navigation, route }) => {
         styles={{
           container: {
             flex: 1,
+            //backgroundColor: "blue",
+            padding: 7,
           },
           textInputContainer: {
             flexDirection: "row",
           },
           textInput: {
-            backgroundColor: "#FFFFFF",
-            height: 44,
-            borderRadius: 5,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-            fontSize: 15,
             flex: 1,
-            elevation: 5,
+            backgroundColor: "white",
+            height: 44,
+            borderRadius: 10,
+            // paddingVertical: 5,
+            // paddingHorizontal: 10,
+            fontSize: 15,
+            //elevation: 5,
+            borderWidth: 2,
+            borderColor: "gainsboro",
           },
           poweredContainer: {
             justifyContent: "flex-end",
             alignItems: "center",
             borderBottomRightRadius: 5,
             borderBottomLeftRadius: 5,
-            borderColor: "#c8c7cc",
+            borderColor: "gainsboro",
             borderWidth: 2,
           },
           powered: {},
           listView: {
             borderRadius: 10,
-            marginBottom: 10,
+            //marginBottom: 10,
             // backgroundColor: "red",
           },
           row: {
             backgroundColor: "#FFFFFF",
             padding: 13,
-            height: 44,
+            height: 45,
             flexDirection: "row",
-            borderLeftWidth: 2,
+            borderLeftWidth: 3,
             borderRightWidth: 2,
-            borderColor: "#c8c7cc",
+            borderColor: "gainsboro",
           },
           separator: {
             height: 2,
-            backgroundColor: "#c8c7cc",
+            backgroundColor: "gainsboro",
           },
           description: {},
           loader: {
@@ -90,6 +94,7 @@ const RouteInputScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   buttonscontainer: {
     height: 70,
