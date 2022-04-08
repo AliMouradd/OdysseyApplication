@@ -17,6 +17,7 @@ const MapViewScreen = ({ navigation, route }) => {
     route.params?.destinationparam
   );
   const [apisteps, setAPISteps] = useState([]);
+  const [apitripinfo, setAPITripInfo] = useState([]);
 
   async function getDirections(startLoc, destinationLoc) {
     try {
@@ -35,6 +36,8 @@ const MapViewScreen = ({ navigation, route }) => {
       });
       setCoords(coordinates);
       setAPISteps(responseJson.routes[0].legs[0].steps);
+      setAPITripInfo(responseJson.routes[0].legs);
+      console.log(responseJson.routes[0].legs[0]);
       return coordinates;
     } catch (error) {
       alert(error);
@@ -65,6 +68,8 @@ const MapViewScreen = ({ navigation, route }) => {
         </View>
         <TextInput
           style={styles.origininput}
+          // origintext and onChangeOrigin are only used to display text in the text boxes, not for passing to getDirections.
+          //onChangeText={() => onChangeOrigin(route.params?.originparam)} this might work too?
           onChangeText={onChangeOrigin}
           //value={origintext}
           value={route.params?.originparam}
@@ -96,7 +101,12 @@ const MapViewScreen = ({ navigation, route }) => {
       <View style={styles.buttonscontainer}>
         <TouchableOpacity
           style={styles.stepsbutton}
-          onPress={() => navigation.navigate("Route Steps", { apisteps })}
+          onPress={() =>
+            navigation.navigate("Route Steps", {
+              apisteps: apisteps,
+              apitripinfo: apitripinfo,
+            })
+          }
         >
           <View style={styles.routeiconcontainer}>
             <Icon name="list" size={24} color="black" />
@@ -105,7 +115,13 @@ const MapViewScreen = ({ navigation, route }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.routebutton}
-          onPress={() => getDirections(origintext, destinationtext)}
+          onPress={() =>
+            getDirections(
+              route.params?.originparam,
+              route.params?.destinationparam
+            )
+          }
+          //onPress={() => console.log(origintext, destinationtext)}
         >
           <View style={styles.routeiconcontainer}>
             <Icon name="navigation" size={20} color="black" />

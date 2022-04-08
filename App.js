@@ -50,7 +50,11 @@ export default function App() {
           options={{ title: "Find Routes" }}
         />
         <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
-        <Stack.Screen name="Route Input" component={RouteInputScreen} />
+        <Stack.Screen
+          name="Route Input"
+          component={RouteInputScreen}
+          options={{ title: "Location Search" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

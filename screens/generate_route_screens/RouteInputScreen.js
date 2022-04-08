@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 const RouteInputScreen = ({ navigation, route }) => {
@@ -108,6 +108,14 @@ const styles = StyleSheet.create({
     margin: 3,
     width: 250,
     borderRadius: 10,
+  },
+  imgcontainer: {
+    alignItems: "center",
+    //backgroundColor: "red",
+  },
+  img: {
+    height: 300,
+    width: 300,
   },
 });
 
