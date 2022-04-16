@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   FlatList,
+  ScrollView,
 } from "react-native";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import CalendarStrip from "react-native-calendar-strip";
@@ -19,6 +20,7 @@ export default class ItineraryMainScreen extends Component {
     let customDatesStyles = [];
     let markedDates = [];
 
+    // holds events data
     let DATA = [
       {
         eventDate: "2022-04-08",
@@ -29,7 +31,7 @@ export default class ItineraryMainScreen extends Component {
         eventTitle: "Downtown Central Park",
       },
       {
-        eventDate: "2022-4-08",
+        eventDate: "2022-4-09",
         eventTitle: "History Museum",
       },
     ];
@@ -43,16 +45,16 @@ export default class ItineraryMainScreen extends Component {
     };
   }
 
+  // called when a date in calendar strip is selected
   onDateSelected = (selectedDate) => {
     this.setState({ selectedDate });
     this.setState({ formattedDate: selectedDate.format("MM-DD-YYYY") });
   };
 
-  Item = ({ date, title }) => (
+  // returns an event item to be rendered in the flatlist
+  listItem = ({ title }) => (
     <View style={styles.item}>
-      <Text>
-        {date}: {title}
-      </Text>
+      <Text>{title}</Text>
     </View>
   );
 
@@ -86,6 +88,7 @@ export default class ItineraryMainScreen extends Component {
           selectedDate={this.state.selectedDate}
           onDateSelected={this.onDateSelected}
           useIsoWeekday={false}
+          startingDate={this.state.startDate}
         />
 
         <Text style={{ fontSize: 24 }}>
@@ -93,22 +96,19 @@ export default class ItineraryMainScreen extends Component {
         </Text>
 
         <View style={styles.agendalist}>
-          <FlatList
+          {/* <FlatList
             data={this.state.DATA}
-            renderItem={({ item }) => (
-              <View style={styles.item}>
-                <Text>
-                  {item.eventDate}: {item.eventTitle}
-                </Text>
-              </View>
-            )}
-            keyExtractor={(item) => item.eventTitle} //change this to item.id or similar
-          />
+            renderItem={({this.state.DATA.eventTitle}) => <this.listItem title = {this.state.DATA.eventTitle} />}
+            //keyExtractor={(item) => item.eventTitle} //change this to item.id or similar
+          /> */}
         </View>
       </View>
     );
   }
 }
+
+// when onSelectDate is called, retrieve events for that date (collection)
+// and update the events state array
 
 const styles = StyleSheet.create({
   maincontainer: {
@@ -125,4 +125,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 7,
   },
+  scrollview: {},
 });

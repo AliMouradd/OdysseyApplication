@@ -13,7 +13,7 @@ import QuestionnaireMainScreen from "./screens/questionnaire_screens/Questionnai
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
 import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
 import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
-import ItineraryMainScreen from "./screens/itinerary_screens/ItineraryMainScreen";
+import ItineraryMainScreen from "./screens/itinerary_screens/ItineraryScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
