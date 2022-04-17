@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
+  ImageBackground,
 } from "react-native";
 import PlacesComponent from "./PlacesComponent";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -19,6 +20,10 @@ import ScheduleDescriptionInputModal from "../modals/ScheduleDescriptionInputMod
 import ListSortModal from "../modals/ListSortModal";
 import ListFilterModal from "../modals/ListFilterModal";
 
+import { db } from "../Config";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+
 const PlacesListScreen = ({ navigation }) => {
   const [scheduleName, setScheduleName] = useState("Name of the Schedule");
   const [description, setDescription] = useState(
@@ -29,6 +34,11 @@ const PlacesListScreen = ({ navigation }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
+  const docRef = doc(db, "UserSchedules", uid);
 
   useEffect(() => {
     getPlacesTest();
@@ -90,6 +100,29 @@ const PlacesListScreen = ({ navigation }) => {
     setPlaces(newPlaces);
   };
 
+  const generateSchedule = async () => {
+    const docSnap = await getDoc(docRef);
+
+    let newPlaces = [...places];
+    for (let i = 0; i < newPlaces.length; i++) {
+      newPlaces[i] = {
+        ...newPlaces[i],
+        number: i + 1,
+      };
+    }
+
+    const newSchedulesList = [
+      ...docSnap.data().schedules,
+      {
+        scheduleName: scheduleName,
+        description: description,
+        places: newPlaces,
+      },
+    ];
+
+    updateDoc(docRef, { schedules: newSchedulesList }, { merge: true });
+  };
+
   const getPlacesTest = () => {
     let sampleData = [
       {
@@ -145,13 +178,14 @@ const PlacesListScreen = ({ navigation }) => {
     setPlaces(sampleData);
   };
 
-  const _renderItem = ({ item, drag, isActive }) => {
+  const renderItem = ({ item, index, drag, isActive }) => {
     return (
       <ScaleDecorator>
         <TouchableOpacity onLongPress={drag} disabled={isActive}>
           <PlacesComponent
             key={item.number}
             place={item}
+            index={index + 1}
             navigation={navigation}
             delFunction={deletePlace}
           />
@@ -164,33 +198,63 @@ const PlacesListScreen = ({ navigation }) => {
     <GestureHandlerRootView>
       <ScrollView>
         <View style={styles.background}>
-          <View style={styles.btns}>
-            <TouchableOpacity>
-              <Text style={{ textAlign: "right" }}>Share</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.infoWrapper}>
-            <View style={styles.info}>
-              <Text style={styles.h1}>{scheduleName}</Text>
-              <TouchableOpacity
-                onPress={() => setNameInputModalVisible(!nameInputModalVisible)}
-              >
-                <Icon name="edit" size={20} color="black" />
+          <ImageBackground
+            style={{ flex: 1 }}
+            source={require("../assets/maarten-van-den-heuvel-gZXx8lKAb7Y-unsplash.jpg")}
+          >
+            <View style={styles.btns}>
+              <TouchableOpacity>
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="share"
+                  size={20}
+                  color="white"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="more-vert"
+                  size={20}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
-            <View style={styles.info}>
-              <Text style={styles.p}>{description}</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  setDescriptionModalVisible(!descriptionModalVisible)
-                }
-              >
-                <Icon name="edit" size={20} color="black" />
-              </TouchableOpacity>
+            <View style={styles.infoWrapper}>
+              <View style={styles.info}>
+                <Text style={styles.h1}>{scheduleName}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setNameInputModalVisible(!nameInputModalVisible)
+                  }
+                >
+                  <Icon name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.info}>
+                <Text style={styles.p}>{description}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setDescriptionModalVisible(!descriptionModalVisible)
+                  }
+                >
+                  <Icon name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </ImageBackground>
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            backgroundColor: "white",
+            borderBottomWidth: 2,
+            borderColor: "#FFD56D",
+            paddingTop: 7,
+          }}
+        >
           <Text
             style={{
               textAlign: "center",
@@ -201,7 +265,7 @@ const PlacesListScreen = ({ navigation }) => {
           >
             Schedule
           </Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setSortModalVisible(!sortModalVisible)}
           >
             <Text>Sort</Text>
@@ -210,7 +274,7 @@ const PlacesListScreen = ({ navigation }) => {
             onPress={() => setFilterModalVisible(!filterModalVisible)}
           >
             <Text>Filter</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <View style={{ width: "90%", alignSelf: "center" }}>
@@ -218,15 +282,13 @@ const PlacesListScreen = ({ navigation }) => {
             data={places}
             onDragEnd={({ data }) => setPlaces(data)}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={_renderItem}
+            renderItem={renderItem}
             scrollEnabled={false}
           />
         </View>
-        <View style={styles.bar}>
-          <TouchableOpacity style={styles.btn}>
-            <Text style={{ fontWeight: "bold", fontSize: 16 }}>Generate</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={generateSchedule} style={styles.btn}>
+          <Text style={{ fontWeight: "bold", fontSize: 16 }}>Generate</Text>
+        </TouchableOpacity>
 
         <ScheduleNameInputModal
           toggleNameInputModalVisible={toggleNameInputModalVisible}
@@ -262,40 +324,44 @@ const PlacesListScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "white",
-  },
   background: {
+    flex: 1,
     backgroundColor: "#FFD56D",
-    height: 125,
-    justifyContent: "space-between",
-    marginBottom: 5,
-    padding: 5,
+    width: "100%",
+    height: 150,
+  },
+  infoWrapper: {
+    paddingLeft: 10,
+    paddingTop: 55,
   },
   info: {
     flexDirection: "row",
   },
+  btns: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
   h1: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "white",
   },
   p: {
     fontSize: 16,
+    color: "white",
   },
   bar: {
-    position: "absolute",
     alignSelf: "center",
     bottom: 20,
   },
   btn: {
     backgroundColor: "#FFD56D",
     borderRadius: 50,
-    marginBottom: 25,
+    margin: 10,
     padding: 10,
-    paddingLeft: 50,
-    paddingRight: 50,
+    width: "45%",
+    alignSelf: "center",
+    alignItems: "center",
   },
 });
 
