@@ -1,11 +1,10 @@
-import React, { useState, Component } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Text,
   FlatList,
-  Button,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import {
@@ -40,6 +39,12 @@ const ItineraryScreen = () => {
 
   const createUserDoc = () => {};
 
+  // get all user's events from database (might run after each rerender?)
+  useEffect(() => {
+    getEventsFromDatabase();
+    // probably create doc here
+  }, []);
+
   // function to get events for date selected from database
   const getEventsFromDatabase = () => {
     // function should take date as parameter
@@ -50,10 +55,10 @@ const ItineraryScreen = () => {
     });
   };
 
-  const getEventsForDay = () => {
+  const getEventsForDay = (formDate) => {
     // WONT WORK, GETS OLD selectedDate STATE, FIGURE OUT HOW TO GET MOST RECENT STATE
     const eventObjectsForDay = events.filter(
-      (event) => event.date === selectedDate
+      (event) => event.date === formDate
     );
     console.log("selectedDate state: ", selectedDate);
     console.log("\nEvent Objects for selected day:\n", eventObjectsForDay);
@@ -66,7 +71,7 @@ const ItineraryScreen = () => {
     console.log("old selectedDate state: ", selectedDate);
     const formDate = date.format("MM/DD/YYYY");
     setSelectedDate(formDate);
-    getEventsForDay();
+    getEventsForDay(formDate);
     //console.log("new selectedDate state: ", selectedDate); this wont work because state is async, wont update immediately
   };
 
@@ -89,7 +94,6 @@ const ItineraryScreen = () => {
   // main return
   return (
     <View style={styles.maincontainer}>
-      <Button onPress={getEventsFromDatabase} title={"get events"} />
       <CalendarStrip
         scrollable={false}
         calendarAnimation={{ type: "sequence", duration: 30 }}
