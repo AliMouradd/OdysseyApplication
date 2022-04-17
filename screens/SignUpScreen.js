@@ -42,6 +42,12 @@ const SignUpScreen = () => {
         likes: 0,
         followers: 0,
       });
+      await setDoc(doc(db, "Goals", auth.currentUser.uid), {
+        todos: [],
+      });
+      await setDoc(doc(db, "UserSchedules", auth.currentUser.uid), {
+        schedules: [],
+      });
     } catch (error) {
       if (error.code === "auth/weak-password") {
         alert(
