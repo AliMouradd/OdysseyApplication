@@ -25,17 +25,20 @@ const ItineraryScreen = () => {
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [formattedDate, setFormattedDate] = useState();
   const [startDate, setStartDate] = useState();
+  const [tripStartDate, setTripStartDate] = useState();
+  const [tripEndDate, setTripEndDate] = useState();
   const [events, setEvents] = useState([]); // array of event maps for currently selected date (should include date, time, and description)
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [markedDates, setMarkedDates] = useState([]);
 
   // setup for getting current user's ID:
-  //const auth = getAuth();
-  //const user = auth.currentUser;
-  //const uid = user.uid;
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
 
   // Firestore document reference
   const userSchedDocRef = doc(db, "GenSchedules", "userid1"); // change "userid1" to uid
+  const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
 
   const createUserDoc = () => {};
 
@@ -52,6 +55,15 @@ const ItineraryScreen = () => {
       console.log("Getting events...");
       setEvents(doc.get("events")); // gets the array of maps from database
       console.log(events);
+    });
+  };
+
+  // function to get vacation start and end dates (to pass to calendar strip)
+  const getTripStartEndDates = () => {
+    getDoc(userSurveyDocRef).then((doc) => {
+      console.log("Getting trip start and end dates...");
+      setTripStartDate(doc.get("startDate"));
+      setTripEndDate(doc.get("endDate"));
     });
   };
 
