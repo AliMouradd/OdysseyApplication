@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   FlatList,
+  Modal,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -31,6 +32,7 @@ const ItineraryScreen = ({ navigation }) => {
   const [events, setEvents] = useState([]); // array of event maps for all dates (should include date, time, and description)
   const [selectedEvents, setSelectedEvents] = useState([]); // array of event maps for selected date
   const [markedDates, setMarkedDates] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // setup for getting current user's ID:
   const auth = getAuth();
@@ -38,7 +40,7 @@ const ItineraryScreen = ({ navigation }) => {
   const uid = user.uid;
 
   // Firestore document reference
-  const userSchedDocRef = doc(db, "GenSchedules", uid); // change "userid1" to uid
+  const userSchedDocRef = doc(db, "GenSchedules", uid);
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
 
   const createSchedDoc = () => {
@@ -54,8 +56,8 @@ const ItineraryScreen = ({ navigation }) => {
   // get all user's events from database (might run after each rerender?)
   useEffect(() => {
     createSchedDoc(); // create user's doc if not already created
-    getEventsFromDatabase(); // get events from database (from user's doc)
     getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
+    getEventsFromDatabase(); // get events from database (from user's doc)
   }, []);
 
   // function to get events for date selected from database
@@ -161,10 +163,21 @@ const ItineraryScreen = ({ navigation }) => {
       </View>
       <TouchableOpacity
         style={styles.addeventbutton}
-        onPress={() => navigation.navigate("Add Event")}
+        onPress={() => setModalVisible(true)}
       >
         <Icon name="add" size={33} color="black" />
       </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalview}></View>
+      </Modal>
     </View>
   );
 };
@@ -191,6 +204,12 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingLeft: 18,
     elevation: 5,
+  },
+  modalview: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
   },
 });
 
