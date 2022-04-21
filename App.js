@@ -14,6 +14,7 @@ import QuestionnaireStartScreen from "./screens/questionnaire_screens/Questionna
 import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
 import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
 import ItineraryMainScreen from "./screens/itinerary_screens/ItineraryScreen";
+import ItineraryAddEvent from "./screens/itinerary_screens/ItineraryAddEvent";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
         <Stack.Screen name="Generate Route" component={MapViewScreen} />
         <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
         <Stack.Screen name="User Itinerary" component={ItineraryMainScreen} />
+        <Stack.Screen name="Add Event" component={ItineraryAddEvent} />
       </Stack.Navigator>
     </NavigationContainer>
   );

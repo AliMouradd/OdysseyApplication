@@ -7,6 +7,7 @@ import {
   FlatList,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import {
   collection,
   doc,
@@ -20,7 +21,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
 
-const ItineraryScreen = () => {
+const ItineraryScreen = ({ navigation }) => {
   // states that will be used for the itinerary
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [formattedDate, setFormattedDate] = useState();
@@ -54,7 +55,7 @@ const ItineraryScreen = () => {
   useEffect(() => {
     createSchedDoc(); // create user's doc if not already created
     getEventsFromDatabase(); // get events from database (from user's doc)
-    getTripStartEndDates(); // get trip start/end dates from survey
+    getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
   }, []);
 
   // function to get events for date selected from database
@@ -158,6 +159,12 @@ const ItineraryScreen = () => {
           renderItem={(item) => <ListItem event={item} />}
         />
       </View>
+      <TouchableOpacity
+        style={styles.addeventbutton}
+        onPress={() => navigation.navigate("Add Event")}
+      >
+        <Icon name="add" size={33} color="black" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -172,6 +179,18 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+  },
+  addeventbutton: {
+    backgroundColor: "#6D97FF",
+    borderRadius: 25,
+    height: 70,
+    width: 70,
+    position: "absolute",
+    top: "87%",
+    left: "77%",
+    paddingTop: 18,
+    paddingLeft: 18,
+    elevation: 5,
   },
 });
 

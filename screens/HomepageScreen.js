@@ -82,7 +82,7 @@ const HomepageScreen = ({ navigation, route }) => {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => navigation.navigate("User Itinerary", { id: uid })}
+          onPress={() => navigation.navigate("User Itinerary")}
         >
           <Text>User Itinerary</Text>
         </TouchableOpacity>

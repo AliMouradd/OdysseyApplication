@@ -18,7 +18,7 @@ const MapViewScreen = ({ navigation }) => {
   async function getDirections(startLoc, destinationLoc) {
     try {
       let response = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o`
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=INSERTKEYHERE`
       );
       let responseJson = await response.json();
       let points = polyline.decode(
