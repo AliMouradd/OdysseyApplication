@@ -27,8 +27,8 @@ const ItineraryScreen = () => {
   const [startDate, setStartDate] = useState();
   const [tripStartDate, setTripStartDate] = useState();
   const [tripEndDate, setTripEndDate] = useState();
-  const [events, setEvents] = useState([]); // array of event maps for currently selected date (should include date, time, and description)
-  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [events, setEvents] = useState([]); // array of event maps for all dates (should include date, time, and description)
+  const [selectedEvents, setSelectedEvents] = useState([]); // array of event maps for selected date
   const [markedDates, setMarkedDates] = useState([]);
 
   // setup for getting current user's ID:
@@ -37,15 +37,24 @@ const ItineraryScreen = () => {
   const uid = user.uid;
 
   // Firestore document reference
-  const userSchedDocRef = doc(db, "GenSchedules", "userid1"); // change "userid1" to uid
+  const userSchedDocRef = doc(db, "GenSchedules", uid); // change "userid1" to uid
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
 
-  const createUserDoc = () => {};
+  const createSchedDoc = () => {
+    setDoc(userSchedDocRef, {}, { merge: true })
+      .then(() => {
+        //alert("Document Created/Updated");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
 
   // get all user's events from database (might run after each rerender?)
   useEffect(() => {
-    getEventsFromDatabase();
-    // probably create doc here
+    createSchedDoc(); // create user's doc if not already created
+    getEventsFromDatabase(); // get events from database (from user's doc)
+    getTripStartEndDates(); // get trip start/end dates from survey
   }, []);
 
   // function to get events for date selected from database
@@ -64,17 +73,26 @@ const ItineraryScreen = () => {
       console.log("Getting trip start and end dates...");
       setTripStartDate(doc.get("startDate"));
       setTripEndDate(doc.get("endDate"));
+
+      // for testing, show uid and start/end dates
+      console.log(uid);
+      console.log(doc.get("startDate"));
+      console.log(doc.get("endDate"));
     });
   };
 
   const getEventsForDay = (formDate) => {
     // WONT WORK, GETS OLD selectedDate STATE, FIGURE OUT HOW TO GET MOST RECENT STATE
-    const eventObjectsForDay = events.filter(
-      (event) => event.date === formDate
-    );
-    console.log("selectedDate state: ", selectedDate);
-    console.log("\nEvent Objects for selected day:\n", eventObjectsForDay);
-    setSelectedEvents(eventObjectsForDay);
+    if (events == undefined) {
+      alert("No events created at all!"); // user hasn't added any events yet
+    } else {
+      const eventObjectsForDay = events.filter(
+        (event) => event.date === formDate
+      );
+      console.log("selectedDate state: ", selectedDate);
+      console.log("\nEvent Objects for selected day:\n", eventObjectsForDay);
+      setSelectedEvents(eventObjectsForDay);
+    }
   };
 
   // function called when date is selected from calendar strip
@@ -108,7 +126,7 @@ const ItineraryScreen = () => {
     <View style={styles.maincontainer}>
       <CalendarStrip
         scrollable={false}
-        calendarAnimation={{ type: "sequence", duration: 30 }}
+        calendarAnimation={{ type: "parallel", duration: 600 }}
         daySelectionAnimation={{
           type: "background",
           duration: 300,
@@ -126,8 +144,10 @@ const ItineraryScreen = () => {
         markedDates={markedDates}
         selectedDate={selectedDate}
         onDateSelected={onDateSelected}
-        useIsoWeekday={false}
-        startingDate={startDate}
+        useIsoWeekday={true}
+        startingDate={tripStartDate}
+        minDate={tripStartDate}
+        maxDate={tripEndDate}
       />
 
       <Text style={{ fontSize: 24 }}>Selected Date: {selectedDate}</Text>
