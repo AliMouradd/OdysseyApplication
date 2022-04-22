@@ -72,7 +72,11 @@ const ProfileScreen = ({ navigation, route }) => {
           }}
         >
           {schedules.map((schedule) => (
-            <ScheduleComponent key={schedule.number} schedule={schedule} />
+            <ScheduleComponent
+              navigation={navigation}
+              key={schedule.number}
+              schedule={schedule}
+            />
           ))}
         </View>
       </View>
