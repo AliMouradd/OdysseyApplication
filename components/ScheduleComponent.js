@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 
-const ScheduleComponent = () => {
+const ScheduleComponent = (props) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -18,8 +18,8 @@ const ScheduleComponent = () => {
         style={styles.img}
       >
         <TouchableOpacity style={styles.container}>
-          <Text style={styles.h2}>Place</Text>
-          <Text>Lorem ipsum dolor sit amet...</Text>
+          <Text style={styles.h2}>{props.schedule.scheduleName}</Text>
+          {/* <Text>Lorem ipsum dolor sit amet...</Text> */}
         </TouchableOpacity>
       </ImageBackground>
     </View>

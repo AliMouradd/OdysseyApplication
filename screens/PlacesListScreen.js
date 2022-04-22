@@ -1,95 +1,260 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   ScrollView,
   View,
+  ImageBackground,
 } from "react-native";
 import PlacesComponent from "./PlacesComponent";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
+import DraggableFlatList, {
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import ScheduleNameInputModal from "../modals/ScheduleNameInputModal";
+import ScheduleDescriptionInputModal from "../modals/ScheduleDescriptionInputModal";
+import ListSortModal from "../modals/ListSortModal";
+import ListFilterModal from "../modals/ListFilterModal";
+
+import { db } from "../Config";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+
 const PlacesListScreen = ({ navigation }) => {
+  const [scheduleName, setScheduleName] = useState("Name of the Schedule");
+  const [description, setDescription] = useState(
+    "Short Description of the Trip"
+  );
   const [places, setPlaces] = useState([]);
+  const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
+  const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
+  const docRef = doc(db, "UserSchedules", uid);
 
   useEffect(() => {
     getPlacesTest();
   }, []);
 
+  const toggleNameInputModalVisible = () => {
+    setNameInputModalVisible(!nameInputModalVisible);
+  };
+
+  const toggleDescriptionInputModalVisible = () => {
+    setDescriptionModalVisible(!descriptionModalVisible);
+  };
+
+  const toggleSortModalVisible = () => {
+    setSortModalVisible(!sortModalVisible);
+  };
+
+  const toggleFilterModalVisible = () => {
+    setFilterModalVisible(!filterModalVisible);
+  };
+
+  const sortPlacesAsc = () => {
+    const sortedPlaces = [...places].sort(function (a, b) {
+      if (a.name.toLowerCase() < b.name.toLowerCase()) {
+        return -1;
+      }
+      if (a.name.toLowerCase() > b.name.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+    });
+    setPlaces(sortedPlaces);
+  };
+
+  const sortPlacesDes = () => {
+    const sortedPlaces = [...places].sort(function (a, b) {
+      if (a.name.toLowerCase() < b.name.toLowerCase()) {
+        return 1;
+      }
+      if (a.name.toLowerCase() > b.name.toLowerCase()) {
+        return -1;
+      }
+      return 0;
+    });
+    setPlaces(sortedPlaces);
+  };
+
+  const filterPlaces = (t) => {
+    getPlacesTest();
+    if (t === "All") {
+      return;
+    }
+    const filteredPlaces = [...places].filter((p) => p.type === t);
+    setPlaces(filteredPlaces);
+  };
+
+  const deletePlace = (num) => {
+    const newPlaces = [...places].filter((p) => p.number !== num);
+    setPlaces(newPlaces);
+  };
+
+  const generateSchedule = async () => {
+    const docSnap = await getDoc(docRef);
+
+    let newPlaces = [...places];
+    for (let i = 0; i < newPlaces.length; i++) {
+      newPlaces[i] = {
+        ...newPlaces[i],
+        number: i + 1,
+      };
+    }
+
+    const newSchedulesList = [
+      ...docSnap.data().schedules,
+      {
+        scheduleName: scheduleName,
+        description: description,
+        places: newPlaces,
+      },
+    ];
+
+    updateDoc(docRef, { schedules: newSchedulesList }, { merge: true });
+  };
+
   const getPlacesTest = () => {
     let sampleData = [
       {
         number: 1,
-        name: "Place One",
+        name: "Z",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Restaurant",
       },
       {
         number: 2,
-        name: "Place Two",
+        name: "A",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Restaurant",
       },
       {
         number: 3,
-        name: "Place Three",
+        name: "C",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Attraction",
       },
       {
         number: 4,
-        name: "Place Four",
+        name: "B",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Store",
       },
       {
         number: 5,
-        name: "Place Five",
+        name: "G",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Park",
       },
       {
         number: 6,
-        name: "Place Six",
+        name: "H",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Store",
       },
       {
         number: 7,
-        name: "Place Seven",
+        name: "I",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+        type: "Park",
       },
     ];
     setPlaces(sampleData);
   };
 
+  const renderItem = ({ item, index, drag, isActive }) => {
+    return (
+      <ScaleDecorator>
+        <TouchableOpacity onLongPress={drag} disabled={isActive}>
+          <PlacesComponent
+            key={item.number}
+            place={item}
+            index={index + 1}
+            navigation={navigation}
+            delFunction={deletePlace}
+          />
+        </TouchableOpacity>
+      </ScaleDecorator>
+    );
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <GestureHandlerRootView>
       <ScrollView>
         <View style={styles.background}>
-          <View style={styles.btns}>
-            <TouchableOpacity>
-              <Text style={{ textAlign: "right" }}>Share</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.infoWrapper}>
-            <View style={styles.info}>
-              <Text style={styles.h1}>Name Of the Schedule</Text>
+          <ImageBackground
+            style={{ flex: 1 }}
+            source={require("../assets/maarten-van-den-heuvel-gZXx8lKAb7Y-unsplash.jpg")}
+          >
+            <View style={styles.btns}>
               <TouchableOpacity>
-                <Icon name="edit" size={20} color="black" />
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="share"
+                  size={20}
+                  color="white"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="more-vert"
+                  size={20}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
-            <View style={styles.info}>
-              <Text style={styles.p}>Short Description of the Trip</Text>
-              <TouchableOpacity>
-                <Icon name="edit" size={20} color="black" />
-              </TouchableOpacity>
+            <View style={styles.infoWrapper}>
+              <View style={styles.info}>
+                <Text style={styles.h1}>{scheduleName}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setNameInputModalVisible(!nameInputModalVisible)
+                  }
+                >
+                  <Icon name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.info}>
+                <Text style={styles.p}>{description}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setDescriptionModalVisible(!descriptionModalVisible)
+                  }
+                >
+                  <Icon name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </ImageBackground>
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            backgroundColor: "white",
+            borderBottomWidth: 2,
+            borderColor: "#FFD56D",
+            paddingTop: 7,
+          }}
+        >
           <Text
             style={{
               textAlign: "center",
@@ -100,68 +265,103 @@ const PlacesListScreen = ({ navigation }) => {
           >
             Schedule
           </Text>
-          <TouchableOpacity>
-            <Icon name="edit" size={20} color="black" />
+          {/* <TouchableOpacity
+            onPress={() => setSortModalVisible(!sortModalVisible)}
+          >
+            <Text>Sort</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Sort/Filter</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setFilterModalVisible(!filterModalVisible)}
+          >
+            <Text>Filter</Text>
+          </TouchableOpacity> */}
         </View>
 
-        <View style={styles.wrapper}>
-          {places.map((place) => (
-            <PlacesComponent
-              key={place.name}
-              place={place}
-              navigation={navigation}
-            />
-          ))}
+        <View style={{ width: "90%", alignSelf: "center" }}>
+          <DraggableFlatList
+            data={places}
+            onDragEnd={({ data }) => setPlaces(data)}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+            scrollEnabled={false}
+          />
         </View>
-      </ScrollView>
-      <View style={styles.bar}>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity onPress={generateSchedule} style={styles.btn}>
           <Text style={{ fontWeight: "bold", fontSize: 16 }}>Generate</Text>
         </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+
+        <ScheduleNameInputModal
+          toggleNameInputModalVisible={toggleNameInputModalVisible}
+          scheduleName={scheduleName}
+          onChangeText={(text) => setScheduleName(text)}
+          nameInputModalVisible={nameInputModalVisible}
+        />
+
+        <ScheduleDescriptionInputModal
+          toggleDescriptionInputModalVisible={
+            toggleDescriptionInputModalVisible
+          }
+          description={description}
+          onChangeText={(text) => setDescription(text)}
+          descriptionModalVisible={descriptionModalVisible}
+        />
+
+        <ListSortModal
+          toggleSortModalVisible={toggleSortModalVisible}
+          sortModalVisible={sortModalVisible}
+          sortPlacesAsc={sortPlacesAsc}
+          sortPlacesDes={sortPlacesDes}
+        />
+
+        <ListFilterModal
+          toggleFilterModalVisible={toggleFilterModalVisible}
+          filterModalVisible={filterModalVisible}
+          filterPlaces={(text) => filterPlaces(text)}
+        />
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "white",
-  },
   background: {
+    flex: 1,
     backgroundColor: "#FFD56D",
-    height: 125,
-    justifyContent: "space-between",
-    marginBottom: 5,
-    padding: 5,
+    width: "100%",
+    height: 150,
+  },
+  infoWrapper: {
+    paddingLeft: 10,
+    paddingTop: 55,
   },
   info: {
     flexDirection: "row",
   },
+  btns: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
   h1: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "white",
   },
   p: {
     fontSize: 16,
+    color: "white",
   },
   bar: {
-    position: "absolute",
     alignSelf: "center",
     bottom: 20,
   },
   btn: {
     backgroundColor: "#FFD56D",
     borderRadius: 50,
-    marginBottom: 25,
+    margin: 10,
     padding: 10,
-    paddingLeft: 50,
-    paddingRight: 50,
+    width: "45%",
+    alignSelf: "center",
+    alignItems: "center",
   },
 });
 
