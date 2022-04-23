@@ -13,8 +13,12 @@ import QuestionnaireMainScreen from "./screens/questionnaire_screens/Questionnai
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
 import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
 import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
-const Stack = createNativeStackNavigator();
+import LookUpScreen from "./screens/LookUpScreen";
+import PlacesListScreen from "./screens/PlacesListScreen";
+import PlacesScreen from "./screens/PlacesScreen";
+import NearbyPlaceDemo from "./screens/NearbyPlaceDemo";
 
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
@@ -29,7 +33,7 @@ export default function App() {
         <Stack.Screen name="Goal Screen" component={GoalScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
-        <Stack.Screen name="Add Places" component={AddPlacesScreen} />
+        <Stack.Screen name="Add Places" component={LookUpScreen} />
         <Stack.Screen
           name="Travel Questionnaire"
           component={QuestionnaireStartScreen}
@@ -40,6 +44,10 @@ export default function App() {
         />
         <Stack.Screen name="Generate Route" component={MapViewScreen} />
         <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
+        <Stack.Screen name="PlacesListScreen" component={PlacesListScreen} />
+        <Stack.Screen name="PlacesScreen" component={PlacesScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Nearby Place Demo" component={NearbyPlaceDemo} />
       </Stack.Navigator>
     </NavigationContainer>
   );
