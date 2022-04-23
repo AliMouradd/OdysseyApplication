@@ -7,14 +7,15 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const PlacesComponent = (props) => {
   const [name, setName] = useState(props.place.name);
   const [description, setDescription] = useState(props.place.description);
-  const [number, setNumber] = useState(props.place.number);
+  const [number, setNumber] = useState(props.index);
 
   return (
-    <TouchableOpacity
+    <View
       style={styles.container}
       onPress={() =>
         props.navigation.navigate("PlacesFullDetailScreen", {
@@ -23,6 +24,8 @@ const PlacesComponent = (props) => {
         })
       }
     >
+      <Icon name="drag-handle" size={25} color="black" />
+
       <Image style={styles.img} source={require("../assets/logo.png")} />
       <View style={styles.content}>
         <Text>{name}</Text>
@@ -32,42 +35,50 @@ const PlacesComponent = (props) => {
             : description.substring(0, 95) + "..."}
         </Text>
       </View>
-      <View style={styles.order}>
-        <Text style={styles.num}>{number}</Text>
+      <View>
+        <View style={{ marginTop: 5, marginBottom: 10 }}>
+          <Text style={styles.num}>{number}</Text>
+        </View>
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={() => props.delFunction(props.place.number)}
+        >
+          <Icon name="delete" size={20} color="black" />
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    borderTopWidth: 1,
     borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderColor: "grey",
     marginBottom: 2,
     justifyContent: "space-evenly",
     backgroundColor: "white",
   },
   img: {
-    width: "40%",
+    width: "35%",
     height: 100,
     width: 100,
     marginRight: 10,
   },
   content: {
-    width: "50%",
-  },
-  order: {
-    width: "10%",
-    justifyContent: "center",
+    width: "45%",
   },
   num: {
+    marginTop: 5,
     backgroundColor: "#FFD56D",
     borderWidth: 10,
     borderColor: "#FFD56D",
-    borderRadius: 20,
+    borderRadius: 15,
+    paddingTop: 15,
     textAlign: "center",
-    paddingTop: 10,
   },
 });
 

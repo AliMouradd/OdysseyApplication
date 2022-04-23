@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, SafeAreaView, View, Text, Image } from "react-native";
 import { app } from "../Config";
+import { getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import ScheduleComponent from "../components/ScheduleComponent";
 
@@ -8,6 +9,12 @@ const db = getFirestore(app);
 
 const ProfileScreen = ({ navigation, route }) => {
   const [name, setName] = useState("");
+  const [schedules, setSchedules] = useState([]);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
+
   useEffect(async () => {
     if (route.params.id === 0) {
       setName("Guest");
@@ -16,6 +23,13 @@ const ProfileScreen = ({ navigation, route }) => {
       const info = await getDoc(infoRef);
       if (info.exists()) {
         setName(info.data().name);
+      } else {
+        alert("Something went wrong!");
+      }
+      const docRef = doc(db, "UserSchedules", route.params.id);
+      const schedulesInfo = await getDoc(docRef);
+      if (schedulesInfo.exists()) {
+        setSchedules(schedulesInfo.data().schedules);
       } else {
         alert("Something went wrong!");
       }
@@ -57,9 +71,9 @@ const ProfileScreen = ({ navigation, route }) => {
             flexDirection: "row",
           }}
         >
-          <ScheduleComponent />
-          <ScheduleComponent />
-          <ScheduleComponent />
+          {schedules.map((schedule) => (
+            <ScheduleComponent key={schedule.number} schedule={schedule} />
+          ))}
         </View>
       </View>
     </SafeAreaView>
