@@ -21,7 +21,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
 
-const ItineraryAddEvent = ({ allevents, navigation }) => {
+const ItineraryAddEvent = ({ navigation, events }) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -32,15 +32,15 @@ const ItineraryAddEvent = ({ allevents, navigation }) => {
   const uid = user.uid;
 
   const userSchedDocRef = doc(db, "GenSchedules", uid); // doc ref
-  const events = allevents.params;
-
-  const data = {
-    title: title,
-    time: time,
-    date: date,
-  };
+  const allevents = events.params;
+  console.log(events);
 
   const addToDatabase = () => {
+    const data = {
+      title: title,
+      time: time,
+      date: date,
+    };
     const newEventsArray = [...events, data];
     updateDoc(userSchedDocRef, { events: newEventsArray }, { merge: true })
       .then(() => {

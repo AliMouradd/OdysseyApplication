@@ -6,6 +6,8 @@ import {
   Text,
   FlatList,
   Modal,
+  Pressable,
+  TextInput,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -23,16 +25,19 @@ import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
 
 const ItineraryScreen = ({ navigation }) => {
-  // states that will be used for the itinerary
+  // states used by the itinerary
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [formattedDate, setFormattedDate] = useState();
-  const [startDate, setStartDate] = useState();
+  const [startDate, setStartDate] = useState(); // change this to make the calendar strip start at correct date
   const [tripStartDate, setTripStartDate] = useState();
   const [tripEndDate, setTripEndDate] = useState();
   const [events, setEvents] = useState([]); // array of event maps for all dates (should include date, time, and description)
   const [selectedEvents, setSelectedEvents] = useState([]); // array of event maps for selected date
   const [markedDates, setMarkedDates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDate, setNewDate] = useState("");
+  const [newTime, setNewTime] = useState("");
 
   // setup for getting current user's ID:
   const auth = getAuth();
@@ -42,6 +47,13 @@ const ItineraryScreen = ({ navigation }) => {
   // Firestore document reference
   const userSchedDocRef = doc(db, "GenSchedules", uid);
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
+
+  // get all user's events from database (might run after each rerender?)
+  useEffect(() => {
+    createSchedDoc(); // create user's doc if not already created
+    getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
+    getEventsFromDatabase(); // get events from database (from user's doc)
+  }, []);
 
   const createSchedDoc = () => {
     setDoc(userSchedDocRef, {}, { merge: true })
@@ -53,12 +65,22 @@ const ItineraryScreen = ({ navigation }) => {
       });
   };
 
-  // get all user's events from database (might run after each rerender?)
-  useEffect(() => {
-    createSchedDoc(); // create user's doc if not already created
-    getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
-    getEventsFromDatabase(); // get events from database (from user's doc)
-  }, []);
+  const addEventToDatabase = () => {
+    const data = {
+      title: newTitle,
+      time: newTime,
+      date: newDate,
+      // add id?
+    };
+    const newEventsArray = [...events, data];
+    updateDoc(userSchedDocRef, { events: newEventsArray }, { merge: true })
+      .then(() => {
+        alert("Event added");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
 
   // function to get events for date selected from database
   const getEventsFromDatabase = () => {
@@ -161,14 +183,16 @@ const ItineraryScreen = ({ navigation }) => {
           renderItem={(item) => <ListItem event={item} />}
         />
       </View>
+
       <TouchableOpacity
         style={styles.addeventbutton}
         onPress={() => setModalVisible(true)}
       >
         <Icon name="add" size={33} color="black" />
       </TouchableOpacity>
+
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -176,7 +200,45 @@ const ItineraryScreen = ({ navigation }) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalview}></View>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={{ fontSize: 19, fontWeight: "bold" }}>
+              Enter new event details:
+            </Text>
+            <TextInput
+              style={styles.textbox}
+              onChangeText={setNewTitle}
+              value={newTitle}
+              placeholder="Enter title..."
+            />
+            <TextInput
+              style={styles.textbox}
+              onChangeText={setNewDate}
+              value={newDate}
+              placeholder="Enter date (MM/DD/YYYY)"
+            />
+            <TextInput
+              style={styles.textbox}
+              onChangeText={setNewTime}
+              value={newTime}
+              placeholder="Enter time (HH:MM:SS AM/PM)"
+            />
+            <View style={styles.modalbuttonsview}>
+              <TouchableOpacity
+                style={styles.modalbutton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalbutton}
+                onPress={() => [addEventToDatabase(), setModalVisible(false)]}
+              >
+                <Text>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
     </View>
   );
@@ -205,11 +267,60 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     elevation: 5,
   },
-  modalview: {
+  centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    marginTop: 56,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    height: "88%",
+    width: "90%",
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalbuttonsview: {
+    flexDirection: "row",
+    //backgroundColor: "red",
+  },
+  modalbutton: {
+    backgroundColor: "#FFD56D",
+    height: 40,
+    width: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    margin: 5,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  textbox: {
+    backgroundColor: "gainsboro",
+    height: 40,
+    width: "90%",
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 5,
   },
 });
 
