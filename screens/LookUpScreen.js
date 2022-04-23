@@ -12,17 +12,17 @@ import Background from "../assets/blob-haikei.svg";
 
 const LookUpScreen = ({ navigation }) => {
   const [text, onChangeText] = useState("");
-
+  const API_KEY = HERE_API_KEY;
   const lookUp = async () => {
     const response = await fetch(
       "https://geocode.search.hereapi.com/v1/geocode?q=" +
         encodeURIComponent(text) +
         "&apiKey=" +
-        HERE_API_KEY
+        API_KEY
     );
     const jsonData = await response.json();
-    console.log(jsonData.items[0].position.lat);
-    console.log(jsonData.items[0].position.lng);
+    //console.log(jsonData.items[0].position.lat);
+    //console.log(jsonData.items[0].position.lng);
     navigation.navigate("Nearby Place Demo", {
       lat: jsonData.items[0].position.lat,
       lng: jsonData.items[0].position.lng,

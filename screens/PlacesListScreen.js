@@ -24,7 +24,7 @@ import { db } from "../Config";
 import { getAuth } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
-const PlacesListScreen = ({ navigation }) => {
+const PlacesListScreen = ({ navigation, route }) => {
   const [scheduleName, setScheduleName] = useState("Name of the Schedule");
   const [description, setDescription] = useState(
     "Short Description of the Trip"
@@ -124,58 +124,20 @@ const PlacesListScreen = ({ navigation }) => {
   };
 
   const getPlacesTest = () => {
-    let sampleData = [
-      {
-        number: 1,
-        name: "Z",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Restaurant",
-      },
-      {
-        number: 2,
-        name: "A",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Restaurant",
-      },
-      {
-        number: 3,
-        name: "C",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Attraction",
-      },
-      {
-        number: 4,
-        name: "B",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Store",
-      },
-      {
-        number: 5,
-        name: "G",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Park",
-      },
-      {
-        number: 6,
-        name: "H",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Store",
-      },
-      {
-        number: 7,
-        name: "I",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-        type: "Park",
-      },
-    ];
-    setPlaces(sampleData);
+    let placesData = [];
+    console.log(route.params.places);
+    for (let i = 0; i < route.params.places.length; i++) {
+      placesData = [
+        ...placesData,
+        {
+          number: i + 1,
+          title: route.params.places[i].title,
+          address: route.params.places[i].address,
+          picture: route.params.places[i].picture,
+        },
+      ];
+    }
+    setPlaces(placesData);
   };
 
   const renderItem = ({ item, index, drag, isActive }) => {
@@ -221,7 +183,7 @@ const PlacesListScreen = ({ navigation }) => {
                     setNameInputModalVisible(!nameInputModalVisible)
                   }
                 >
-                  <Icon name="edit" size={20} color="black" />
+                  <Icon name="edit" size={20} color="white" />
                 </TouchableOpacity>
               </View>
               <View style={styles.info}>
@@ -231,7 +193,7 @@ const PlacesListScreen = ({ navigation }) => {
                     setDescriptionModalVisible(!descriptionModalVisible)
                   }
                 >
-                  <Icon name="edit" size={20} color="black" />
+                  <Icon name="edit" size={20} color="white" />
                 </TouchableOpacity>
               </View>
             </View>

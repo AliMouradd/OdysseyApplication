@@ -7,43 +7,41 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import CheckBox from "expo-checkbox";
 
-const PlacesComponent = (props) => {
+const NearbyPlaceComponentDemo = (props) => {
   const [title, setTitle] = useState(props.place.title);
   const [address, setAddress] = useState(props.place.address);
   const [picture, setPicture] = useState(props.place.picture);
-  const [number, setNumber] = useState(props.index);
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
-  console.log(props);
+  const toggleBox = (newValue) => {
+    if (newValue) {
+      props.addPlace(props.place);
+    } else {
+      props.delPlace(props.place);
+    }
+    setToggleCheckBox(newValue);
+  };
+
   return (
-    <View
-      style={styles.container}
-      onPress={() =>
-        props.navigation.navigate("PlacesFullDetailScreen", {
-          title: title,
-          address: address,
-        })
-      }
-    >
-      {props.ui && <Icon name="drag-handle" size={25} color="black" />}
-
-      <Image style={styles.img} source={{ uri: picture }} />
+    <View style={styles.container}>
+      <Image
+        style={styles.img}
+        source={{
+          uri: picture,
+        }}
+      />
       <View style={styles.content}>
         <Text>{title}</Text>
         <Text>{address}</Text>
       </View>
-      <View>
-        <View style={{ marginTop: 5, marginBottom: 10 }}>
-          <Text style={styles.num}>{number}</Text>
-        </View>
-        <TouchableOpacity
-          style={{ alignItems: "center" }}
-          onPress={() => props.delFunction(props.place.number)}
-        >
-          {props.ui && <Icon name="delete" size={20} color="black" />}
-        </TouchableOpacity>
-      </View>
+      <CheckBox
+        style={{ alignSelf: "center" }}
+        disabled={false}
+        value={toggleCheckBox}
+        onValueChange={toggleBox}
+      />
     </View>
   );
 };
@@ -61,9 +59,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   img: {
-    width: "35%",
-    height: 100,
-    width: 100,
+    width: "25%",
+    height: 50,
+    width: 50,
     marginRight: 10,
   },
   content: {
@@ -80,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlacesComponent;
+export default NearbyPlaceComponentDemo;
