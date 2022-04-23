@@ -188,6 +188,7 @@ const PlacesListScreen = ({ navigation }) => {
             index={index + 1}
             navigation={navigation}
             delFunction={deletePlace}
+            ui={true}
           />
         </TouchableOpacity>
       </ScaleDecorator>
@@ -203,14 +204,6 @@ const PlacesListScreen = ({ navigation }) => {
             source={require("../assets/maarten-van-den-heuvel-gZXx8lKAb7Y-unsplash.jpg")}
           >
             <View style={styles.btns}>
-              <TouchableOpacity>
-                <Icon
-                  style={{ textAlign: "right", padding: 10 }}
-                  name="share"
-                  size={20}
-                  color="white"
-                />
-              </TouchableOpacity>
               <TouchableOpacity>
                 <Icon
                   style={{ textAlign: "right", padding: 10 }}

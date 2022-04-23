@@ -24,7 +24,7 @@ const PlacesComponent = (props) => {
         })
       }
     >
-      <Icon name="drag-handle" size={25} color="black" />
+      {props.ui && <Icon name="drag-handle" size={25} color="black" />}
 
       <Image style={styles.img} source={require("../assets/logo.png")} />
       <View style={styles.content}>
@@ -43,7 +43,7 @@ const PlacesComponent = (props) => {
           style={{ alignItems: "center" }}
           onPress={() => props.delFunction(props.place.number)}
         >
-          <Icon name="delete" size={20} color="black" />
+          {props.ui && <Icon name="delete" size={20} color="black" />}
         </TouchableOpacity>
       </View>
     </View>

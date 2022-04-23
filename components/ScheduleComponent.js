@@ -17,7 +17,14 @@ const ScheduleComponent = (props) => {
         imageStyle={{ opacity: 0.3 }}
         style={styles.img}
       >
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity
+          style={styles.container}
+          onPress={() =>
+            props.navigation.navigate("PlacesScreen", {
+              schedule: props.schedule,
+            })
+          }
+        >
           <Text style={styles.h2}>{props.schedule.scheduleName}</Text>
           {/* <Text>Lorem ipsum dolor sit amet...</Text> */}
         </TouchableOpacity>
