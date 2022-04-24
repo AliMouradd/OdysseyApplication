@@ -23,21 +23,29 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
+import moment from "moment";
 
 const ItineraryScreen = ({ navigation }) => {
   // states used by the itinerary
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [formattedDate, setFormattedDate] = useState();
-  const [startDate, setStartDate] = useState(); // change this to make the calendar strip start at correct date
+  const [startDate, setStartDate] = useState(
+    moment("04/20/2023").format("MM/DD/YYYY")
+  ); // change this to make the calendar strip start at correct date
   const [tripStartDate, setTripStartDate] = useState();
   const [tripEndDate, setTripEndDate] = useState();
   const [events, setEvents] = useState([]); // array of event maps for all dates (should include date, time, and description)
   const [selectedEvents, setSelectedEvents] = useState([]); // array of event maps for selected date
   const [markedDates, setMarkedDates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  // states for adding new events
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
+
+  // state for places list
+  const [places, setPlaces] = useState([]);
 
   // setup for getting current user's ID:
   const auth = getAuth();
@@ -47,12 +55,14 @@ const ItineraryScreen = ({ navigation }) => {
   // Firestore document reference
   const userSchedDocRef = doc(db, "GenSchedules", uid);
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
+  const placesListDocRef = doc(db, "UserSchedules", "123");
 
   // get all user's events from database (might run after each rerender?)
   useEffect(() => {
-    createSchedDoc(); // create user's doc if not already created
     getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
+    createSchedDoc(); // create user's doc if not already created
     getEventsFromDatabase(); // get events from database (from user's doc)
+    getFromPlacesList();
   }, []);
 
   const createSchedDoc = () => {
@@ -70,7 +80,7 @@ const ItineraryScreen = ({ navigation }) => {
       title: newTitle,
       time: newTime,
       date: newDate,
-      // add id?
+      id: Math.random(),
     };
     const newEventsArray = [...events, data];
     updateDoc(userSchedDocRef, { events: newEventsArray }, { merge: true })
@@ -98,12 +108,20 @@ const ItineraryScreen = ({ navigation }) => {
       console.log("Getting trip start and end dates...");
       setTripStartDate(doc.get("startDate"));
       setTripEndDate(doc.get("endDate"));
+      setStartDate(doc.get("startDate"));
 
       // for testing, show uid and start/end dates
       console.log(uid);
       console.log(doc.get("startDate"));
       console.log(doc.get("endDate"));
     });
+  };
+
+  const getFromPlacesList = () => {
+    getDoc(placesListDocRef).then((doc) => {
+      setPlaces(doc.get("places"));
+    });
+    console.log(places);
   };
 
   const getEventsForDay = (formDate) => {
@@ -138,9 +156,21 @@ const ItineraryScreen = ({ navigation }) => {
     return (
       <View>
         <TouchableOpacity style={styles.eventcontainer}>
+          <Text>title: {event.item.title}</Text>
           <Text>date: {event.item.date}</Text>
           <Text>time: {event.item.time}</Text>
-          <Text>description: {event.item.description}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const PlacesListItem = ({ place }) => {
+    const [selectedPlace, setSelectedPlace] = useState();
+    return (
+      <View>
+        <TouchableOpacity style={styles.placecontainer}>
+          <Text>{place.item.name}</Text>
+          <Text>{place.item.type}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -169,7 +199,7 @@ const ItineraryScreen = ({ navigation }) => {
         markedDates={markedDates}
         selectedDate={selectedDate}
         onDateSelected={onDateSelected}
-        useIsoWeekday={true}
+        useIsoWeekday={false}
         startingDate={tripStartDate}
         minDate={tripStartDate}
         maxDate={tripEndDate}
@@ -223,6 +253,12 @@ const ItineraryScreen = ({ navigation }) => {
               value={newTime}
               placeholder="Enter time (HH:MM:SS AM/PM)"
             />
+            <View style={{ height: 300 }}>
+              <FlatList
+                data={places}
+                renderItem={(item) => <PlacesListItem place={item} />}
+              />
+            </View>
             <View style={styles.modalbuttonsview}>
               <TouchableOpacity
                 style={styles.modalbutton}
@@ -321,6 +357,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 5,
+  },
+  placecontainer: {
+    backgroundColor: "gainsboro",
+    width: 250,
+    margin: 2,
   },
 });
 
