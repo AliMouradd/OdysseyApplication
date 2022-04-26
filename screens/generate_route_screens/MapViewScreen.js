@@ -37,7 +37,7 @@ const MapViewScreen = ({ navigation, route }) => {
       setCoords(coordinates);
       setAPISteps(responseJson.routes[0].legs[0].steps);
       setAPITripInfo(responseJson.routes[0].legs);
-      console.log(responseJson.routes[0].legs[0]);
+      //console.log(responseJson.routes[0].legs[0]);
       return coordinates;
     } catch (error) {
       alert(error);
@@ -52,6 +52,12 @@ const MapViewScreen = ({ navigation, route }) => {
         initialRegion={{
           latitude: 34.0522,
           longitude: -118.2437,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        region={{
+          latitude: coords[0].latitude,
+          longitude: coords[0].longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
