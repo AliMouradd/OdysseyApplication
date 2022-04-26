@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import NearbyPlaceComponentDemo from "./NearbyPlaceComponentDemo";
+import yelp from "./yelp_api/yelp";
 
-import { HERE_API_KEY } from "@env";
+//import { HERE_API_KEY } from "@env";
 
 const NearbyPlaceDemo = ({ navigation, route }) => {
   const [places, setPlaces] = useState([]);
   const [finalPlaces, setFinalPlaces] = useState([]);
-  const API_KEY = HERE_API_KEY;
+  //const API_KEY = HERE_API_KEY;
   useEffect(() => {
     getPlaces();
   }, []);
@@ -28,35 +29,44 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
     setFinalPlaces(newPlaces);
   };
 
+  // const getAPI = async () =>{
+  //   try{
+  //   const response = await yelp.get("/search",{
+  //       params: {
+  //           limit: 20,
+  //           location: term,
+  //           categories: "arts",
+  //           sort_by: "review_count"
+  //       }
+  //   })
+  //   setResults(response.data.businesses)
+  //   console.log(response.data.businesses)
+
   const getPlaces = async () => {
     try {
-      const response = await fetch(
-        "https://places.ls.hereapi.com/places/v1/discover/explore?at=" +
-          route.params.lat +
-          "," +
-          route.params.lng +
-          "&cat=sights-museums&apiKey=" +
-          API_KEY
-      );
-      const jsonData = await response.json();
+      const response = await yelp.get("/search",{
+        params: {
+            limit: 20,
+            location: route.params.text,
+            categories: "arts",
+            sort_by: "review_count"
+        }
+    })
 
       let d = [];
-      console.log(jsonData.results.items.length);
-      for (let i = 0; i < jsonData.results.items.length; i++) {
-        d = [
-          ...d,
-          {
-            title: jsonData.results.items[i].title,
-            address: jsonData.results.items[i].vicinity.replace("<br/>", ", "),
-            picture:
-              "https://download.vcdn.data.here.com/p/d/places2/icons/categories/" +
-              jsonData.results.items[i].icon.substring(
-                jsonData.results.items[i].icon.length - 8
-              ),
-          },
-        ];
-      }
+      console.log(response.data.businesses.length );
+      for (let i = 0; i < response.data.businesses.length ; i++) {
+      d = [
+        ...d,
+        {
+          title: response.data.businesses[i].name,
+          address: response.data.businesses[i].location.display_address[0] + "  " + response.data.businesses[i].location.display_address[1],
+          picture: response.data.businesses[i].image_url
+        },
+      ];
+    }
       setPlaces(d);
+      
     } catch (err) {
       // console.err(err.message);
     }
