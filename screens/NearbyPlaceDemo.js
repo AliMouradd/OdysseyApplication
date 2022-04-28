@@ -14,6 +14,7 @@ import yelp from "./yelp_api/yelp";
 const NearbyPlaceDemo = ({ navigation, route }) => {
   const [places, setPlaces] = useState([]);
   const [finalPlaces, setFinalPlaces] = useState([]);
+  const [aliasList, setAliasList] = useState([]);
   //const API_KEY = HERE_API_KEY;
   useEffect(() => {
     getPlaces();
@@ -54,18 +55,28 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
     })
 
       let d = [];
-      console.log(response.data.businesses.length );
+      console.log(response.data.businesses);
+      //console.log(response.data.businesses.length);
+      let al = [];
       for (let i = 0; i < response.data.businesses.length ; i++) {
       d = [
         ...d,
         {
+
           title: response.data.businesses[i].name,
           address: response.data.businesses[i].location.display_address[0] + "  " + response.data.businesses[i].location.display_address[1],
-          picture: response.data.businesses[i].image_url
+          picture: response.data.businesses[i].image_url,
+          alias: response.data.businesses[i].categories[0].title,
         },
       ];
+      if (!al.find(element => element == response.data.businesses[i].categories[0].title)){
+        al = [...al, response.data.businesses[i].categories[0].title]
+      }
+      //aliasList = [...aliasList, response.data.businesses[i].categories[0].title]
     }
       setPlaces(d);
+      setAliasList(al);
+      //prints alias
       
     } catch (err) {
       // console.err(err.message);
@@ -77,6 +88,7 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
         <View>
           <NearbyPlaceComponentDemo
             place={place}
+            //aliasList = {aliasList}
             addPlace={addPlace}
             delPlace={delPlace}
           />
@@ -85,7 +97,7 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
       <TouchableOpacity
         style={styles.btn}
         onPress={() =>
-          navigation.navigate("PlacesListScreen", { places: finalPlaces })
+          navigation.navigate("PlacesListScreen", { places: finalPlaces, aliasList: aliasList})
         }
       >
         <Text>Submit</Text>

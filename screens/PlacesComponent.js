@@ -15,7 +15,7 @@ const PlacesComponent = (props) => {
   const [picture, setPicture] = useState(props.place.picture);
   const [number, setNumber] = useState(props.index);
 
-  console.log(props);
+  //console.log(props);
   return (
     <View
       style={styles.container}

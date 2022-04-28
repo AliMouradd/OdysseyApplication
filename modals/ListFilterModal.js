@@ -9,30 +9,27 @@ import {
   Modal,
 } from "react-native";
 
+
 const ListFilterModal = (props) => {
+  console.log(props.aliasList)
   return (
+
     <Modal transparent={true} visible={props.filterModalVisible}>
       <TouchableWithoutFeedback
         onPress={() => props.toggleFilterModalVisible()}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Filter By</Text>
+        
+          <Text style={styles.modalTitle}>Filter By</Text>
             <TouchableOpacity onPress={() => props.filterPlaces("All")}>
               <Text style={styles.modalText}>All</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => props.filterPlaces("Park")}>
-              <Text style={styles.modalText}>Park</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => props.filterPlaces("Restaurant")}>
-              <Text style={styles.modalText}>Restaurant</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => props.filterPlaces("Store")}>
-              <Text style={styles.modalText}>Store</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => props.filterPlaces("Attraction")}>
-              <Text style={styles.modalText}>Attraction</Text>
-            </TouchableOpacity>
+
+            {props.aliasList.map((e) => (         
+              <TouchableOpacity onPress={() => props.filterPlaces(e)}>
+                <Text style={styles.modalText}>{e}</Text>
+              </TouchableOpacity>))}
           </View>
         </View>
       </TouchableWithoutFeedback>

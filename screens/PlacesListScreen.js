@@ -62,10 +62,10 @@ const PlacesListScreen = ({ navigation, route }) => {
 
   const sortPlacesAsc = () => {
     const sortedPlaces = [...places].sort(function (a, b) {
-      if (a.name.toLowerCase() < b.name.toLowerCase()) {
+      if (a.title.toLowerCase() < b.title.toLowerCase()) {
         return -1;
       }
-      if (a.name.toLowerCase() > b.name.toLowerCase()) {
+      if (a.title.toLowerCase() > b.title.toLowerCase()) {
         return 1;
       }
       return 0;
@@ -74,11 +74,13 @@ const PlacesListScreen = ({ navigation, route }) => {
   };
 
   const sortPlacesDes = () => {
+    console.log("RBN");
+    console.log(places);
     const sortedPlaces = [...places].sort(function (a, b) {
-      if (a.name.toLowerCase() < b.name.toLowerCase()) {
+      if (a.title.toLowerCase() < b.title.toLowerCase()) {
         return 1;
       }
-      if (a.name.toLowerCase() > b.name.toLowerCase()) {
+      if (a.title.toLowerCase() > b.title.toLowerCase()) {
         return -1;
       }
       return 0;
@@ -91,7 +93,9 @@ const PlacesListScreen = ({ navigation, route }) => {
     if (t === "All") {
       return;
     }
-    const filteredPlaces = [...places].filter((p) => p.type === t);
+    const filteredPlaces = [...places].filter((p) => p.alias == t);
+    console.log("lias: ")
+    console.log(places)
     setPlaces(filteredPlaces);
   };
 
@@ -134,6 +138,7 @@ const PlacesListScreen = ({ navigation, route }) => {
           title: route.params.places[i].title,
           address: route.params.places[i].address,
           picture: route.params.places[i].picture,
+          alias: route.params.places[i].alias
         },
       ];
     }
@@ -271,6 +276,7 @@ const PlacesListScreen = ({ navigation, route }) => {
         <ListFilterModal
           toggleFilterModalVisible={toggleFilterModalVisible}
           filterModalVisible={filterModalVisible}
+          aliasList = {route.params.aliasList}
           filterPlaces={(text) => filterPlaces(text)}
         />
       </ScrollView>
