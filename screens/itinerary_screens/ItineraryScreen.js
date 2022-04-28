@@ -24,6 +24,8 @@ import {
 import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
 import moment from "moment";
+import { set } from "react-native-reanimated";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const ItineraryScreen = ({ navigation }) => {
   // states used by the itinerary
@@ -44,6 +46,7 @@ const ItineraryScreen = ({ navigation }) => {
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
   const [selectedPlace, setSelectedPlace] = useState("");
+  const [pickerdate, setPickerDate] = useState(new Date());
 
   // state for places list
   const [places, setPlaces] = useState([]);
@@ -123,6 +126,10 @@ const ItineraryScreen = ({ navigation }) => {
       .catch((error) => {
         alert(error.message);
       });
+    // clear inputs after adding an event
+    setNewTitle("");
+    setNewDate(undefined);
+    setNewTime(undefined);
   };
 
   const getFromPlacesList = () => {
@@ -131,6 +138,29 @@ const ItineraryScreen = ({ navigation }) => {
       setPlaces(doc.get("places"));
     });
     //console.log(places);
+  };
+
+  // datetimepicker functions
+  const onChange = (pickerevent, pickerSelectedDate) => {
+    const currentDate = pickerSelectedDate;
+    setPickerDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    DateTimePicker.open({
+      value: date,
+      onChange,
+      mode: currentMode,
+      is24Hour: false,
+    });
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
   };
 
   // function called when date is selected from calendar strip
