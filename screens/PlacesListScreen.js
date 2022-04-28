@@ -220,7 +220,7 @@ const PlacesListScreen = ({ navigation, route }) => {
           >
             Schedule
           </Text>
-          {/* <TouchableOpacity
+          <TouchableOpacity
             onPress={() => setSortModalVisible(!sortModalVisible)}
           >
             <Text>Sort</Text>
@@ -229,7 +229,7 @@ const PlacesListScreen = ({ navigation, route }) => {
             onPress={() => setFilterModalVisible(!filterModalVisible)}
           >
             <Text>Filter</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
 
         <View style={{ width: "90%", alignSelf: "center" }}>

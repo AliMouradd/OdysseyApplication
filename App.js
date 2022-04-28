@@ -7,7 +7,6 @@ import SignUpScreen from "./screens/SignUpScreen";
 import HomepageScreen from "./screens/HomepageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ItineraryScreen from "./screens/ItineraryScreen";
-import AddPlacesScreen from "./screens/AddPlacesScreen";
 import GoalScreen from "./screens/GoalScreen";
 import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
