@@ -294,10 +294,17 @@ const ItineraryScreen = ({ navigation }) => {
                 placeholder="Enter title..."
               />
               <TextInput
+                // style={styles.textbox}
+                // onChangeText={setNewDate}
+                // value={newDate}
+                // placeholder="Enter date (MM/DD/YYYY)"
                 style={styles.textbox}
                 onChangeText={setNewDate}
-                value={newDate}
-                placeholder="Enter date (MM/DD/YYYY)"
+                //value={destinationtext}
+                value={route.params?.destinationparam}
+                placeholder="Enter date..."
+                onFocus={() => showDatepicker()}
+                showSoftInputOnFocus={false}
               />
               <TextInput
                 style={styles.textbox}
