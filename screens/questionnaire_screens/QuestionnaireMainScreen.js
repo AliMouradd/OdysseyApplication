@@ -1,23 +1,16 @@
 import React, { Component } from "react";
 import {
   StyleSheet,
-  ScrollView,
   Text,
   TextInput,
   View,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
 import { SimpleSurvey } from "react-native-simple-survey";
 import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
-import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  addDoc,
-} from "firebase/firestore";
+import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 // this will contain all questions and possible answers
 const survey = [
@@ -252,7 +245,7 @@ export default class SurveyScreen extends Component {
     for (const elem of infoQuestionsRemoved) {
       answersAsObject[elem.questionId] = elem.value;
       console.log(elem.questionId);
-      console.log(elem.value[0]); //[0].value
+      console.log(elem.value[0]);
     }
 
     // setup for getting current user's ID:
@@ -270,9 +263,7 @@ export default class SurveyScreen extends Component {
     var interestsArrayLength = answersAsObject.interests.length;
     var foodInterestsArrayLength = answersAsObject.foodInterests.length;
 
-    // create the doc / reset the doc
-    // TEST TO SEE IF DOCUMENT REWRITES WHEN RUN AGAIN
-
+    // doc reference
     const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
 
     // maybe add user ID's to documents?
@@ -285,9 +276,10 @@ export default class SurveyScreen extends Component {
       foodInterests: [],
     };
 
-    setDoc(userAnswersDocRef, docData)
+    // update the doc
+    setDoc(userAnswersDocRef, docData, { merge: true })
       .then(() => {
-        alert("Document Created");
+        ToastAndroid.show("Document Updated", ToastAndroid.SHORT);
       })
       .catch((error) => {
         alert(error.message);
@@ -379,10 +371,10 @@ export default class SurveyScreen extends Component {
           renderInfo={this.renderInfoText}
         />
 
-        <ScrollView style={styles.answersContainer}>
+        {/*<ScrollView style={styles.answersContainer}>
           <Text style={{ textAlign: "center" }}>JSON output</Text>
           <Text>{this.state.answersSoFar}</Text>
-        </ScrollView>
+        </ScrollView>*/}
       </View>
     );
   }
@@ -401,7 +393,7 @@ const styles = StyleSheet.create({
     // main parent view
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     //borderRadius: 10,
     flex: 1,
   },
@@ -422,7 +414,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     padding: 5,
     height: "70%",
-    //flex: 1,
+    flex: 1,
     //flexGrow: 1,
     //elevation: 20,
   },

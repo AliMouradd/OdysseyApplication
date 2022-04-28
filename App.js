@@ -11,8 +11,10 @@ import AddPlacesScreen from "./screens/AddPlacesScreen";
 import GoalScreen from "./screens/GoalScreen";
 import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
+import LocationQuestionScreen from "./screens/questionnaire_screens/LocationQuestionScreen";
 import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
 import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
+import RouteInputScreen from "./screens/generate_route_screens/RouteInputScreen";
 import ItineraryMainScreen from "./screens/itinerary_screens/ItineraryScreen";
 import ItineraryAddEvent from "./screens/itinerary_screens/ItineraryAddEvent";
 const Stack = createNativeStackNavigator();
@@ -36,11 +38,24 @@ export default function App() {
           component={QuestionnaireStartScreen}
         />
         <Stack.Screen
+          name="Getting Started"
+          component={LocationQuestionScreen}
+        />
+        <Stack.Screen
           name="Questionnaire"
           component={QuestionnaireMainScreen}
         />
-        <Stack.Screen name="Generate Route" component={MapViewScreen} />
+        <Stack.Screen
+          name="Generate Route"
+          component={MapViewScreen}
+          options={{ title: "Find Routes" }}
+        />
         <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
+        <Stack.Screen
+          name="Route Input"
+          component={RouteInputScreen}
+          options={{ title: "Location Search" }}
+        />
         <Stack.Screen name="User Itinerary" component={ItineraryMainScreen} />
         <Stack.Screen name="Add Event" component={ItineraryAddEvent} />
       </Stack.Navigator>
