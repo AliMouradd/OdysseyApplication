@@ -8,6 +8,7 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
+  Button,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -31,11 +32,9 @@ const ItineraryScreen = ({ navigation }) => {
   // states used by the itinerary
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [formattedDate, setFormattedDate] = useState();
-  const [startDate, setStartDate] = useState(
-    moment(new Date()).format("MM/DD/YYYY")
-  ); // change this to make the calendar strip start at correct date
-  const [tripStartDate, setTripStartDate] = useState(undefined);
-  const [tripEndDate, setTripEndDate] = useState(undefined);
+  const [startDate, setStartDate] = useState(moment(new Date())); // change this to make the calendar strip start at correct date
+  const [tripStartDate, setTripStartDate] = useState(undefined); // will be set to a moment
+  const [tripEndDate, setTripEndDate] = useState(undefined); // will be set to a moment
   const [events, setEvents] = useState([]); // array of event objects for all dates (should include date, time, and description)
   const [selectedEvents, setSelectedEvents] = useState([]); // array of event objects for selected date
   const [markedDates, setMarkedDates] = useState([]);
@@ -47,6 +46,8 @@ const ItineraryScreen = ({ navigation }) => {
   const [newTime, setNewTime] = useState("");
   const [selectedPlace, setSelectedPlace] = useState("");
   const [pickerdate, setPickerDate] = useState(new Date());
+  const [pickermode, setPickerMode] = useState("date");
+  const [pickershow, setPickerShow] = useState(false);
 
   // state for places list
   const [places, setPlaces] = useState([]);
@@ -75,9 +76,9 @@ const ItineraryScreen = ({ navigation }) => {
     console.log("getTripStartEndDates called!");
     getDoc(userSurveyDocRef).then((doc) => {
       console.log("Getting trip start and end dates...");
-      setTripStartDate(moment(doc.get("startDate")).format("MM/DD/YYYY"));
-      setTripEndDate(moment(doc.get("endDate")).format("MM/DD/YYYY"));
-      setStartDate(moment(doc.get("startDate")).format("MM/DD/YYYY"));
+      setTripStartDate(moment(doc.get("startDate")));
+      setTripEndDate(moment(doc.get("endDate")));
+      setStartDate(moment(doc.get("startDate")));
 
       // for testing, show uid and start/end dates
       // console.log(uid);
@@ -113,8 +114,7 @@ const ItineraryScreen = ({ navigation }) => {
     console.log("addEventToDatabase called!");
     const data = {
       title: newTitle,
-      time: newTime,
-      date: moment(newDate).format("MM/DD/YYYY"),
+      datetime: pickerdate,
       place: selectedPlace,
       id: Math.random(),
     };
@@ -128,8 +128,6 @@ const ItineraryScreen = ({ navigation }) => {
       });
     // clear inputs after adding an event
     setNewTitle("");
-    setNewDate(undefined);
-    setNewTime(undefined);
   };
 
   const getFromPlacesList = () => {
@@ -143,23 +141,20 @@ const ItineraryScreen = ({ navigation }) => {
   // datetimepicker functions
   const onChange = (pickerevent, pickerSelectedDate) => {
     const currentDate = pickerSelectedDate;
+    setPickerShow(false);
     setPickerDate(currentDate);
   };
 
   const showMode = (currentMode) => {
-    DateTimePicker.open({
-      value: date,
-      onChange,
-      mode: currentMode,
-      is24Hour: false,
-    });
+    setPickerShow(true);
+    setPickerMode(currentMode);
   };
 
-  const showDatepicker = () => {
+  const showDatePicker = () => {
     showMode("date");
   };
 
-  const showTimepicker = () => {
+  const showTimePicker = () => {
     showMode("time");
   };
 
@@ -170,10 +165,11 @@ const ItineraryScreen = ({ navigation }) => {
     //console.log("old selectedDate state: ", selectedDate);
     const formDate = date.format("MM/DD/YYYY");
     setSelectedDate(formDate);
-    getEventsForDay(formDate);
+    getEventsForDay(formDate); // try passing in just date (its a moment)
   };
 
   const getEventsForDay = (formDate) => {
+    // pass in a moment
     console.log("getEventsForDay called!");
     if (events == undefined) {
       alert("No events created at all!"); // user hasn't added any events yet
@@ -293,25 +289,30 @@ const ItineraryScreen = ({ navigation }) => {
                 value={newTitle}
                 placeholder="Enter title..."
               />
-              <TextInput
-                // style={styles.textbox}
-                // onChangeText={setNewDate}
-                // value={newDate}
-                // placeholder="Enter date (MM/DD/YYYY)"
+              {/* <TextInput
                 style={styles.textbox}
                 onChangeText={setNewDate}
-                //value={destinationtext}
-                value={route.params?.destinationparam}
-                placeholder="Enter date..."
-                onFocus={() => showDatepicker()}
-                showSoftInputOnFocus={false}
-              />
-              <TextInput
+                value={newDate}
+                placeholder="Enter date (MM/DD/YYYY)"
+              /> */}
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold" }}
+                onPress={() => showDatePicker()}
+              >
+                {moment(pickerdate).format("MM/DD/YYYY")}
+              </Text>
+              {/* <TextInput
                 style={styles.textbox}
                 onChangeText={setNewTime}
                 value={newTime}
                 placeholder="Enter time (HH:MM:SS AM/PM)"
-              />
+              /> */}
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold" }}
+                onPress={() => showTimePicker()}
+              >
+                {moment(pickerdate).format("hh:mm A")}
+              </Text>
               <View style={{ height: "55%", margin: 10 }}>
                 <Text>Choose a place from your list:</Text>
                 <Text>Selected place: {selectedPlace}</Text>
@@ -337,6 +338,17 @@ const ItineraryScreen = ({ navigation }) => {
                 >
                   <Text>Save</Text>
                 </TouchableOpacity>
+                {pickershow && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={pickerdate}
+                    mode={pickermode}
+                    is24Hour={false}
+                    onChange={onChange}
+                    minimumDate={tripStartDate.toDate()}
+                    maximumDate={tripEndDate.toDate()}
+                  />
+                )}
               </View>
             </View>
           </View>
