@@ -165,20 +165,23 @@ const ItineraryScreen = ({ navigation }) => {
     //console.log("old selectedDate state: ", selectedDate);
     const formDate = date.format("MM/DD/YYYY");
     setSelectedDate(formDate);
-    getEventsForDay(formDate); // try passing in just date (its a moment)
+    getEventsForDay(date);
   };
 
-  const getEventsForDay = (formDate) => {
-    // pass in a moment
+  const getEventsForDay = (date) => {
     console.log("getEventsForDay called!");
+    const formSelectedDate = date.format("MM/DD/YYYY");
     if (events == undefined) {
       alert("No events created at all!"); // user hasn't added any events yet
     } else {
       const eventObjectsForDay = events.filter(
-        (event) => event.date === formDate
+        (event) =>
+          moment(event.datetime.toDate()).format("MM/DD/YYYY") ===
+          formSelectedDate
       );
-      //console.log("selectedDate state: ", selectedDate);
-      //console.log("\nEvent Objects for selected day:\n", eventObjectsForDay);
+      const sortedEventObjectsForDay = eventObjectsForDay.sort((a, b) =>
+        moment(a.datetime).diff(moment(b.datetime))
+      );
       setSelectedEvents(eventObjectsForDay);
     }
   };
@@ -192,8 +195,12 @@ const ItineraryScreen = ({ navigation }) => {
       <View>
         <TouchableOpacity style={styles.eventcontainer}>
           <Text>title: {event.item.title}</Text>
-          <Text>date: {event.item.date}</Text>
-          <Text>time: {event.item.time}</Text>
+          <Text>
+            date: {moment(event.item.datetime.toDate()).format("MM/DD/YYYY")}
+          </Text>
+          <Text>
+            time: {moment(event.item.datetime.toDate()).format("hh:mm A")}
+          </Text>
           <Text>place: {event.item.place}</Text>
         </TouchableOpacity>
       </View>
@@ -256,9 +263,11 @@ const ItineraryScreen = ({ navigation }) => {
 
         <Text style={{ fontSize: 24 }}>Selected Date: {selectedDate}</Text>
 
-        <View>
+        <View style={styles.eventslistcontainer}>
           <FlatList
-            data={selectedEvents}
+            data={selectedEvents.sort((a, b) =>
+              moment(a.datetime.toDate()).diff(moment(b.datetime.toDate()))
+            )}
             renderItem={(item) => <ListItem event={item} />}
           />
         </View>
@@ -360,6 +369,9 @@ const ItineraryScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   maincontainer: {
+    flex: 1,
+  },
+  eventslistcontainer: {
     flex: 1,
   },
   eventcontainer: {
