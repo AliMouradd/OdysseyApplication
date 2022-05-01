@@ -45,45 +45,59 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
 
   const getPlaces = async () => {
     try {
-      const response = await yelp.get("/search",{
+      const response = await yelp.get("/search", {
         params: {
-            limit: 20,
-            location: route.params.text,
-            categories: "arts",
-            sort_by: "review_count"
-        }
-    })
+          limit: 20,
+          location: route.params.text,
+          categories: "arts",
+          sort_by: "review_count",
+        },
+      });
 
       let d = [];
       console.log(response.data.businesses);
       //console.log(response.data.businesses.length);
       let al = [];
-      for (let i = 0; i < response.data.businesses.length ; i++) {
-      d = [
-        ...d,
-        {
-
-          title: response.data.businesses[i].name,
-          address: response.data.businesses[i].location.display_address[0] + "  " + response.data.businesses[i].location.display_address[1],
-          picture: response.data.businesses[i].image_url,
-          alias: response.data.businesses[i].categories[0].title,
-        },
-      ];
-      if (!al.find(element => element == response.data.businesses[i].categories[0].title)){
-        al = [...al, response.data.businesses[i].categories[0].title]
+      for (let i = 0; i < response.data.businesses.length; i++) {
+        d = [
+          ...d,
+          {
+            title: response.data.businesses[i].name,
+            address:
+              response.data.businesses[i].location.display_address[0] +
+              "  " +
+              response.data.businesses[i].location.display_address[1],
+            picture: response.data.businesses[i].image_url,
+            alias: response.data.businesses[i].categories[0].title,
+          },
+        ];
+        if (
+          !al.find(
+            (element) =>
+              element == response.data.businesses[i].categories[0].title
+          )
+        ) {
+          al = [...al, response.data.businesses[i].categories[0].title];
+        }
+        //aliasList = [...aliasList, response.data.businesses[i].categories[0].title]
       }
-      //aliasList = [...aliasList, response.data.businesses[i].categories[0].title]
-    }
       setPlaces(d);
       setAliasList(al);
       //prints alias
-      
     } catch (err) {
       // console.err(err.message);
     }
   };
   return (
     <ScrollView>
+      <Text
+        style={{ marginTop: 70, padding: 10, fontSize: 20, fontWeight: "700" }}
+      >
+        Selection
+      </Text>
+      <Text style={{ paddingLeft: 10, paddingBottom: 5 }}>
+        Check the places you want to visit!
+      </Text>
       {places.map((place) => (
         <View>
           <NearbyPlaceComponentDemo
@@ -97,7 +111,10 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
       <TouchableOpacity
         style={styles.btn}
         onPress={() =>
-          navigation.navigate("PlacesListScreen", { places: finalPlaces, aliasList: aliasList})
+          navigation.navigate("PlacesListScreen", {
+            places: finalPlaces,
+            aliasList: aliasList,
+          })
         }
       >
         <Text>Submit</Text>

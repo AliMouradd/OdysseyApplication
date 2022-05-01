@@ -35,7 +35,6 @@ const PlacesScreen = ({ navigation, route }) => {
   const auth = getAuth();
   const user = auth.currentUser;
   const uid = user.uid;
-  const docRef = doc(db, "PublicSchedules", uid);
 
   const toggleNameInputModalVisible = () => {
     setNameInputModalVisible(!nameInputModalVisible);
@@ -89,11 +88,13 @@ const PlacesScreen = ({ navigation, route }) => {
   };
 
   const shareSchedule = async () => {
+    const docRef = doc(db, "PublicSchedules", uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const newSchedulesList = [
         ...docSnap.data().schedules,
         {
+          creator: uid,
           scheduleName: scheduleName,
           description: description,
           places: places,
@@ -104,6 +105,7 @@ const PlacesScreen = ({ navigation, route }) => {
       await setDoc(doc(db, "PublicSchedules", auth.currentUser.uid), {
         schedules: [
           {
+            creator: uid,
             scheduleName: scheduleName,
             description: description,
             places: places,
@@ -115,12 +117,46 @@ const PlacesScreen = ({ navigation, route }) => {
     alert("Schedule Uploaded.");
   };
 
+  const copySchedule = async () => {
+    const docRefTwo = doc(db, "UserSchedules", uid);
+    const docSnapTwo = await getDoc(docRefTwo);
+
+    let newPlaces = [...places];
+    for (let i = 0; i < newPlaces.length; i++) {
+      newPlaces[i] = {
+        ...newPlaces[i],
+        number: i + 1,
+      };
+    }
+
+    const newSchedulesList = [
+      ...docSnapTwo.data().schedules,
+      {
+        scheduleName: scheduleName,
+        description: description,
+        places: newPlaces,
+      },
+    ];
+
+    updateDoc(docRefTwo, { schedules: newSchedulesList }, { merge: true });
+  };
+
+  const likeSchedule = async () => {
+    console.log(route.params.schedule.creator);
+    const docRefThree = doc(db, "users", route.params.schedule.creator);
+    const docSnapThree = await getDoc(docRefThree);
+    if (docSnapThree.exists()) {
+      let newLikes = docSnapThree.data().likes + 1;
+      updateDoc(docRefThree, { likes: newLikes }, { merge: true });
+    }
+  };
+
   return (
     <ScrollView>
       <View style={styles.background}>
         <ImageBackground
           style={{ flex: 1 }}
-          source={require("../assets/maarten-van-den-heuvel-gZXx8lKAb7Y-unsplash.jpg")}
+          source={{ uri: places[0].picture }}
         >
           <View style={styles.btns}>
             <TouchableOpacity onPress={() => shareSchedule()}>
@@ -227,6 +263,24 @@ const PlacesScreen = ({ navigation, route }) => {
         filterModalVisible={filterModalVisible}
         filterPlaces={(text) => filterPlaces(text)}
       />
+      {route.params.owned && (
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              copySchedule();
+            }}
+          >
+            <Text>Copy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              likeSchedule();
+            }}
+          >
+            <Text>Like</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </ScrollView>
   );
 };
