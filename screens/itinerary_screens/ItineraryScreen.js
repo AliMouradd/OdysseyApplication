@@ -8,7 +8,6 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
-  Button,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -28,7 +27,7 @@ import moment from "moment";
 import { set } from "react-native-reanimated";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const ItineraryScreen = ({ navigation }) => {
+const UserItineraryScreen = ({ navigation }) => {
   // states used by the itinerary
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [formattedDate, setFormattedDate] = useState();
@@ -193,7 +192,16 @@ const ItineraryScreen = ({ navigation }) => {
 
     return (
       <View>
-        <TouchableOpacity style={styles.eventcontainer}>
+        <TouchableOpacity
+          style={styles.eventcontainer}
+          onPress={() =>
+            navigation.navigate("Itinerary Event View", {
+              title: event.item.title,
+              datetime: event.item.datetime,
+              place: event.item.place,
+            })
+          }
+        >
           <Text>title: {event.item.title}</Text>
           <Text>
             date: {moment(event.item.datetime.toDate()).format("MM/DD/YYYY")}
@@ -467,4 +475,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ItineraryScreen;
+export default UserItineraryScreen;
