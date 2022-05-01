@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, SafeAreaView, View, Text, Image } from "react-native";
 import { app } from "../Config";
-import { getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
-import ScheduleComponent from "../components/ScheduleComponent";
+import ProfileScheduleComponent from "../components/ProfileScheduleComponent";
 
 const db = getFirestore(app);
 
 const ProfileScreen = ({ navigation, route }) => {
   const [name, setName] = useState("");
+  const [likes, setLikes] = useState(0);
   const [schedules, setSchedules] = useState([]);
-
-  const auth = getAuth();
-  const user = auth.currentUser;
-  const uid = user.uid;
 
   useEffect(async () => {
     if (route.params.id === 0) {
@@ -23,6 +19,7 @@ const ProfileScreen = ({ navigation, route }) => {
       const info = await getDoc(infoRef);
       if (info.exists()) {
         setName(info.data().name);
+        setLikes(info.data().likes);
       } else {
         alert("Something went wrong!");
       }
@@ -49,7 +46,7 @@ const ProfileScreen = ({ navigation, route }) => {
         </Text>
         <View style={styles.information}>
           <View style={styles.info}>
-            <Text style={{ textAlign: "center" }}>0</Text>
+            <Text style={{ textAlign: "center" }}>{likes}</Text>
             <Text style={{ textAlign: "center" }}>Likes</Text>
           </View>
           <View style={styles.info}>
@@ -72,7 +69,7 @@ const ProfileScreen = ({ navigation, route }) => {
           }}
         >
           {schedules.map((schedule) => (
-            <ScheduleComponent
+            <ProfileScheduleComponent
               navigation={navigation}
               key={schedule.number}
               schedule={schedule}

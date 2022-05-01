@@ -30,8 +30,11 @@ const WelcomeScreen = ({ navigation }) => {
       <Text style={styles.h1}>Odyssey</Text>
       <CarouselComponent />
       <View style={styles.buttons}>
-        <TouchableOpacity style={[styles.btn, styles.btnBigger]}>
-          <Text onPress={() => navigation.navigate("Log In")}>Log In</Text>
+        <TouchableOpacity
+          style={[styles.btn, styles.btnBigger]}
+          onPress={() => navigation.navigate("Log In")}
+        >
+          <Text>Log In</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn}

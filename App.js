@@ -16,6 +16,7 @@ import LookUpScreen from "./screens/LookUpScreen";
 import PlacesListScreen from "./screens/PlacesListScreen";
 import PlacesScreen from "./screens/PlacesScreen";
 import NearbyPlaceDemo from "./screens/NearbyPlaceDemo";
+import SchedulesScreen from "./screens/SchedulesScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +29,7 @@ export default function App() {
       >
         <Stack.Screen name="Sign Up" component={SignUpScreen} />
         <Stack.Screen name="Home" component={HomepageScreen} />
-        <Stack.Screen name="Itinerary" component={ItineraryScreen} />
+        <Stack.Screen name="Itinerary" component={SchedulesScreen} />
         <Stack.Screen name="Goal Screen" component={GoalScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
