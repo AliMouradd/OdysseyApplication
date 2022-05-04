@@ -88,19 +88,19 @@ const BudgetPlannerV2 = ()=>{
             {/*The view that holds the expense */}
             <View style = {{flex: 1,flexDirection:"row"}}>
                 {/*The text for the expense and cost*/}
-                <Text style = {{fontWeight: "bold", fontSize: 15, color: "#000",}}>
+                <Text style = {{fontWeight: "bold", flex:0.4, fontSize: 12, color: "#000",}}>
                     {
                     expense.Expenses
                     
                     }
                     
                 </Text>
-                <Text style = {{fontWeight: "bold", fontSize: 15, color: "#000", paddingHorizontal:20}}>
+                <Text style = {{fontWeight: "bold", flex:0.2, fontSize: 12, color: "#000", paddingHorizontal:20}}>
                     {
                     "$" + expense.Costs
                     }
                 </Text>
-                <Text style = {{fontWeight: "bold", fontSize: 15, color: "#000", paddingHorizontal:20}}>
+                <Text style = {{fontWeight: "bold", flex: 0.4, fontSize: 12, color: "#000", paddingHorizontal:20}}>
                     {
                         //getMonthName(convertSecToDate(expense.Dates.seconds).getDay()) + " " + convertSecToDate(expense.Dates.seconds).getDate()  + ", " + convertSecToDate(expense.Dates.seconds).getFullYear()
                         //expense.Dates
@@ -110,6 +110,7 @@ const BudgetPlannerV2 = ()=>{
                     }
                 </Text>
             </View>
+
 
             {/*Done and Delete buttons*/}
             <TouchableOpacity style = {[styles.actionIcon]} onPress={()=>{deleteExpense(expense?.id)}}>
