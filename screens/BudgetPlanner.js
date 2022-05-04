@@ -67,20 +67,6 @@ const BudgetPlannerV2 = ()=>{
         createDoc()
       }, [])
 
-      const convertSecToDate = (sec) => {
-        console.log (sec)
-        //var t = new Date(1970, 0, 1) // Epoch
-        //t.setSeconds(sec)
-        //console.log(t)
-        //return t2;
-      }
-
-      const getMonthName = (num) => {
-        var monthNames = ["January", "February", "March", "April", "May","June","July", "August", "September", "October", "November","December"];
-        return monthNames[num + 1]
-      }
-
-
     const ListItem = ({expense}) => {
         console.log(expense)
         return (
@@ -102,11 +88,7 @@ const BudgetPlannerV2 = ()=>{
                 </Text>
                 <Text style = {{fontWeight: "bold", flex: 0.4, fontSize: 12, color: "#000", paddingHorizontal:20}}>
                     {
-                        //getMonthName(convertSecToDate(expense.Dates.seconds).getDay()) + " " + convertSecToDate(expense.Dates.seconds).getDate()  + ", " + convertSecToDate(expense.Dates.seconds).getFullYear()
-                        //expense.Dates
-                        //convertSecToDate(expense.Dates)
-                        expense.Dates
-                        
+                        expense.Dates                       
                     }
                 </Text>
             </View>
