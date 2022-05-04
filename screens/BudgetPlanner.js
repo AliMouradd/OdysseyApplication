@@ -210,7 +210,7 @@ const BudgetPlannerV2 = ()=>{
                 <View style = {styles.inputContainer}>
                     <TextInput
                         value={textInput}
-                        placeholder = "Write an Expense"
+                        placeholder = "Add Expense"
                         onChangeText={text => setTextInput(text)}
                     />
                 </View>
@@ -218,7 +218,7 @@ const BudgetPlannerV2 = ()=>{
                 <View style = {styles.inputContainer}>
                     <TextInput
                         value={costInput}
-                        placeholder = "Cost"
+                        placeholder = "Add Cost"
                         onChangeText={text => setCostInput(text)}
                     />
                 </View>
