@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from 'moment'; 
 import {
   collection,
   doc,
@@ -66,6 +67,19 @@ const BudgetPlannerV2 = ()=>{
         createDoc()
       }, [])
 
+      const convertSecToDate = (sec) => {
+        console.log (sec)
+        //var t = new Date(1970, 0, 1) // Epoch
+        //t.setSeconds(sec)
+        //console.log(t)
+        //return t2;
+      }
+
+      const getMonthName = (num) => {
+        var monthNames = ["January", "February", "March", "April", "May","June","July", "August", "September", "October", "November","December"];
+        return monthNames[num + 1]
+      }
+
 
     const ListItem = ({expense}) => {
         console.log(expense)
@@ -83,12 +97,16 @@ const BudgetPlannerV2 = ()=>{
                 </Text>
                 <Text style = {{fontWeight: "bold", fontSize: 15, color: "#000", paddingHorizontal:20}}>
                     {
-                    expense.Costs
+                    "$" + expense.Costs
                     }
                 </Text>
-                <Text style = {{fontWeight: "bold", fontSize: 10, color: "#000", paddingHorizontal:20}}>
+                <Text style = {{fontWeight: "bold", fontSize: 15, color: "#000", paddingHorizontal:20}}>
                     {
-                        JSON.stringify(expense.Dates)
+                        //getMonthName(convertSecToDate(expense.Dates.seconds).getDay()) + " " + convertSecToDate(expense.Dates.seconds).getDate()  + ", " + convertSecToDate(expense.Dates.seconds).getFullYear()
+                        //expense.Dates
+                        //convertSecToDate(expense.Dates)
+                        expense.Dates
+                        
                     }
                 </Text>
             </View>
@@ -140,7 +158,8 @@ const BudgetPlannerV2 = ()=>{
                 id:Math.random(),
                 Expenses: textInput,
                 Costs: costInput,
-                Dates: new Date()
+                //Dates: new Date().toLocaleString()
+                Dates: moment().format("DD/MM/YYYY")
                 
             };
             console.log(newExpenses.Dates),
@@ -248,6 +267,7 @@ const styles = StyleSheet.create({
         elevation: 12,
         borderRadius: 7,
         marginVertical: 10,
+        justifyContent: 'space-evenly'
     },
     header:{
         padding: 10,
