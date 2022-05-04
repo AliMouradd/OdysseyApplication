@@ -17,6 +17,7 @@ import LookUpScreen from "./screens/LookUpScreen";
 import PlacesListScreen from "./screens/PlacesListScreen";
 import PlacesScreen from "./screens/PlacesScreen";
 import NearbyPlaceDemo from "./screens/NearbyPlaceDemo";
+import BudgetPlanner from "./screens/BudgetPlanner";
 import { LogBox } from "react-native"
 
 LogBox.ignoreAllLogs(true);
@@ -37,6 +38,7 @@ export default function App() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Log In" component={LoginScreen} />
         <Stack.Screen name="Add Places" component={LookUpScreen} />
+        <Stack.Screen name="Budget Planner" component={BudgetPlanner} />
         <Stack.Screen
           name="Travel Questionnaire"
           component={QuestionnaireStartScreen}

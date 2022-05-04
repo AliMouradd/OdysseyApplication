@@ -78,6 +78,12 @@ const HomepageScreen = ({ navigation, route }) => {
         >
           <Text>Routes</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Budget Planner")}
+        >
+          <Text>Budget Planner</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
