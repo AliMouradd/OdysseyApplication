@@ -24,8 +24,8 @@ import {
 import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
 import moment from "moment";
-import { set } from "react-native-reanimated";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useIsFocused } from "@react-navigation/native";
 
 const UserItineraryScreen = ({ navigation }) => {
   // states used by the itinerary
@@ -61,14 +61,16 @@ const UserItineraryScreen = ({ navigation }) => {
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
   const placesListDocRef = doc(db, "UserSchedules", "123");
 
-  // get all user's events from database (might run after each rerender?)
-  // maybe get all data from a previous screen and pass it into this screen to avoid rendering issue
+  // check if screen is focused
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
     createSchedDoc(); // create user's doc if not already created
     getEventsFromDatabase(); // get events from database (from user's doc)
     getFromPlacesList();
-  }, []);
+    getEventsForDay(moment(selectedDate, "MM/DD/YYYY"));
+  }, [isFocused]);
 
   // function to get vacation start and end dates (to pass to calendar strip)
   const getTripStartEndDates = () => {
@@ -196,9 +198,11 @@ const UserItineraryScreen = ({ navigation }) => {
           style={styles.eventcontainer}
           onPress={() =>
             navigation.navigate("Itinerary Event View", {
+              userevents: events,
               title: event.item.title,
               datetime: event.item.datetime,
               place: event.item.place,
+              id: event.item.id,
             })
           }
         >
