@@ -122,7 +122,9 @@ const HomepageScreen = ({ navigation, route }) => {
           />
           <Text style={styles.p}>Questionnaire</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity style={styles.btn}
+        onPress={() => navigation.navigate("Budget Planner")}
+        >
           <Image
             style={{ height: 55, width: 55, borderRadius: 15, marginBottom: 5 }}
             source={require("../assets/undraw_Receipt_re_fre3.png")}
@@ -152,12 +154,7 @@ const HomepageScreen = ({ navigation, route }) => {
           />
           <Text style={styles.p}>Routes</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => navigation.navigate("Budget Planner")}
-        >
-          <Text>Budget Planner</Text>
-        </TouchableOpacity>
+        
       </View>
     </SafeAreaView>
   );
