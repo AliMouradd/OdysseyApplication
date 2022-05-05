@@ -37,7 +37,9 @@ const UserItineraryScreen = ({ navigation }) => {
   const [events, setEvents] = useState([]); // array of event objects for all dates (should include date, time, and description)
   const [selectedEvents, setSelectedEvents] = useState([]); // array of event objects for selected date
   const [markedDates, setMarkedDates] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [eventModalVisible, setEventModalVisible] = useState(false);
+  const [selectedEventModal, setSelectedEventModal] = useState({});
 
   // states for adding new events
   const [newTitle, setNewTitle] = useState("");
@@ -139,6 +141,23 @@ const UserItineraryScreen = ({ navigation }) => {
     //console.log(places);
   };
 
+  const deleteEvent = () => {
+    console.log("deleteEvent called!");
+    const newEvents = events.filter(
+      (item) => item.id != selectedEventModal.item?.id
+    );
+    setEvents(newEvents);
+    console.log(selectedEventModal.item?.datetime);
+    getEventsForDay(moment(selectedEventModal.item?.datetime));
+    updateDoc(userSchedDocRef, { events: newEvents }, { merge: true })
+      .then(() => {
+        ToastAndroid.show("Event deleted", ToastAndroid.SHORT);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   // datetimepicker functions
   const onChange = (pickerevent, pickerSelectedDate) => {
     const currentDate = pickerSelectedDate;
@@ -197,13 +216,14 @@ const UserItineraryScreen = ({ navigation }) => {
         <TouchableOpacity
           style={styles.eventcontainer}
           onPress={() =>
-            navigation.navigate("Itinerary Event View", {
-              userevents: events,
-              title: event.item.title,
-              datetime: event.item.datetime,
-              place: event.item.place,
-              id: event.item.id,
-            })
+            // navigation.navigate("Itinerary Event View", {
+            //   userevents: events,
+            //   title: event.item.title,
+            //   datetime: event.item.datetime,
+            //   place: event.item.place,
+            //   id: event.item.id,
+            // })
+            [setEventModalVisible(true), setSelectedEventModal(event)]
           }
         >
           <Text>title: {event.item.title}</Text>
@@ -286,17 +306,17 @@ const UserItineraryScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.addeventbutton}
-          onPress={() => [setModalVisible(true), setSelectedPlace("")]}
+          onPress={() => [setAddModalVisible(true), setSelectedPlace("")]}
         >
           <Icon name="add" size={33} color="black" />
         </TouchableOpacity>
-
+        {/* Add Event Modal: */}
         <Modal
           animationType="fade"
           transparent={true}
-          visible={modalVisible}
+          visible={addModalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setAddModalVisible(!addModalVisible);
           }}
         >
           <View style={styles.centeredView}>
@@ -310,24 +330,12 @@ const UserItineraryScreen = ({ navigation }) => {
                 value={newTitle}
                 placeholder="Enter title..."
               />
-              {/* <TextInput
-                style={styles.textbox}
-                onChangeText={setNewDate}
-                value={newDate}
-                placeholder="Enter date (MM/DD/YYYY)"
-              /> */}
               <Text
                 style={{ fontSize: 17, fontWeight: "bold" }}
                 onPress={() => showDatePicker()}
               >
                 {moment(pickerdate).format("MM/DD/YYYY")}
               </Text>
-              {/* <TextInput
-                style={styles.textbox}
-                onChangeText={setNewTime}
-                value={newTime}
-                placeholder="Enter time (HH:MM:SS AM/PM)"
-              /> */}
               <Text
                 style={{ fontSize: 17, fontWeight: "bold" }}
                 onPress={() => showTimePicker()}
@@ -345,7 +353,7 @@ const UserItineraryScreen = ({ navigation }) => {
               <View style={styles.modalbuttonsview}>
                 <TouchableOpacity
                   style={styles.modalbutton}
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => setAddModalVisible(false)}
                 >
                   <Text>Cancel</Text>
                 </TouchableOpacity>
@@ -354,7 +362,7 @@ const UserItineraryScreen = ({ navigation }) => {
                   onPress={() => [
                     addEventToDatabase(),
                     getEventsFromDatabase(),
-                    setModalVisible(false),
+                    setAddModalVisible(false),
                   ]}
                 >
                   <Text>Save</Text>
@@ -370,6 +378,43 @@ const UserItineraryScreen = ({ navigation }) => {
                     maximumDate={tripEndDate.toDate()}
                   />
                 )}
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* Event View Modal: */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={eventModalVisible}
+          onRequestClose={() => {
+            setEventModalVisible(!eventModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text>{selectedEventModal.item?.title}</Text>
+              <Text>{selectedEventModal.item?.datetime.toString()}</Text>
+              <Text>{selectedEventModal.item?.place}</Text>
+              <View style={styles.modalbuttonsview}>
+                <TouchableOpacity
+                  style={styles.modalbutton}
+                  onPress={() => [setEventModalVisible(false)]}
+                >
+                  <Text>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalbutton}
+                  onPress={() => [setEventModalVisible(false), deleteEvent()]}
+                >
+                  <Text>Delete Event</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalbutton}
+                  onPress={() => [setEventModalVisible(false)]}
+                >
+                  <Text>Edit Event</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
