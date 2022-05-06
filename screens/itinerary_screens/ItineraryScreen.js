@@ -39,16 +39,19 @@ const UserItineraryScreen = ({ navigation }) => {
   const [markedDates, setMarkedDates] = useState([]);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
-  const [selectedEventModal, setSelectedEventModal] = useState({});
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [selectedEventModal, setSelectedEventModal] = useState({}); // hold event object of selected event
 
   // states for adding new events
   const [newTitle, setNewTitle] = useState("");
-  const [newDate, setNewDate] = useState("");
-  const [newTime, setNewTime] = useState("");
   const [selectedPlace, setSelectedPlace] = useState("");
   const [pickerdate, setPickerDate] = useState(new Date());
   const [pickermode, setPickerMode] = useState("date");
   const [pickershow, setPickerShow] = useState(false);
+
+  // states for editing events
+  const [editTitle, setEditTitle] = useState(selectedEventModal.item?.title);
+  const [editpickerdate, seteditpickerdate] = useState(new Date());
 
   // state for places list
   const [places, setPlaces] = useState([]);
@@ -147,7 +150,6 @@ const UserItineraryScreen = ({ navigation }) => {
       (item) => item.id != selectedEventModal.item?.id
     );
     setEvents(newEvents);
-    console.log(selectedEventModal.item?.datetime);
     getEventsForDay(moment(selectedEventModal.item?.datetime));
     updateDoc(userSchedDocRef, { events: newEvents }, { merge: true })
       .then(() => {
@@ -156,6 +158,10 @@ const UserItineraryScreen = ({ navigation }) => {
       .catch((error) => {
         alert(error.message);
       });
+  };
+
+  const editEvent = () => {
+    console.log("editEvent called!");
   };
 
   // datetimepicker functions
@@ -310,6 +316,7 @@ const UserItineraryScreen = ({ navigation }) => {
         >
           <Icon name="add" size={33} color="black" />
         </TouchableOpacity>
+
         {/* Add Event Modal: */}
         <Modal
           animationType="fade"
@@ -382,6 +389,7 @@ const UserItineraryScreen = ({ navigation }) => {
             </View>
           </View>
         </Modal>
+
         {/* Event View Modal: */}
         <Modal
           animationType="fade"
@@ -411,10 +419,96 @@ const UserItineraryScreen = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.modalbutton}
-                  onPress={() => [setEventModalVisible(false)]}
+                  onPress={() => [
+                    setEventModalVisible(false),
+                    setEditModalVisible(true),
+                  ]}
                 >
                   <Text>Edit Event</Text>
                 </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Edit Event Modal: */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={editModalVisible}
+          onRequestClose={() => {
+            setAddModalVisible(!editModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={{ fontSize: 19, fontWeight: "bold" }}>
+                Edit event details:
+              </Text>
+              <TextInput
+                style={styles.textbox}
+                onChangeText={setEditTitle}
+                value={editTitle}
+                defaultValue={selectedEventModal.item?.title}
+                placeholder="Enter title..."
+              />
+              <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+                Old date and time:{"\n"}
+                {moment(selectedEventModal.item?.datetime.toDate()).format(
+                  "MM/DD/YYYY, hh:mm A"
+                )}
+              </Text>
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold" }}
+                onPress={() => showDatePicker()}
+              >
+                New date: {moment(pickerdate).format("MM/DD/YYYY")}
+              </Text>
+              <Text
+                style={{ fontSize: 17, fontWeight: "bold" }}
+                onPress={() => showTimePicker()}
+              >
+                {moment(pickerdate).format("hh:mm A")}
+              </Text>
+              <View style={{ height: "55%", margin: 10 }}>
+                <Text>Choose a place from your list:</Text>
+                <Text>Selected place: {selectedPlace}</Text>
+                <FlatList
+                  data={places}
+                  renderItem={(item) => <PlacesListItem place={item} />}
+                />
+              </View>
+              <View style={styles.modalbuttonsview}>
+                <TouchableOpacity
+                  style={styles.modalbutton}
+                  onPress={() => [
+                    setEditModalVisible(false),
+                    console.log(selectedEventModal.item?.datetime),
+                  ]}
+                >
+                  <Text>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalbutton}
+                  onPress={() => [
+                    addEventToDatabase(),
+                    getEventsFromDatabase(),
+                    setAddModalVisible(false),
+                  ]}
+                >
+                  <Text>Save</Text>
+                </TouchableOpacity>
+                {pickershow && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={pickerdate}
+                    mode={pickermode}
+                    is24Hour={false}
+                    onChange={onChange}
+                    minimumDate={tripStartDate.toDate()}
+                    maximumDate={tripEndDate.toDate()}
+                  />
+                )}
               </View>
             </View>
           </View>
