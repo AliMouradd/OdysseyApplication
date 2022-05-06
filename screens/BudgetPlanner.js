@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from 'moment'; 
+import moment from 'moment';
 import {
   collection,
   doc,
@@ -55,11 +55,9 @@ const BudgetPlannerV2 = ()=>{
     const getNumOfDays = () => {
         getDoc(docBudgetRef)
         .then((doc) => {  
-            setstartDate (moment(doc.get("startDate"),'MM-DD-YYYY'));
-            setendDate(moment(doc.get("endDate"),'MM-DD-YYYY'));
-            let num = endDate.diff(startDate, 'days')
-            setnumOfDays(num)
-            return num
+            var num = moment(doc.get("endDate"),'MM-DD-YYYY').diff(moment(doc.get("startDate"),'MM-DD-YYYY'),'days');
+            setnumOfDays(num);
+            return num;
         }
         )
     };
@@ -188,7 +186,7 @@ const BudgetPlannerV2 = ()=>{
                 id:Math.random(),
                 Expenses: textInput,
                 Costs: costInput,
-                Dates: moment().format("DD/MM/YYYY")
+                Dates: moment().format("MM/DD/YYYY")
             };
 
             calculateTotal(costInput);
