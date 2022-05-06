@@ -15,17 +15,17 @@ const CarouselComponent = () => {
     {
       picture: FirstImg,
       title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+        "Plan your vacation!",
     },
     {
       picture: SecondImg,
       title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+        "Get your routes!",
     },
     {
       picture: ThirdImg,
       title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+        "Set your goals and budget!",
     },
   ];
 

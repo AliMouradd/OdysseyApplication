@@ -23,14 +23,18 @@ import { TextPath } from 'react-native-svg';
 const BudgetPlannerV2 = ()=>{
     const [textInput, setTextInput]  = React.useState('');
     const [costInput, setCostInput] = React.useState('');
-    const [dateInput, setDateInput] = React.useState('');
     const [Costs, setCosts] = React.useState([]);
     const [Expenses,setExpenses] = React.useState([]);
     const [Dates, setDates] = React.useState([]);
     const [toggleSubmit, setToggleSubmit] = useState(true);
     const [isEditItem, setIsEditItem] = useState(null);
     const [userDoc, setUserDoc] = useState(null);
+    const [Budget, setBudget] = React.useState([]);
     const [text, setText] = useState("");
+    const [total,setTotal] = useState("");
+    const [startDate,setstartDate] = useState("");
+    const [endDate,setendDate] = useState("");
+    const [numOfDays,setnumOfDays] = useState("");
 
     const auth = getAuth();
     const user = auth.currentUser;
@@ -39,6 +43,38 @@ const BudgetPlannerV2 = ()=>{
     const myDoc = doc(db, "BudgetPlanner", uid);
     const docRef = doc(db, "BudgetPlanner", uid);
     const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
+
+    const getBudget = () => {
+        getDoc(docBudgetRef)
+        .then((doc) => {  
+            setBudget(doc.get("budget"));
+            }
+        )
+    };
+
+    const getNumOfDays = () => {
+        getDoc(docBudgetRef)
+        .then((doc) => {  
+            setstartDate (moment(doc.get("startDate"),'MM-DD-YYYY'));
+            setendDate(moment(doc.get("endDate"),'MM-DD-YYYY'));
+            let num = endDate.diff(startDate, 'days')
+            setnumOfDays(num)
+            return num
+        }
+        )
+    };
+
+    const calculateTotal = () => {
+        let total = 0
+        for (let i = 0; i < Expenses.length; i++) {
+            console.log(Expenses[i].Costs)
+            total  =  parseInt(total) + parseInt(Expenses[i].Costs)
+          };
+        //total = parseInt(total) + parseInt(costInput)
+        setTotal(total);
+        console.log("TOTAL: ")
+        console.log(total)
+     }
 
     const addPreviousExpenses = () => {
         getDoc(docRef)
@@ -67,8 +103,19 @@ const BudgetPlannerV2 = ()=>{
         createDoc()
       }, [])
 
+
+      React.useEffect(() => {
+        getBudget()
+      }, [])
+
+      React.useEffect(() => {
+        getNumOfDays()
+      }, [])
+
     const ListItem = ({expense}) => {
-        console.log(expense)
+        //console.log(expense)
+        // console.log("BUDGET: ")
+        // console.log(Budget)
         return (
         <View style = {styles.listItem}>
             {/*The view that holds the expense */}
@@ -77,7 +124,6 @@ const BudgetPlannerV2 = ()=>{
                 <Text style = {{fontWeight: "bold", flex:0.4, fontSize: 12, color: "#000",}}>
                     {
                     expense.Expenses
-                    
                     }
                     
                 </Text>
@@ -126,6 +172,7 @@ const BudgetPlannerV2 = ()=>{
                     return expense;
                 })
             );
+            calculateTotal(costInput);
             set
             setToggleSubmit(true);
             setTextInput('');
@@ -133,20 +180,18 @@ const BudgetPlannerV2 = ()=>{
             setIsEditItem(null);
            
         }
-        //adding brand new expense
 
+        //adding brand new expense
         if (toggleSubmit){
             
             const newExpenses = {
                 id:Math.random(),
                 Expenses: textInput,
                 Costs: costInput,
-                //Dates: new Date().toLocaleString()
                 Dates: moment().format("DD/MM/YYYY")
-                
             };
-            console.log(newExpenses.Dates),
 
+            calculateTotal(costInput);
             setExpenses([...Expenses,newExpenses]);
             setTextInput('');
             setCostInput('');
@@ -167,9 +212,9 @@ const BudgetPlannerV2 = ()=>{
 
 
     const deleteExpense = (expenseId) => {
-        //filters out selected expense and removes it
         const newExpenses = Expenses.filter(expense => expense.id != expenseId);
         setExpenses(newExpenses);
+        calculateTotal();
         updateDoc(docRef, {Expenses: newExpenses}, {merge:true});
     }
 
@@ -185,17 +230,23 @@ const BudgetPlannerV2 = ()=>{
         setExpenses(Expenses);
         updateDoc(docRef, {Expenses:Expenses}, {merge:true});
     };
-    const totalCost = ({expense}) => {
-        totalExpenseCost += expense.Costs;
-        return totalExpenseCost;
-
-    }
 
     return( 
     <SafeAreaView
         style= {{flex: 1, backgroundColor: "#fff",}}>
             <View style = {styles.header}>
                 <Text style={styles.sectionTitle}>Budget Planner</Text>
+            </View>
+            <View>
+                <Text style={styles.budgetTitle}>Your Max budget: ${Budget}</Text>
+            </View>
+            <View>
+                <Text style={styles.budgetTitle}>Total Spent: ${total}</Text>
+            </View>
+
+            {/* should display  total/numOfDays */}
+            <View>
+                <Text style={styles.budgetTitle}>Estimate Cost per Day: ${Budget/numOfDays}</Text>
             </View>
 
             <FlatList
@@ -263,6 +314,11 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         alignSelf: "center",
+    },
+    budgetTitle:{
+        fontSize: 15,
+        marginLeft: 20,
+        
     },
 
     footer:{
