@@ -28,7 +28,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-const GoalScreen = () => {
+const GoalScreen = ({ navigation }) => {
   const [textInput, setTextInput] = React.useState("");
   const [todos, setTodos] = React.useState([]);
   const [toggleSubmit, setToggleSubmit] = useState(true);
@@ -182,6 +182,12 @@ const GoalScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <TouchableOpacity
+        style={{ marginTop: 25, marginLeft: 15 }}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="arrow-back" size={30} color="black" />
+      </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.sectionTitle}> To-Do List</Text>
       </View>

@@ -1,12 +1,23 @@
-
-import React, {useState} from 'react';
-import { Platform, StyleSheet,Text,View,TextInput, KeyboardAvoidingView, Keyboard, TouchableOpacity, ScrollView, FlatList, Alert} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import React, { useState } from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from 'moment'; 
+import moment from "moment";
 import {
   collection,
   doc,
@@ -17,347 +28,369 @@ import {
   Firestore,
   getDoc,
 } from "firebase/firestore";
-import { TextPath } from 'react-native-svg';
+import { TextPath } from "react-native-svg";
 
+const BudgetPlannerV2 = ({ navigation }) => {
+  const [textInput, setTextInput] = React.useState("");
+  const [costInput, setCostInput] = React.useState("");
+  const [Costs, setCosts] = React.useState([]);
+  const [Expenses, setExpenses] = React.useState([]);
+  const [Dates, setDates] = React.useState([]);
+  const [toggleSubmit, setToggleSubmit] = useState(true);
+  const [isEditItem, setIsEditItem] = useState(null);
+  const [userDoc, setUserDoc] = useState(null);
+  const [Budget, setBudget] = React.useState([]);
+  const [text, setText] = useState("");
+  const [total, setTotal] = useState("");
+  const [startDate, setstartDate] = useState("");
+  const [endDate, setendDate] = useState("");
+  const [numOfDays, setnumOfDays] = useState("");
 
-const BudgetPlannerV2 = ()=>{
-    const [textInput, setTextInput]  = React.useState('');
-    const [costInput, setCostInput] = React.useState('');
-    const [Costs, setCosts] = React.useState([]);
-    const [Expenses,setExpenses] = React.useState([]);
-    const [Dates, setDates] = React.useState([]);
-    const [toggleSubmit, setToggleSubmit] = useState(true);
-    const [isEditItem, setIsEditItem] = useState(null);
-    const [userDoc, setUserDoc] = useState(null);
-    const [Budget, setBudget] = React.useState([]);
-    const [text, setText] = useState("");
-    const [total,setTotal] = useState("");
-    const [startDate,setstartDate] = useState("");
-    const [endDate,setendDate] = useState("");
-    const [numOfDays,setnumOfDays] = useState("");
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
 
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const uid = user.uid;
+  const myDoc = doc(db, "BudgetPlanner", uid);
+  const docRef = doc(db, "BudgetPlanner", uid);
+  const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
 
-    const myDoc = doc(db, "BudgetPlanner", uid);
-    const docRef = doc(db, "BudgetPlanner", uid);
-    const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
+  const getBudget = () => {
+    getDoc(docBudgetRef).then((doc) => {
+      setBudget(doc.get("budget"));
+    });
+  };
 
-    const getBudget = () => {
-        getDoc(docBudgetRef)
-        .then((doc) => {  
-            setBudget(doc.get("budget"));
-            }
-        )
-    };
+  const getNumOfDays = () => {
+    getDoc(docBudgetRef).then((doc) => {
+      setstartDate(moment(doc.get("startDate"), "MM-DD-YYYY"));
+      setendDate(moment(doc.get("endDate"), "MM-DD-YYYY"));
+      let num = endDate.diff(startDate, "days");
+      setnumOfDays(num);
+      return num;
+    });
+  };
 
-    const getNumOfDays = () => {
-        getDoc(docBudgetRef)
-        .then((doc) => {  
-            setstartDate (moment(doc.get("startDate"),'MM-DD-YYYY'));
-            setendDate(moment(doc.get("endDate"),'MM-DD-YYYY'));
-            let num = endDate.diff(startDate, 'days')
-            setnumOfDays(num)
-            return num
-        }
-        )
-    };
+  const calculateTotal = () => {
+    let total = 0;
+    for (let i = 0; i < Expenses.length; i++) {
+      console.log(Expenses[i].Costs);
+      total = parseInt(total) + parseInt(Expenses[i].Costs);
+    }
+    //total = parseInt(total) + parseInt(costInput)
+    setTotal(total);
+    console.log("TOTAL: ");
+    console.log(total);
+  };
 
-    const calculateTotal = () => {
-        let total = 0
-        for (let i = 0; i < Expenses.length; i++) {
-            console.log(Expenses[i].Costs)
-            total  =  parseInt(total) + parseInt(Expenses[i].Costs)
-          };
-        //total = parseInt(total) + parseInt(costInput)
-        setTotal(total);
-        console.log("TOTAL: ")
-        console.log(total)
-     }
+  const addPreviousExpenses = () => {
+    getDoc(docRef).then((doc) => {
+      setExpenses(doc.get("Expenses"));
+    });
+  };
 
-    const addPreviousExpenses = () => {
-        getDoc(docRef)
-        .then((doc) => {  
-            setExpenses(doc.get("Expenses"));
-            }
-        )
-    };
-
-    const createDoc = async () => {
-        const snap = await getDoc(docRef);
-        if (!snap.exists()) {
-          const docRef = doc(db, "BudgetPlanner", uid);
-          const docData = {
-            Expenses: [],
-          };
-          setDoc(docRef, docData);
-        }
+  const createDoc = async () => {
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) {
+      const docRef = doc(db, "BudgetPlanner", uid);
+      const docData = {
+        Expenses: [],
       };
+      setDoc(docRef, docData);
+    }
+  };
 
-      React.useEffect(() => {
-        addPreviousExpenses()
-      }, [])
+  React.useEffect(() => {
+    addPreviousExpenses();
+  }, []);
 
-      React.useEffect(() => {
-        createDoc()
-      }, [])
+  React.useEffect(() => {
+    createDoc();
+  }, []);
 
+  React.useEffect(() => {
+    getBudget();
+  }, []);
 
-      React.useEffect(() => {
-        getBudget()
-      }, [])
+  React.useEffect(() => {
+    getNumOfDays();
+  }, []);
 
-      React.useEffect(() => {
-        getNumOfDays()
-      }, [])
-
-    const ListItem = ({expense}) => {
-        //console.log(expense)
-        // console.log("BUDGET: ")
-        // console.log(Budget)
-        return (
-        <View style = {styles.listItem}>
-            {/*The view that holds the expense */}
-            <View style = {{flex: 1,flexDirection:"row"}}>
-                {/*The text for the expense and cost*/}
-                <Text style = {{fontWeight: "bold", flex:0.4, fontSize: 12, color: "#000",}}>
-                    {
-                    expense.Expenses
-                    }
-                    
-                </Text>
-                <Text style = {{fontWeight: "bold", flex:0.2, fontSize: 12, color: "#000", paddingHorizontal:20}}>
-                    {
-                    "$" + expense.Costs
-                    }
-                </Text>
-                <Text style = {{fontWeight: "bold", flex: 0.4, fontSize: 12, color: "#000", paddingHorizontal:20}}>
-                    {
-                        expense.Dates                       
-                    }
-                </Text>
-            </View>
-
-
-            {/*Done and Delete buttons*/}
-            <TouchableOpacity style = {[styles.actionIcon]} onPress={()=>{deleteExpense(expense?.id)}}>
-                <Icon name = "delete" size = {20} color = "black"/>
-            </TouchableOpacity>
-            
-        
-            {/* Attempt at edit. */}
-            <TouchableOpacity style = {[styles.actionIcon]} onPress = {()=> {editExpense(expense?.id) }}>
-                <Icon name = "edit" size = {20} color = "black"/>
-            </TouchableOpacity>
-            { 
-        }
+  const ListItem = ({ expense }) => {
+    //console.log(expense)
+    // console.log("BUDGET: ")
+    // console.log(Budget)
+    return (
+      <View style={styles.listItem}>
+        {/*The view that holds the expense */}
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          {/*The text for the expense and cost*/}
+          <Text
+            style={{
+              fontWeight: "bold",
+              flex: 0.4,
+              fontSize: 12,
+              color: "#000",
+            }}
+          >
+            {expense.Expenses}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              flex: 0.2,
+              fontSize: 12,
+              color: "#000",
+              paddingHorizontal: 20,
+            }}
+          >
+            {"$" + expense.Costs}
+          </Text>
+          <Text
+            style={{
+              fontWeight: "bold",
+              flex: 0.4,
+              fontSize: 12,
+              color: "#000",
+              paddingHorizontal: 20,
+            }}
+          >
+            {expense.Dates}
+          </Text>
         </View>
-        );
-    };
 
-    {/*Add expense, mark expense done, edit expense, and delete expense functions*/}
-    const addExpense = () => {
-        //gets users doc then updates it after user adds a todo.
-        if(textInput == "" || costInput == ""){
-            Alert.alert("Error", "Please input an Expense and Cost");
+        {/*Done and Delete buttons*/}
+        <TouchableOpacity
+          style={[styles.actionIcon]}
+          onPress={() => {
+            deleteExpense(expense?.id);
+          }}
+        >
+          <Icon name="delete" size={20} color="black" />
+        </TouchableOpacity>
 
-        //For editing expense
-        }if (textInput && !toggleSubmit){
-            setExpenses(
-                Expenses.map((expense) => {
-                    if(expense.id === isEditItem){
-                        return{...expense, Expenses:textInput, Costs:costInput}
-                    }
-                    return expense;
-                })
-            );
-            calculateTotal(costInput);
-            set
-            setToggleSubmit(true);
-            setTextInput('');
-            setCostInput('');
-            setIsEditItem(null);
-           
-        }
+        {/* Attempt at edit. */}
+        <TouchableOpacity
+          style={[styles.actionIcon]}
+          onPress={() => {
+            editExpense(expense?.id);
+          }}
+        >
+          <Icon name="edit" size={20} color="black" />
+        </TouchableOpacity>
+        {}
+      </View>
+    );
+  };
 
-        //adding brand new expense
-        if (toggleSubmit){
-            
-            const newExpenses = {
-                id:Math.random(),
-                Expenses: textInput,
-                Costs: costInput,
-                Dates: moment().format("DD/MM/YYYY")
-            };
+  {
+    /*Add expense, mark expense done, edit expense, and delete expense functions*/
+  }
+  const addExpense = () => {
+    //gets users doc then updates it after user adds a todo.
+    if (textInput == "" || costInput == "") {
+      Alert.alert("Error", "Please input an Expense and Cost");
 
-            calculateTotal(costInput);
-            setExpenses([...Expenses,newExpenses]);
-            setTextInput('');
-            setCostInput('');
-            const recentExpenseList = [...Expenses,newExpenses];
-
-
-            getDoc(docRef)
-            .then((doc) => {  
-                if (!doc.exists) {
-                    console.log('No such document!');
-                } else {
-                    updateDoc(docRef, {Expenses: recentExpenseList}, {merge:true});
-                }
-            })
-        }
-        updateDoc(docRef, {Expenses:Expenses}, {Costs:Costs}, {Dates:Dates}, {merge:true});
-    };
-
-
-    const deleteExpense = (expenseId) => {
-        const newExpenses = Expenses.filter(expense => expense.id != expenseId);
-        setExpenses(newExpenses);
-        calculateTotal();
-        updateDoc(docRef, {Expenses: newExpenses}, {merge:true});
+      //For editing expense
+    }
+    if (textInput && !toggleSubmit) {
+      setExpenses(
+        Expenses.map((expense) => {
+          if (expense.id === isEditItem) {
+            return { ...expense, Expenses: textInput, Costs: costInput };
+          }
+          return expense;
+        })
+      );
+      calculateTotal(costInput);
+      set;
+      setToggleSubmit(true);
+      setTextInput("");
+      setCostInput("");
+      setIsEditItem(null);
     }
 
-    const editExpense= (expenseId) => {
-        let newEditItem = Expenses.find((expense) => {
-            return expense.id === expenseId
-        });
-        setToggleSubmit(false);
-        setTextInput(newEditItem.Expenses);
-        setCostInput(newEditItem.Costs);
-        setCosts(newEditItem.Costs);
-        setIsEditItem(expenseId);
-        setExpenses(Expenses);
-        updateDoc(docRef, {Expenses:Expenses}, {merge:true});
-    };
+    //adding brand new expense
+    if (toggleSubmit) {
+      const newExpenses = {
+        id: Math.random(),
+        Expenses: textInput,
+        Costs: costInput,
+        Dates: moment().format("DD/MM/YYYY"),
+      };
 
-    return( 
-    <SafeAreaView
-        style= {{flex: 1, backgroundColor: "#fff",}}>
-            <View style = {styles.header}>
-                <Text style={styles.sectionTitle}>Budget Planner</Text>
-            </View>
-            <View>
-                <Text style={styles.budgetTitle}>Your Max budget: ${Budget}</Text>
-            </View>
-            <View>
-                <Text style={styles.budgetTitle}>Total Spent: ${total}</Text>
-            </View>
+      calculateTotal(costInput);
+      setExpenses([...Expenses, newExpenses]);
+      setTextInput("");
+      setCostInput("");
+      const recentExpenseList = [...Expenses, newExpenses];
 
-            {/* should display  total/numOfDays */}
-            <View>
-                <Text style={styles.budgetTitle}>Estimate Cost per Day: ${Budget/numOfDays}</Text>
-            </View>
-
-            <FlatList
-                showsVerticalScrollIndicator = {false}
-                contentContainerStyle = {{padding: 20, paddingBottom: 100}}
-                data = {Expenses} 
-                renderItem = {({item}) => <ListItem expense = {item}/>}
-            />
-            
-
-            <View style = {styles.footer}>
-                <View style = {styles.inputContainer}>
-                    <TextInput
-                        value={textInput}
-                        placeholder = "Add Expense"
-                        onChangeText={text => setTextInput(text)}
-                    />
-                </View>
-
-                <View style = {styles.inputContainer}>
-                    <TextInput
-                        value={costInput}
-                        placeholder = "Add Cost"
-                        onChangeText={text => setCostInput(text)}
-                    />
-                </View>
-                
-                <TouchableOpacity onPress={addExpense}>
-                    <View style = {styles.iconContainer}>
-                        <Text style={styles.addText}> + </Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-
-
-    </SafeAreaView>
+      getDoc(docRef).then((doc) => {
+        if (!doc.exists) {
+          console.log("No such document!");
+        } else {
+          updateDoc(docRef, { Expenses: recentExpenseList }, { merge: true });
+        }
+      });
+    }
+    updateDoc(
+      docRef,
+      { Expenses: Expenses },
+      { Costs: Costs },
+      { Dates: Dates },
+      { merge: true }
     );
+  };
+
+  const deleteExpense = (expenseId) => {
+    const newExpenses = Expenses.filter((expense) => expense.id != expenseId);
+    setExpenses(newExpenses);
+    calculateTotal();
+    updateDoc(docRef, { Expenses: newExpenses }, { merge: true });
+  };
+
+  const editExpense = (expenseId) => {
+    let newEditItem = Expenses.find((expense) => {
+      return expense.id === expenseId;
+    });
+    setToggleSubmit(false);
+    setTextInput(newEditItem.Expenses);
+    setCostInput(newEditItem.Costs);
+    setCosts(newEditItem.Costs);
+    setIsEditItem(expenseId);
+    setExpenses(Expenses);
+    updateDoc(docRef, { Expenses: Expenses }, { merge: true });
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <TouchableOpacity
+        style={{ marginTop: 25, marginLeft: 15 }}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="arrow-back" size={30} color="black" />
+      </TouchableOpacity>
+      <View style={styles.header}>
+        <Text style={styles.sectionTitle}>Budget Planner</Text>
+      </View>
+      <View>
+        <Text style={styles.budgetTitle}>Your Max budget: ${Budget}</Text>
+      </View>
+      <View>
+        <Text style={styles.budgetTitle}>Total Spent: ${total}</Text>
+      </View>
+
+      {/* should display  total/numOfDays */}
+      <View>
+        <Text style={styles.budgetTitle}>
+          Estimate Cost per Day: ${Budget / numOfDays}
+        </Text>
+      </View>
+
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
+        data={Expenses}
+        renderItem={({ item }) => <ListItem expense={item} />}
+      />
+
+      <View style={styles.footer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            value={textInput}
+            placeholder="Add Expense"
+            onChangeText={(text) => setTextInput(text)}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            value={costInput}
+            placeholder="Add Cost"
+            onChangeText={(text) => setCostInput(text)}
+          />
+        </View>
+
+        <TouchableOpacity onPress={addExpense}>
+          <View style={styles.iconContainer}>
+            <Text style={styles.addText}> + </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
 };
-  
+
 const styles = StyleSheet.create({
-    actionIcon: {
-        height: 25,
-        width: 25,
-        justifyContent: "center",
-        alignItems: "center",
-        marginLeft: 5,
-    },
-    listItem: {
-        padding: 20,
-        backgroundColor: '#FFD56D',
-        flexDirection: "row",
-        elevation: 12,
-        borderRadius: 7,
-        marginVertical: 10,
-        justifyContent: 'space-evenly'
-    },
-    header:{
-        padding: 10,
-        flexDirection: "row",
-        alignItems:"center",
-        justifyContent: "center"
-    },
+  actionIcon: {
+    height: 25,
+    width: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 5,
+  },
+  listItem: {
+    padding: 20,
+    backgroundColor: "#FFD56D",
+    flexDirection: "row",
+    elevation: 12,
+    borderRadius: 7,
+    marginVertical: 10,
+    justifyContent: "space-evenly",
+  },
+  header: {
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-    sectionTitle:{
-        fontSize: 24,
-        fontWeight: "bold",
-        alignSelf: "center",
-    },
-    budgetTitle:{
-        fontSize: 15,
-        marginLeft: 20,
-        
-    },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
+  budgetTitle: {
+    fontSize: 15,
+    marginLeft: 20,
+  },
 
-    footer:{
-        position: 'absolute',
-        bottom: 0,
-        backgroundColor: "#fff",
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-    },
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    backgroundColor: "#fff",
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
 
-    inputContainer:{
-        elevation: 40,
-        flex: 1,
-        height: 50,
-        marginVertical: 20,
-        marginRight: 20,
-        borderRadius: 30,
-        paddingHorizontal: 20,
-        justifyContent: 'center',
-        backgroundColor: "#C4C4C4",
-    },
+  inputContainer: {
+    elevation: 40,
+    flex: 1,
+    height: 50,
+    marginVertical: 20,
+    marginRight: 20,
+    borderRadius: 30,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    backgroundColor: "#C4C4C4",
+  },
 
-    iconContainer:{
-        height: 50,
-        width: 50,
-        backgroundColor: "#C4C4C4",
-        borderRadius: 25,
-        elevation: 40,
-        justifyContent: "center",
-        alignItems: "center",
-    },
+  iconContainer: {
+    height: 50,
+    width: 50,
+    backgroundColor: "#C4C4C4",
+    borderRadius: 25,
+    elevation: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-    addText:{
-        fontSize: 24,
-        justifyContent: "center",
-        alignItems: "center",
-    },
+  addText: {
+    fontSize: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default BudgetPlannerV2;
