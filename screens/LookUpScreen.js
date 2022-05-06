@@ -9,6 +9,7 @@ import {
 import { HERE_API_KEY } from "@env";
 import MapPic from "../assets/undraw_map_re_60yf.svg";
 import Background from "../assets/blob-haikei.svg";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const LookUpScreen = ({ navigation }) => {
   const [text, onChangeText] = useState("");
@@ -26,13 +27,19 @@ const LookUpScreen = ({ navigation }) => {
     navigation.navigate("Nearby Place Demo", {
       // lat: jsonData.items[0].position.lat,
       // lng: jsonData.items[0].position.lng,
-      text: text
+      text: text,
     });
   };
 
   return (
     <View style={styles.container}>
       <Background style={{ position: "absolute" }} />
+      <TouchableOpacity
+        style={{ alignSelf: "flex-start", marginLeft: 15 }}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="arrow-back" size={30} color="black" />
+      </TouchableOpacity>
       <MapPic width="275" height="200" />
       <Text style={styles.h2}>Where do you want to go?</Text>
       <TextInput

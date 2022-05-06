@@ -80,6 +80,7 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={(value) => setPassword(value)}
           value={password}
           placeholder="Password"
+          secureTextEntry={true}
         />
       </View>
 

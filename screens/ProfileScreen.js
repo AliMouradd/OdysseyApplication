@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView, View, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { app } from "../Config";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import ProfileScheduleComponent from "../components/ProfileScheduleComponent";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const db = getFirestore(app);
 
@@ -35,7 +43,14 @@ const ProfileScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.background}></View>
+      <View style={styles.background}>
+        <TouchableOpacity
+          style={{ marginTop: 30, marginLeft: 15 }}
+          onPress={() => navigation.goBack()}
+        >
+          <Icon name="arrow-back" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.profile}>
         <View style={styles.imageContainer}>
           <Image source={require("../assets/icon.png")} style={styles.img} />
