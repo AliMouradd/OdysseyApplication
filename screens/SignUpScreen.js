@@ -48,6 +48,7 @@ const SignUpScreen = () => {
       await setDoc(doc(db, "UserSchedules", auth.currentUser.uid), {
         schedules: [],
       });
+      navigation.navigate("Travel Questionnaire");
     } catch (error) {
       if (error.code === "auth/weak-password") {
         alert(
@@ -91,12 +92,14 @@ const SignUpScreen = () => {
           onChangeText={(value) => setPassword(value)}
           value={password}
           placeholder="Password"
+          secureTextEntry={true}
         />
         <TextInput
           style={styles.input}
           onChangeText={(value) => setConfirmPassword(value)}
           value={confirmPassword}
           placeholder="Confirm Password"
+          secureTextEntry={true}
         />
       </View>
 
