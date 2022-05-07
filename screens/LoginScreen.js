@@ -23,8 +23,8 @@ import {
   signInWithEmailAndPassword,
   signInAnonymously,
 } from "firebase/auth";
-
-import { app } from "../Config";
+import { doc, getDoc } from "firebase/firestore";
+import { db, app } from "../Config";
 
 import Background from "../assets/blob-haikei.svg";
 
@@ -41,8 +41,21 @@ const LoginScreen = ({ navigation }) => {
    */
   const login = () => {
     signInWithEmailAndPassword(auth, username, password)
-      .then((userCredential) => {
-        navigation.navigate("Home", { id: auth.currentUser.uid });
+      .then(async (userCredential) => {
+        // Check if the user has already completed the questionnaire.
+        // If they have not, navigate them to the questionnaire screen.
+        // Otherwise, navigate the user to the Home screen.
+        const userAnswersDocRef = doc(
+          db,
+          "UserQuestionnaireAnswers",
+          auth.currentUser.uid
+        );
+        const userAnswersDocSnap = await getDoc(userAnswersDocRef);
+        if (userAnswersDocSnap.exists()) {
+          navigation.navigate("Home", { id: auth.currentUser.uid });
+        } else {
+          navigation.navigate("Travel Questionnaire");
+        }
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
@@ -85,7 +98,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.input}
           onChangeText={(value) => setUserName(value)}
           value={username}
-          placeholder="Username"
+          placeholder="Email"
         />
         <TextInput
           style={styles.input}

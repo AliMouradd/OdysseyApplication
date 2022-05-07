@@ -27,7 +27,7 @@ import {
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const SignUpScreen = () => {
+const SignUpScreen = ({ navigation }) => {
   const [fullName, setfullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
