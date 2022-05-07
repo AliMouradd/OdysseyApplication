@@ -40,10 +40,19 @@ const PlacesScreen = ({ navigation, route }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+  const [newAliasList, setNewAliasList] = useState([]);
 
   const auth = getAuth();
   const user = auth.currentUser;
   const uid = user.uid;
+
+  useEffect(() => {
+    let aliasData = [];
+    for (let i = 0; i < route.params.schedule.places.length; i++) {
+      aliasData = [...aliasData, route.params.schedule.places[i].alias];
+    }
+    setNewAliasList(aliasData);
+  }, []);
 
   /**
    * Toggle function for the Name Input modal
@@ -79,44 +88,43 @@ const PlacesScreen = ({ navigation, route }) => {
   /**
    * A function that sorts the list of places in ascending order.
    */
-  const sortPlacesAsc = () => {
-    const sortedPlaces = [...places].sort(function (a, b) {
-      if (a.name.toLowerCase() < b.name.toLowerCase()) {
-        return -1;
-      }
-      if (a.name.toLowerCase() > b.name.toLowerCase()) {
-        return 1;
-      }
-      return 0;
-    });
-    setPlaces(sortedPlaces);
-  };
+  // const sortPlacesAsc = () => {
+  //   const sortedPlaces = [...places].sort(function (a, b) {
+  //     if (a.title.toLowerCase() < b.title.toLowerCase()) {
+  //       return -1;
+  //     }
+  //     if (a.title.toLowerCase() > b.title.toLowerCase()) {
+  //       return 1;
+  //     }
+  //     return 0;
+  //   });
+  //   setPlaces(sortedPlaces);
+  // };
 
   /**
    * A function that sorts the list of places in descending order.
    */
-  const sortPlacesDes = () => {
-    const sortedPlaces = [...places].sort(function (a, b) {
-      if (a.name.toLowerCase() < b.name.toLowerCase()) {
-        return 1;
-      }
-      if (a.name.toLowerCase() > b.name.toLowerCase()) {
-        return -1;
-      }
-      return 0;
-    });
-    setPlaces(sortedPlaces);
-  };
+  // const sortPlacesDes = () => {
+  //   const sortedPlaces = [...places].sort(function (a, b) {
+  //     if (a.title.toLowerCase() < b.title.toLowerCase()) {
+  //       return 1;
+  //     }
+  //     if (a.title.toLowerCase() > b.title.toLowerCase()) {
+  //       return -1;
+  //     }
+  //     return 0;
+  //   });
+  //   setPlaces(sortedPlaces);
+  // };
 
   /**
-   * A function that filters the list of places by a category.
+   * A function that filters the list of places by a category
    */
   const filterPlaces = (t) => {
-    getPlacesTest();
     if (t === "All") {
       return;
     }
-    const filteredPlaces = [...places].filter((p) => p.type === t);
+    const filteredPlaces = [...places].filter((p) => p.alias == t);
     setPlaces(filteredPlaces);
   };
 
@@ -185,7 +193,6 @@ const PlacesScreen = ({ navigation, route }) => {
    * A function that likes a schedule
    */
   const likeSchedule = async () => {
-    console.log(route.params.schedule.creator);
     const docRefThree = doc(db, "users", route.params.schedule.creator);
     const docSnapThree = await getDoc(docRefThree);
     if (docSnapThree.exists()) {
@@ -202,22 +209,32 @@ const PlacesScreen = ({ navigation, route }) => {
           source={{ uri: places[0].picture }}
         >
           <View style={styles.btns}>
-            <TouchableOpacity onPress={() => shareSchedule()}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Icon
-                style={{ textAlign: "right", padding: 10 }}
-                name="share"
-                size={20}
+                style={{ padding: 5 }}
+                name="arrow-back"
+                size={30}
                 color="white"
               />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon
-                style={{ textAlign: "right", padding: 10 }}
-                name="more-vert"
-                size={20}
-                color="white"
-              />
-            </TouchableOpacity>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity onPress={() => shareSchedule()}>
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="share"
+                  size={20}
+                  color="white"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="more-vert"
+                  size={20}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.infoWrapper}>
             <View style={styles.info}>
@@ -262,15 +279,15 @@ const PlacesScreen = ({ navigation, route }) => {
           Schedule
         </Text>
         {/* <TouchableOpacity
-            onPress={() => setSortModalVisible(!sortModalVisible)}
-          >
-            <Text>Sort</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setFilterModalVisible(!filterModalVisible)}
-          >
-            <Text>Filter</Text>
-          </TouchableOpacity> */}
+           onPress={() => setSortModalVisible(!sortModalVisible)}
+         >
+           <Text>Sort</Text>
+         </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => setFilterModalVisible(!filterModalVisible)}
+        >
+          <Text>Filter</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{ width: "90%", alignSelf: "center" }}>
@@ -295,15 +312,16 @@ const PlacesScreen = ({ navigation, route }) => {
         onChangeText={(text) => setDescription(text)}
         descriptionModalVisible={descriptionModalVisible}
       />
-      <ListSortModal
-        toggleSortModalVisible={toggleSortModalVisible}
-        sortModalVisible={sortModalVisible}
-        sortPlacesAsc={sortPlacesAsc}
-        sortPlacesDes={sortPlacesDes}
-      />
+      {/* <ListSortModal
+         toggleSortModalVisible={toggleSortModalVisible}
+         sortModalVisible={sortModalVisible}
+         sortPlacesAsc={sortPlacesAsc}
+         sortPlacesDes={sortPlacesDes}
+       /> */}
       <ListFilterModal
         toggleFilterModalVisible={toggleFilterModalVisible}
         filterModalVisible={filterModalVisible}
+        aliasList={newAliasList}
         filterPlaces={(text) => filterPlaces(text)}
       />
       {route.params.owned && (
@@ -312,6 +330,7 @@ const PlacesScreen = ({ navigation, route }) => {
             onPress={() => {
               copySchedule();
             }}
+            style={styles.btn}
           >
             <Text>Copy</Text>
           </TouchableOpacity>
@@ -319,6 +338,7 @@ const PlacesScreen = ({ navigation, route }) => {
             onPress={() => {
               likeSchedule();
             }}
+            style={styles.btn}
           >
             <Text>Like</Text>
           </TouchableOpacity>
@@ -343,8 +363,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   btns: {
+    marginTop: 25,
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
   },
   h1: {
     fontSize: 18,
