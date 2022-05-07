@@ -11,77 +11,80 @@ import {
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  addDoc,
-  Firestore,
-  getDoc,
-} from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "./../../Config";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useIsFocused } from "@react-navigation/native";
 
+/**
+ * Description:
+ *
+ * The Itinerary screen shows the user their own user-created itinerary,
+ * where they can add events to the different days of their vacation
+ * and specify where the event will take place based on the user's list
+ * of saved places.
+ *
+ * Built by: Quacky Coders
+ */
 const UserItineraryScreen = ({ navigation }) => {
-  // states used by the itinerary
-  const [selectedDate, setSelectedDate] = useState(undefined);
-  const [formattedDate, setFormattedDate] = useState();
-  const [startDate, setStartDate] = useState(moment(new Date())); // change this to make the calendar strip start at correct date
-  const [tripStartDate, setTripStartDate] = useState(undefined); // will be set to a moment
-  const [tripEndDate, setTripEndDate] = useState(undefined); // will be set to a moment
-  const [events, setEvents] = useState([]); // array of event objects for all dates (should include date, time, and description)
-  const [selectedEvents, setSelectedEvents] = useState([]); // array of event objects for selected date
-  const [markedDates, setMarkedDates] = useState([]);
-  const [addModalVisible, setAddModalVisible] = useState(false);
-  const [eventModalVisible, setEventModalVisible] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [selectedEventModal, setSelectedEventModal] = useState({}); // hold event object of selected event
+  /*
+   * States used by the Itinerary
+   */
+  const [selectedDate, setSelectedDate] = useState(undefined); // holds the date that the user selects
+  const [tripStartDate, setTripStartDate] = useState(undefined); // holds trip start date, will be set to a moment
+  const [tripEndDate, setTripEndDate] = useState(undefined); // holds trip end date, will be set to a moment
+  const [events, setEvents] = useState([]); // array of event objects for all dates
+  const [selectedEventsArray, setSelectedEventsArray] = useState([]); // array of event objects for selected date
+  const [eventModalVisible, setEventModalVisible] = useState(false); // visibility toggle for event view modal
+  const [selectedEvent, setSelectedEvent] = useState({}); // holds event object of the selected event
 
-  // states for adding new events
-  const [newTitle, setNewTitle] = useState("");
-  const [selectedPlace, setSelectedPlace] = useState("");
-  const [pickerdate, setPickerDate] = useState(new Date());
-  const [pickermode, setPickerMode] = useState("date");
-  const [pickershow, setPickerShow] = useState(false);
+  /*
+   * States for adding new events
+   */
+  const [addModalVisible, setAddModalVisible] = useState(false); // visibility toggle for add event modal
+  const [newTitle, setNewTitle] = useState(""); // holds the event's new title
+  const [places, setPlaces] = useState([]); // array of places from the user's list of places
+  const [selectedPlace, setSelectedPlace] = useState(""); // holds the selected place from user's list of places
+  const [pickerdate, setPickerDate] = useState(new Date()); // holds datetime from the date/time picker
+  const [pickermode, setPickerMode] = useState("date"); // holds date/time picker mode setting
+  const [pickershow, setPickerShow] = useState(false); // show date/time picker toggle
 
-  // states for editing events
-  const [editTitle, setEditTitle] = useState(selectedEventModal.item?.title);
+  /*
+   * States for editing events (unused)
+   */
+  const [editModalVisible, setEditModalVisible] = useState(false); // visibility toggle for edit view modal (unused)
+  const [editTitle, setEditTitle] = useState(selectedEvent.item?.title);
   const [editpickerdate, seteditpickerdate] = useState(new Date());
-
-  // state for places list
-  const [places, setPlaces] = useState([]);
 
   // setup for getting current user's ID:
   const auth = getAuth();
   const user = auth.currentUser;
   const uid = user.uid;
 
-  // Firestore document reference
-  const userSchedDocRef = doc(db, "GenSchedules", uid);
+  // Firestore document references
+  const userSchedDocRef = doc(db, "GenSchedules", uid); // where Itinerary info is stored
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
-  const placesListDocRef = doc(db, "UserSchedules", "123");
+  const placesListDocRef = doc(db, "UserSchedules", uid); // for getting user's places list
 
-  // check if screen is focused
-  const isFocused = useIsFocused();
-
+  /*
+   * useEffect functions are called when the screen first renders
+   */
   useEffect(() => {
-    getTripStartEndDates(); // get trip start/end dates from survey (try getting these before calendar strip renders somehow)
-    createSchedDoc(); // create user's doc if not already created
-    getEventsFromDatabase(); // get events from database (from user's doc)
-    getFromPlacesList();
-    getEventsForDay(moment(selectedDate, "MM/DD/YYYY"));
-  }, [isFocused]);
+    getTripStartEndDates(); // get trip start/end dates from questionnaire
+    createSchedDoc(); // create user's Itinerary document if not already created
+    getEventsFromDatabase(); // retrieve user's Itinerary events from database
+    getFromPlacesList(); // retrieve user's list of places
+  }, []);
 
-  // function to get vacation start and end dates (to pass to calendar strip)
+  /**
+   * Function to get vacation start and end dates from database (to pass to calendar strip)
+   */
   const getTripStartEndDates = () => {
-    console.log("getTripStartEndDates called!");
+    //console.log("getTripStartEndDates called!");
+
     getDoc(userSurveyDocRef).then((doc) => {
-      console.log("Getting trip start and end dates...");
+      //console.log("Getting trip start and end dates...");
       setTripStartDate(moment(doc.get("startDate")));
       setTripEndDate(moment(doc.get("endDate")));
       setStartDate(moment(doc.get("startDate")));
@@ -93,8 +96,13 @@ const UserItineraryScreen = ({ navigation }) => {
     });
   };
 
+  /**
+   * Function to create user's Itinerary document in database.
+   * If user already has document, this will do nothing.
+   */
   const createSchedDoc = () => {
-    console.log("createSchedDoc called!");
+    //console.log("createSchedDoc called!");
+
     setDoc(userSchedDocRef, {}, { merge: true })
       .then(() => {
         //alert("Document Created/Updated");
@@ -104,27 +112,48 @@ const UserItineraryScreen = ({ navigation }) => {
       });
   };
 
-  // function to get events for date selected from database
+  /**
+   * Function to retrieve all Itinerary events from database
+   */
   const getEventsFromDatabase = () => {
-    console.log("getEventsFromDatabase called!");
-    // function should take date as parameter
+    //console.log("getEventsFromDatabase called!");
+
     getDoc(userSchedDocRef).then((doc) => {
-      console.log("Getting events...");
-      setEvents(doc.get("events")); // gets the array of event objects from database
+      //console.log("Getting events...");
+      setEvents(doc.get("events")); // gets the array of event objects from database and saves to events state
       //console.log(events);
     });
   };
 
-  // function to add events to database
+  /**
+   * Function to retrieve user's places list from database
+   */
+  const getFromPlacesList = () => {
+    //console.log("getFromPlacesList called!");
+
+    getDoc(placesListDocRef).then((doc) => {
+      setPlaces(doc.get("places")); // gets array of places and saves to places state
+    });
+    //console.log(places);
+  };
+
+  /**
+   * Function to add an event to database.
+   * TODO: Add a way to refresh events list after adding an event.
+   */
   const addEventToDatabase = () => {
-    console.log("addEventToDatabase called!");
+    //console.log("addEventToDatabase called!");
+
+    // create data object with all new event info
     const data = {
       title: newTitle,
       datetime: pickerdate,
       place: selectedPlace,
       id: Math.random(),
     };
-    const newEventsArray = [...events, data];
+    const newEventsArray = [...events, data]; // add new data object to locally saved array of events
+
+    // updates user's Itinerary database with newEventsArray
     updateDoc(userSchedDocRef, { events: newEventsArray }, { merge: true })
       .then(() => {
         ToastAndroid.show("Event added", ToastAndroid.SHORT);
@@ -132,25 +161,26 @@ const UserItineraryScreen = ({ navigation }) => {
       .catch((error) => {
         alert(error.message);
       });
-    // clear inputs after adding an event
+
+    // clear title input box after adding an event
     setNewTitle("");
   };
 
-  const getFromPlacesList = () => {
-    console.log("getFromPlacesList called!");
-    getDoc(placesListDocRef).then((doc) => {
-      setPlaces(doc.get("places"));
-    });
-    //console.log(places);
-  };
-
+  /**
+   * Function to delete an event from the database.
+   * TODO: Add a way to refresh events list after deleting an event.
+   */
   const deleteEvent = () => {
-    console.log("deleteEvent called!");
+    //console.log("deleteEvent called!");
+
+    // creates new array of events containing all events except the one that will be deleted
     const newEvents = events.filter(
-      (item) => item.id != selectedEventModal.item?.id
+      (item) => item.id != selectedEvent.item?.id // filter list where event id != deleted event id
     );
-    setEvents(newEvents);
-    getEventsForDay(moment(selectedEventModal.item?.datetime));
+    setEvents(newEvents); // set locally saved events array to new events array without deleted event
+    getEventsForDay(moment(selectedEvent.item?.datetime)); // ISSUE: passes in null for some reason.
+
+    // update database:
     updateDoc(userSchedDocRef, { events: newEvents }, { merge: true })
       .then(() => {
         ToastAndroid.show("Event deleted", ToastAndroid.SHORT);
@@ -160,7 +190,9 @@ const UserItineraryScreen = ({ navigation }) => {
       });
   };
 
-  // doesnt work.
+  /**
+   * Function to edit an event (unused, not working)
+   */
   const editEvent = () => {
     console.log("editEvent called!");
     // delete event
@@ -168,7 +200,7 @@ const UserItineraryScreen = ({ navigation }) => {
     // uses editTitle, pickerdate, selectedPlace
     deleteEvent(); // first delete old event
     const data = {
-      title: selectedEventModal.item?.title,
+      title: selectedEvent.item?.title,
       datetime: pickerdate,
       place: selectedPlace,
       id: Math.random(),
@@ -185,39 +217,63 @@ const UserItineraryScreen = ({ navigation }) => {
     //setEditTitle("");
   };
 
-  // datetimepicker functions
+  /**
+   * Function used by datetimepicker.
+   * onChange changes date/time states when user presses "ok" on datetimepicker.
+   */
   const onChange = (pickerevent, pickerSelectedDate) => {
     const currentDate = pickerSelectedDate;
     setPickerShow(false);
     setPickerDate(currentDate);
   };
 
+  /**
+   * Function used by datetimepicker.
+   * showMode toggles picker visibility and modes.
+   */
   const showMode = (currentMode) => {
     setPickerShow(true);
     setPickerMode(currentMode);
   };
 
+  /**
+   * Function used by datetimepicker.
+   * showDatePicker changes show mode to "date".
+   */
   const showDatePicker = () => {
     showMode("date");
   };
 
+  /**
+   * Function used by datetimepicker.
+   * showTimePicker changes show mode to "time".
+   */
   const showTimePicker = () => {
     showMode("time");
   };
 
-  // function called when date is selected from calendar strip
+  /**
+   * Function that is called when a date is selected from the calendar strip.
+   */
   const onDateSelected = (date) => {
-    console.log("onDateSelected called!");
+    //console.log("onDateSelected called!");
     //console.log("\ndate variable: ", date);
-    //console.log("old selectedDate state: ", selectedDate);
+
     const formDate = date.format("MM/DD/YYYY");
-    setSelectedDate(formDate);
-    getEventsForDay(date);
+    setSelectedDate(formDate); // sets selected date state
+    getEventsForDay(date); // gets events occuring on selected date
   };
 
+  /**
+   * Function that filters all Itinerary events into a new array that only contains
+   * the events that occur on the date selected by the user.
+   */
   const getEventsForDay = (date) => {
-    console.log("getEventsForDay called!");
+    //console.log("getEventsForDay called!");
+    //console.log(date);
+
     const formSelectedDate = date.format("MM/DD/YYYY");
+
     if (events == undefined) {
       alert("No events created at all!"); // user hasn't added any events yet
     } else {
@@ -226,14 +282,13 @@ const UserItineraryScreen = ({ navigation }) => {
           moment(event.datetime.toDate()).format("MM/DD/YYYY") ===
           formSelectedDate
       );
-      const sortedEventObjectsForDay = eventObjectsForDay.sort((a, b) =>
-        moment(a.datetime).diff(moment(b.datetime))
-      );
-      setSelectedEvents(eventObjectsForDay);
+      setSelectedEventsArray(eventObjectsForDay);
     }
   };
 
-  // List Item component, renders each event in the agenda list
+  /**
+   * List Item component, renders each event in the agenda FlatList.
+   */
   const ListItem = ({ event }) => {
     // each event is one object from the events array
     //console.log(event); // shows each event object
@@ -242,10 +297,7 @@ const UserItineraryScreen = ({ navigation }) => {
       <View>
         <TouchableOpacity
           style={styles.eventcontainer}
-          onPress={() => [
-            setEventModalVisible(true),
-            setSelectedEventModal(event),
-          ]}
+          onPress={() => [setEventModalVisible(true), setSelectedEvent(event)]}
         >
           <Text style={{ fontWeight: "bold", fontSize: 17 }}>
             {event.item.title}
@@ -262,6 +314,9 @@ const UserItineraryScreen = ({ navigation }) => {
     );
   };
 
+  /**
+   * Places List Item component, renders each event in the agenda FlatList.
+   */
   const PlacesListItem = ({ place }) => {
     return (
       <View>
@@ -289,16 +344,19 @@ const UserItineraryScreen = ({ navigation }) => {
     );
   };
 
-  // main return
+  // Main return branches:
   if (tripStartDate == undefined) {
+    // return loading view if trip start date has not been retrieved from database yet
     return (
-      <View>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text>Loading...</Text>
       </View>
     );
   } else {
+    // return Itinerary view if trip start date has been retrieved
     return (
       <View style={styles.maincontainer}>
+        {/* Calendar Strip component, renders top row of selectable calendar dates. */}
         <CalendarStrip
           scrollable
           calendarAnimation={{ type: "parallel", duration: 600 }}
@@ -316,7 +374,6 @@ const UserItineraryScreen = ({ navigation }) => {
           highlightDateNameStyle={{ color: "white" }}
           highlightDateNumberStyle={{ color: "white" }}
           highlightDateContainerStyle={{ backgroundColor: "black" }}
-          markedDates={markedDates}
           selectedDate={selectedDate}
           onDateSelected={onDateSelected}
           useIsoWeekday={false}
@@ -327,15 +384,17 @@ const UserItineraryScreen = ({ navigation }) => {
 
         {/* <Text style={{ fontSize: 24 }}>Selected Date: {selectedDate}</Text> */}
 
+        {/* Agenda list view: Renders agenda list of events for a specific day*/}
         <View style={styles.eventslistcontainer}>
           <FlatList
-            data={selectedEvents.sort((a, b) =>
+            data={selectedEventsArray.sort((a, b) =>
               moment(a.datetime.toDate()).diff(moment(b.datetime.toDate()))
             )}
             renderItem={(item) => <ListItem event={item} />}
           />
         </View>
 
+        {/* Renders Add Event button. */}
         <TouchableOpacity
           style={styles.addeventbutton}
           onPress={() => [setAddModalVisible(true), setSelectedPlace("")]}
@@ -438,22 +497,22 @@ const UserItineraryScreen = ({ navigation }) => {
               </Text>
               <View style={{ width: "100%", marginBottom: 20 }}>
                 <Text style={{ fontSize: 16 }}>
-                  Event Title: {selectedEventModal.item?.title}
+                  Event Title: {selectedEvent.item?.title}
                 </Text>
                 <Text style={{ fontSize: 16 }}>
                   Event Date:{" "}
-                  {moment(selectedEventModal.item?.datetime.toDate()).format(
+                  {moment(selectedEvent.item?.datetime.toDate()).format(
                     "MM/DD/YYYY"
                   )}
                 </Text>
                 <Text style={{ fontSize: 16 }}>
                   Event Time:{" "}
-                  {moment(selectedEventModal.item?.datetime.toDate()).format(
+                  {moment(selectedEvent.item?.datetime.toDate()).format(
                     "hh:mm A"
                   )}
                 </Text>
                 <Text style={{ fontSize: 16 }}>
-                  Event Place: {selectedEventModal.item?.place}
+                  Event Place: {selectedEvent.item?.place}
                 </Text>
               </View>
               <View style={styles.modalbuttonsview}>
@@ -501,12 +560,12 @@ const UserItineraryScreen = ({ navigation }) => {
                 style={styles.textbox}
                 onChangeText={setEditTitle}
                 value={editTitle}
-                defaultValue={selectedEventModal.item?.title}
+                defaultValue={selectedEvent.item?.title}
                 placeholder="Enter title..."
               />
               <Text style={{ fontSize: 17, fontWeight: "bold" }}>
                 Old date and time:{"\n"}
-                {moment(selectedEventModal.item?.datetime.toDate()).format(
+                {moment(selectedEvent.item?.datetime.toDate()).format(
                   "MM/DD/YYYY, hh:mm A"
                 )}
               </Text>
@@ -567,6 +626,9 @@ const UserItineraryScreen = ({ navigation }) => {
   }
 };
 
+/**
+ * StyleSheet for components:
+ */
 const styles = StyleSheet.create({
   maincontainer: {
     flex: 1,

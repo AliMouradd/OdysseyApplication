@@ -16,7 +16,6 @@ import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
 import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
 import RouteInputScreen from "./screens/generate_route_screens/RouteInputScreen";
 import UserItineraryScreen from "./screens/itinerary_screens/ItineraryScreen";
-import ItineraryEventView from "./screens/itinerary_screens/ItineraryEventView";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -57,10 +56,6 @@ export default function App() {
           options={{ title: "Location Search" }}
         />
         <Stack.Screen name="User Itinerary" component={UserItineraryScreen} />
-        <Stack.Screen
-          name="Itinerary Event View"
-          component={ItineraryEventView}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );
