@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The Schedule Description Input Modal displays
+ * a modal for the user to input a short description
+ * of their created schedule.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
   TextInput,
@@ -10,6 +20,9 @@ import {
 } from "react-native";
 
 const ScheduleDescriptionInputModal = (props) => {
+  /**
+   * Renders the Description Input Modal
+   */
   return (
     <Modal transparent={true} visible={props.descriptionModalVisible}>
       <TouchableWithoutFeedback

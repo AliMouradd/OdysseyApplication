@@ -1,3 +1,12 @@
+/**
+ * Description:
+ *
+ * The Places Screen displays a schedule
+ * that the user has generated.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -36,22 +45,40 @@ const PlacesScreen = ({ navigation, route }) => {
   const user = auth.currentUser;
   const uid = user.uid;
 
+  /**
+   * Toggle function for the Name Input modal
+   * Set true for the boolean if it's false.
+   * Set false for the boolean if it's true.
+   * Displays the modal if true.
+   */
   const toggleNameInputModalVisible = () => {
     setNameInputModalVisible(!nameInputModalVisible);
   };
 
+  /**
+   * Toggle function for the Description Input modal
+   */
   const toggleDescriptionInputModalVisible = () => {
     setDescriptionModalVisible(!descriptionModalVisible);
   };
 
+  /**
+   * Toggle function for the Sort modal
+   */
   const toggleSortModalVisible = () => {
     setSortModalVisible(!sortModalVisible);
   };
 
+  /**
+   * Toggle function for the Filter modal
+   */
   const toggleFilterModalVisible = () => {
     setFilterModalVisible(!filterModalVisible);
   };
 
+  /**
+   * A function that sorts the list of places in ascending order.
+   */
   const sortPlacesAsc = () => {
     const sortedPlaces = [...places].sort(function (a, b) {
       if (a.name.toLowerCase() < b.name.toLowerCase()) {
@@ -65,6 +92,9 @@ const PlacesScreen = ({ navigation, route }) => {
     setPlaces(sortedPlaces);
   };
 
+  /**
+   * A function that sorts the list of places in descending order.
+   */
   const sortPlacesDes = () => {
     const sortedPlaces = [...places].sort(function (a, b) {
       if (a.name.toLowerCase() < b.name.toLowerCase()) {
@@ -78,6 +108,9 @@ const PlacesScreen = ({ navigation, route }) => {
     setPlaces(sortedPlaces);
   };
 
+  /**
+   * A function that filters the list of places by a category.
+   */
   const filterPlaces = (t) => {
     getPlacesTest();
     if (t === "All") {
@@ -87,6 +120,9 @@ const PlacesScreen = ({ navigation, route }) => {
     setPlaces(filteredPlaces);
   };
 
+  /**
+   * A function to upload a user's schedule to a public schedule database.
+   */
   const shareSchedule = async () => {
     const docRef = doc(db, "PublicSchedules", uid);
     const docSnap = await getDoc(docRef);
@@ -117,6 +153,10 @@ const PlacesScreen = ({ navigation, route }) => {
     alert("Schedule Uploaded.");
   };
 
+  /**
+   * A function that copies another user's schedule
+   * and add it to the current user's list of schedules
+   */
   const copySchedule = async () => {
     const docRefTwo = doc(db, "UserSchedules", uid);
     const docSnapTwo = await getDoc(docRefTwo);
@@ -141,6 +181,9 @@ const PlacesScreen = ({ navigation, route }) => {
     updateDoc(docRefTwo, { schedules: newSchedulesList }, { merge: true });
   };
 
+  /**
+   * A function that likes a schedule
+   */
   const likeSchedule = async () => {
     console.log(route.params.schedule.creator);
     const docRefThree = doc(db, "users", route.params.schedule.creator);

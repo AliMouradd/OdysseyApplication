@@ -1,6 +1,15 @@
+/**
+ * Description:
+ *
+ * The List Filter Modal displays a modal
+ * for the user to filter out specific categories
+ * when looking through their list of nearby places
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
-  TextInput,
   Text,
   TouchableOpacity,
   View,
@@ -9,27 +18,27 @@ import {
   Modal,
 } from "react-native";
 
-
 const ListFilterModal = (props) => {
-  console.log(props.aliasList)
+  /**
+   * Renders the Filter Modal
+   */
   return (
-
     <Modal transparent={true} visible={props.filterModalVisible}>
       <TouchableWithoutFeedback
         onPress={() => props.toggleFilterModalVisible()}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-        
-          <Text style={styles.modalTitle}>Filter By</Text>
+            <Text style={styles.modalTitle}>Filter By</Text>
             <TouchableOpacity onPress={() => props.filterPlaces("All")}>
               <Text style={styles.modalText}>All</Text>
             </TouchableOpacity>
 
-            {props.aliasList.map((e) => (         
+            {props.aliasList.map((e) => (
               <TouchableOpacity onPress={() => props.filterPlaces(e)}>
                 <Text style={styles.modalText}>{e}</Text>
-              </TouchableOpacity>))}
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </TouchableWithoutFeedback>

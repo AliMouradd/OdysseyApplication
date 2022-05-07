@@ -6,8 +6,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import HomepageScreen from "./screens/HomepageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import ItineraryScreen from "./screens/ItineraryScreen";
-import SchedulesScreen from "./screens/SchedulesScreen"
+import SchedulesScreen from "./screens/SchedulesScreen";
 import GoalScreen from "./screens/GoalScreen";
 import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
@@ -18,7 +17,7 @@ import PlacesListScreen from "./screens/PlacesListScreen";
 import PlacesScreen from "./screens/PlacesScreen";
 import NearbyPlaceDemo from "./screens/NearbyPlaceDemo";
 import BudgetPlanner from "./screens/BudgetPlanner";
-import { LogBox } from "react-native"
+import { LogBox } from "react-native";
 
 LogBox.ignoreAllLogs(true);
 
@@ -57,4 +56,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-// add dark mode

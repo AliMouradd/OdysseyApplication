@@ -15,27 +15,18 @@ import {
   TextInput,
   Text,
 } from "react-native";
-import { HERE_API_KEY } from "@env";
 import MapPic from "../assets/undraw_map_re_60yf.svg";
 import Background from "../assets/blob-haikei.svg";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const LookUpScreen = ({ navigation }) => {
   const [text, onChangeText] = useState("");
-  // const API_KEY = HERE_API_KEY;
+
+  /**
+   * Navigate to the next screen with the user's input
+   */
   const lookUp = async () => {
-    // const response = await fetch(
-    //   "https://geocode.search.hereapi.com/v1/geocode?q=" +
-    //     encodeURIComponent(text) +
-    //     "&apiKey=" +
-    //     API_KEY
-    // );
-    // const jsonData = await response.json();
-    //console.log(jsonData.items[0].position.lat);
-    //console.log(jsonData.items[0].position.lng);
     navigation.navigate("Nearby Place Demo", {
-      // lat: jsonData.items[0].position.lat,
-      // lng: jsonData.items[0].position.lng,
       text: text,
     });
   };

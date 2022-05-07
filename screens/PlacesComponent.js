@@ -1,6 +1,8 @@
 /**
  * Description:
- *
+ * The Places Component displays a small card that
+ * displays picture, name, and a short description
+ * of a place in a list of places
  *
  * Built by: Quacky Coders
  */
@@ -15,7 +17,9 @@ const PlacesComponent = (props) => {
   const [picture, setPicture] = useState(props.place.picture);
   const [number, setNumber] = useState(props.index);
 
-  //console.log(props);
+  /**
+   * Renders the Places component
+   */
   return (
     <View
       style={styles.container}

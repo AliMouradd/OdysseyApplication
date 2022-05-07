@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The Profile Schedule Component displays a small card that
+ * shows a picture, name, and a short description
+ * of a user-generated schedule in a user's profile.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
   Text,
@@ -8,6 +18,9 @@ import {
 } from "react-native";
 
 const ProfileScheduleComponent = (props) => {
+  /**
+   * Renders a Profile Schedule Component.
+   */
   return (
     <View style={styles.container}>
       <ImageBackground

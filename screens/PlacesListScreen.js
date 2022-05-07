@@ -1,3 +1,17 @@
+/**
+ * Description:
+ *
+ * The Places List Screen displays a list
+ * of places that the user has decided they might want
+ * to go. The user can sort the order of the places,
+ * as well as delete places they might not want to go anymore.
+ *
+ * Library used for the draggable flatlist:
+ * https://github.com/computerjazz/react-native-draggable-flatlist
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -40,26 +54,49 @@ const PlacesListScreen = ({ navigation, route }) => {
   const uid = user.uid;
   const docRef = doc(db, "UserSchedules", uid);
 
+  /**
+   * After rendering, call a function
+   * to get the list of places the user
+   * decided they might want to visit.
+   */
   useEffect(() => {
     getPlacesTest();
   }, []);
 
+  /**
+   * Toggle function for the Name Input modal
+   * Set true for the boolean if it's false.
+   * Set false for the boolean if it's true.
+   * Displays the modal if true.
+   */
   const toggleNameInputModalVisible = () => {
     setNameInputModalVisible(!nameInputModalVisible);
   };
 
+  /**
+   * Toggle function for the Description Input modal
+   */
   const toggleDescriptionInputModalVisible = () => {
     setDescriptionModalVisible(!descriptionModalVisible);
   };
 
+  /**
+   * Toggle function for the Sort modal
+   */
   const toggleSortModalVisible = () => {
     setSortModalVisible(!sortModalVisible);
   };
 
+  /**
+   * Toggle function for the Filter modal
+   */
   const toggleFilterModalVisible = () => {
     setFilterModalVisible(!filterModalVisible);
   };
 
+  /**
+   * A function that sorts the list of places in ascending order.
+   */
   const sortPlacesAsc = () => {
     const sortedPlaces = [...places].sort(function (a, b) {
       if (a.title.toLowerCase() < b.title.toLowerCase()) {
@@ -73,9 +110,10 @@ const PlacesListScreen = ({ navigation, route }) => {
     setPlaces(sortedPlaces);
   };
 
+  /**
+   * A function that sorts the list of places in descending order.
+   */
   const sortPlacesDes = () => {
-    console.log("RBN");
-    console.log(places);
     const sortedPlaces = [...places].sort(function (a, b) {
       if (a.title.toLowerCase() < b.title.toLowerCase()) {
         return 1;
@@ -88,22 +126,29 @@ const PlacesListScreen = ({ navigation, route }) => {
     setPlaces(sortedPlaces);
   };
 
+  /**
+   * A function that filters the list of places by a category.
+   */
   const filterPlaces = (t) => {
     getPlacesTest();
     if (t === "All") {
       return;
     }
     const filteredPlaces = [...places].filter((p) => p.alias == t);
-    console.log("lias: ")
-    console.log(places)
     setPlaces(filteredPlaces);
   };
 
+  /**
+   * A function that deletes a place from the list.
+   */
   const deletePlace = (num) => {
     const newPlaces = [...places].filter((p) => p.number !== num);
     setPlaces(newPlaces);
   };
 
+  /**
+   * A function that saves a schedule into the database.
+   */
   const generateSchedule = async () => {
     const docSnap = await getDoc(docRef);
 
@@ -127,6 +172,10 @@ const PlacesListScreen = ({ navigation, route }) => {
     updateDoc(docRef, { schedules: newSchedulesList }, { merge: true });
   };
 
+  /**
+   * Looping through the list of places the user might want to visit,
+   * add it to an array, while extracting out the needed information.
+   */
   const getPlacesTest = () => {
     let placesData = [];
     console.log(route.params.places);
@@ -138,13 +187,17 @@ const PlacesListScreen = ({ navigation, route }) => {
           title: route.params.places[i].title,
           address: route.params.places[i].address,
           picture: route.params.places[i].picture,
-          alias: route.params.places[i].alias
+          alias: route.params.places[i].alias,
         },
       ];
     }
     setPlaces(placesData);
   };
 
+  /**
+   * Renders an item of the list of places.
+   * Makes use of the PlacesComponent.
+   */
   const renderItem = ({ item, index, drag, isActive }) => {
     return (
       <ScaleDecorator>
@@ -162,6 +215,9 @@ const PlacesListScreen = ({ navigation, route }) => {
     );
   };
 
+  /**
+   * Renders the Places List screen.
+   */
   return (
     <GestureHandlerRootView>
       <ScrollView>
@@ -276,7 +332,7 @@ const PlacesListScreen = ({ navigation, route }) => {
         <ListFilterModal
           toggleFilterModalVisible={toggleFilterModalVisible}
           filterModalVisible={filterModalVisible}
-          aliasList = {route.params.aliasList}
+          aliasList={route.params.aliasList}
           filterPlaces={(text) => filterPlaces(text)}
         />
       </ScrollView>

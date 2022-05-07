@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The Schedule Component displays a card that
+ * shows a picture, name, and a short description
+ * of a user-generated schedule in the Schedules screen.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
   Text,
@@ -8,6 +18,9 @@ import {
 } from "react-native";
 
 const ScheduleComponent = (props) => {
+  /**
+   * Renders a Schedule Component.
+   */
   return (
     <TouchableOpacity
       style={styles.container}

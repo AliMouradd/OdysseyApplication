@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The List Sort Modal displays a modal
+ * for the user to sort a list of nearby places
+ * alphabetically, A to Z or Z to A.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
   Text,
@@ -9,6 +19,9 @@ import {
 } from "react-native";
 
 const ListSortModal = (props) => {
+  /**
+   * Renders the Sort Modal.
+   */
   return (
     <Modal transparent={true} visible={props.sortModalVisible}>
       <TouchableWithoutFeedback onPress={() => props.toggleSortModalVisible()}>

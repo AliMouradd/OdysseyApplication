@@ -16,33 +16,38 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
   const [finalPlaces, setFinalPlaces] = useState([]);
   const [aliasList, setAliasList] = useState([]);
   //const API_KEY = HERE_API_KEY;
+
+  /**
+   * After rendering, call a function
+   * to get the list of nearby places
+   */
   useEffect(() => {
     getPlaces();
   }, []);
 
+  /**
+   * Adds a place from a list of places
+   * @param {Object} place - a place to be added to the list
+   */
   const addPlace = (place) => {
     const newPlaces = [...finalPlaces, place];
     setFinalPlaces(newPlaces);
   };
 
+  /**
+   * Deletes a place from a list of places
+   * @param {Object} place - a place to be deleted from the list
+   */
   const delPlace = (place) => {
     const newPlaces = [...finalPlaces].filter((p) => p.title !== place.title);
     setFinalPlaces(newPlaces);
   };
 
-  // const getAPI = async () =>{
-  //   try{
-  //   const response = await yelp.get("/search",{
-  //       params: {
-  //           limit: 20,
-  //           location: term,
-  //           categories: "arts",
-  //           sort_by: "review_count"
-  //       }
-  //   })
-  //   setResults(response.data.businesses)
-  //   console.log(response.data.businesses)
-
+  /**
+   * Using the Yelp API, get a list of nearby places.
+   * Then, extract the needed information from each of the place
+   * and add it to a list of places as an object.
+   */
   const getPlaces = async () => {
     try {
       const response = await yelp.get("/search", {
@@ -54,9 +59,9 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
         },
       });
 
+      // From the JSON data, add each nearby place with only
+      // the needed information in an array as an object.
       let d = [];
-      console.log(response.data.businesses);
-      //console.log(response.data.businesses.length);
       let al = [];
       for (let i = 0; i < response.data.businesses.length; i++) {
         d = [
@@ -88,6 +93,10 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
       // console.err(err.message);
     }
   };
+
+  /**
+   * Renders the Nearby Places screen
+   */
   return (
     <ScrollView>
       <Text

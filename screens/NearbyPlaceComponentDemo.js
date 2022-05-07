@@ -1,6 +1,10 @@
 /**
  * Description:
- *
+ * The Nearby Place Component displays a small card that
+ * displays picture, name, and a short description
+ * of a place in a list of places. It also includes a checkbox
+ * that a user can click on if they are interested in visiting
+ * that place.
  *
  * Built by: Quacky Coders
  */
@@ -15,6 +19,12 @@ const NearbyPlaceComponentDemo = (props) => {
   const [picture, setPicture] = useState(props.place.picture);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
+  /**
+   * Toggles the checkbox.
+   * Also, calls a function to add
+   * or delete a place from a list of places
+   * user wants to visit.
+   */
   const toggleBox = (newValue) => {
     if (newValue) {
       props.addPlace(props.place);
@@ -24,6 +34,9 @@ const NearbyPlaceComponentDemo = (props) => {
     setToggleCheckBox(newValue);
   };
 
+  /**
+   * Renders the Nearby Place Component
+   */
   return (
     <View style={styles.container}>
       <Image

@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The Schedule Name Input Modal displays
+ * a modal for the user to input a name
+ * for their created schedule.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import {
   TextInput,
@@ -10,6 +20,9 @@ import {
 } from "react-native";
 
 const ScheduleNameInputModal = (props) => {
+  /**
+   * Renders the Name Input Modal
+   */
   return (
     <Modal transparent={true} visible={props.nameInputModalVisible}>
       <TouchableWithoutFeedback
