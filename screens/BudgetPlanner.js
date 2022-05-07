@@ -17,7 +17,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from 'moment';
+import moment from "moment";
 import {
   collection,
   doc,
@@ -28,81 +28,76 @@ import {
   Firestore,
   getDoc,
 } from "firebase/firestore";
-import { TextPath } from 'react-native-svg';
+import { TextPath } from "react-native-svg";
 
+const BudgetPlannerV2 = ({ navigation }) => {
+  const [textInput, setTextInput] = React.useState("");
+  const [costInput, setCostInput] = React.useState("");
+  const [Costs, setCosts] = React.useState([]);
+  const [Expenses, setExpenses] = React.useState([]);
+  const [Dates, setDates] = React.useState([]);
+  const [toggleSubmit, setToggleSubmit] = useState(true);
+  const [isEditItem, setIsEditItem] = useState(null);
+  const [userDoc, setUserDoc] = useState(null);
+  const [Budget, setBudget] = React.useState([]);
+  const [text, setText] = useState("");
+  const [total, setTotal] = useState("");
+  const [startDate, setstartDate] = useState("");
+  const [endDate, setendDate] = useState("");
+  const [numOfDays, setnumOfDays] = useState("");
 
-const BudgetPlannerV2 = ()=>{
-    const [textInput, setTextInput]  = React.useState('');
-    const [costInput, setCostInput] = React.useState('');
-    const [Costs, setCosts] = React.useState([]);
-    const [Expenses,setExpenses] = React.useState([]);
-    const [Dates, setDates] = React.useState([]);
-    const [toggleSubmit, setToggleSubmit] = useState(true);
-    const [isEditItem, setIsEditItem] = useState(null);
-    const [userDoc, setUserDoc] = useState(null);
-    const [Budget, setBudget] = React.useState([]);
-    const [text, setText] = useState("");
-    const [total,setTotal] = useState("");
-    const [startDate,setstartDate] = useState("");
-    const [endDate,setendDate] = useState("");
-    const [numOfDays,setnumOfDays] = useState("");
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
 
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const uid = user.uid;
+  const myDoc = doc(db, "BudgetPlanner", uid);
+  const docRef = doc(db, "BudgetPlanner", uid);
+  const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
 
-    const myDoc = doc(db, "BudgetPlanner", uid);
-    const docRef = doc(db, "BudgetPlanner", uid);
-    const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
+  const getBudget = () => {
+    getDoc(docBudgetRef).then((doc) => {
+      setBudget(doc.get("budget"));
+    });
+  };
 
-    const getBudget = () => {
-        getDoc(docBudgetRef)
-        .then((doc) => {  
-            setBudget(doc.get("budget"));
-            }
-        )
-    };
+  const getNumOfDays = () => {
+    getDoc(docBudgetRef)
+    .then((doc) => {
+        var num = moment(doc.get("endDate"),'MM-DD-YYYY').diff(moment(doc.get("startDate"),'MM-DD-YYYY'),'days');
+        setnumOfDays(num);
+        return num;
+    }
+    )
+};
 
-    const getNumOfDays = () => {
-        getDoc(docBudgetRef)
-        .then((doc) => {  
-            var num = moment(doc.get("endDate"),'MM-DD-YYYY').diff(moment(doc.get("startDate"),'MM-DD-YYYY'),'days');
-            setnumOfDays(num);
-            return num;
-        }
-        )
-    };
+  const calculateTotal = () => {
+    let total = 0;
+    for (let i = 0; i < Expenses.length; i++) {
+      console.log(Expenses[i].Costs);
+      total = parseInt(total) + parseInt(Expenses[i].Costs);
+    }
+    //total = parseInt(total) + parseInt(costInput)
+    setTotal(total);
+    console.log("TOTAL: ");
+    console.log(total);
+  };
 
-    const calculateTotal = () => {
-        let total = 0
-        for (let i = 0; i < Expenses.length; i++) {
-            console.log(Expenses[i].Costs)
-            total  =  parseInt(total) + parseInt(Expenses[i].Costs)
-          };
-        //total = parseInt(total) + parseInt(costInput)
-        setTotal(total);
-        console.log("TOTAL: ")
-        console.log(total)
-     }
+  const addPreviousExpenses = () => {
+    getDoc(docRef).then((doc) => {
+      setExpenses(doc.get("Expenses"));
+    });
+  };
 
-    const addPreviousExpenses = () => {
-        getDoc(docRef)
-        .then((doc) => {  
-            setExpenses(doc.get("Expenses"));
-            }
-        )
-    };
-
-    const createDoc = async () => {
-      const snap = await getDoc(docRef);
-      if (!snap.exists()) {
-        const docRef = doc(db, "BudgetPlanner", uid);
-        const docData = {
-          Expenses: [],
-        };
-        setDoc(docRef, docData);
-      }
-    };
+  const createDoc = async () => {
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) {
+      const docRef = doc(db, "BudgetPlanner", uid);
+      const docData = {
+        Expenses: [],
+      };
+      setDoc(docRef, docData);
+    }
+  };
 
   React.useEffect(() => {
     addPreviousExpenses();
@@ -223,7 +218,7 @@ const BudgetPlannerV2 = ()=>{
         Dates: moment().format("DD/MM/YYYY"),
       };
 
-      calculateTotal(costInput);
+      //calculateTotal(costInput);
       setExpenses([...Expenses, newExpenses]);
       setTextInput("");
       setCostInput("");
