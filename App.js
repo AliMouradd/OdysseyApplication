@@ -36,7 +36,7 @@ export default function App() {
           component={QuestionnaireStartScreen}
         />
         <Stack.Screen
-          name="Getting Started"
+          name="Location Question"
           component={LocationQuestionScreen}
         />
         <Stack.Screen

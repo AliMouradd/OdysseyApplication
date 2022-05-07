@@ -12,7 +12,7 @@ import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
 import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
-// this will contain all questions and possible answers
+// Survey array of question objects will contain all questions and possible answers:
 const survey = [
   {
     questionType: "TextInput",
@@ -147,6 +147,14 @@ const survey = [
   },
 ];
 
+/**
+ * Description:
+ *
+ * The Survey Screen will show the user the questionnaire and allow the user to
+ * input their answers. After all answers are inputted, the answers will be saved to the database.
+ *
+ * Built by: Quacky Coders
+ */
 export default class SurveyScreen extends Component {
   constructor(props) {
     super(props);
@@ -386,6 +394,9 @@ export default class SurveyScreen extends Component {
   }
 }
 
+/**
+ * StyleSheet for components.
+ */
 const styles = StyleSheet.create({
   button: {
     margin: 10,

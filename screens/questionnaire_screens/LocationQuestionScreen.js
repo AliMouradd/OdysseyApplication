@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,15 @@ import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
+/**
+ * Description:
+ *
+ * The Location Question Screen allows the user to search for and input a location
+ * that will serve as their vacation location. This user inputted location will
+ * then be saved to the database.
+ *
+ * Built by: Quacky Coders
+ */
 const LocationQuestionScreen = ({ navigation }) => {
   const ref = useRef();
 
@@ -18,6 +27,9 @@ const LocationQuestionScreen = ({ navigation }) => {
     console.log(ref.current?.getAddressText());
   };
 
+  /**
+   * Function to save inputted location to database.
+   */
   const writeToDatabase = () => {
     // setup for getting current user's ID:
     const auth = getAuth();
@@ -36,8 +48,7 @@ const LocationQuestionScreen = ({ navigation }) => {
       // initializing doc reference:
       const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
 
-      // creates the doc and adds vacationLocation (check for updating and overwriting)
-      // maybe delete or revert doc if user backs out from this screen?
+      // creates the doc and adds vacationLocation
       setDoc(userAnswersDocRef, docData)
         .then(() => {
           ToastAndroid.show("Document Created", ToastAndroid.SHORT);
@@ -50,6 +61,7 @@ const LocationQuestionScreen = ({ navigation }) => {
     }
   };
 
+  // Main return:
   return (
     <View style={styles.container}>
       <Text style={styles.questionText}>
@@ -59,6 +71,7 @@ const LocationQuestionScreen = ({ navigation }) => {
       <Text style={styles.questionText}>
         Where are you planning to go for your vacation?
       </Text>
+      {/* Location Search Box*/}
       <GooglePlacesAutocomplete
         ref={ref}
         placeholder={"Search for a city..."}
@@ -68,7 +81,7 @@ const LocationQuestionScreen = ({ navigation }) => {
           //console.log("details", details);
         }}
         query={{
-          key: "AIzaSyCYeXwGAufetFuE8BQzIL5BFREfbUk9v4o",
+          key: "AIzaSyAlQmVRL7LxjWepNA8PvOO-2hYIOvkrAeU",
           language: "en",
         }}
         debounce={500}
@@ -137,6 +150,9 @@ const LocationQuestionScreen = ({ navigation }) => {
   );
 };
 
+/**
+ * StyleSheet for components.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

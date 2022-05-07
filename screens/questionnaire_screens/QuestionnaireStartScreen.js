@@ -1,7 +1,17 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
+/**
+ * Description:
+ *
+ * The QuestionnaireStartScreen is a simple screen that displays the start screen
+ * of the Questionnaire. Here the user is shown details about the questionnaire and the
+ * option to start filling out their questionnaire.
+ *
+ * Built by: Quacky Coders
+ */
 export default function QuestionnaireStartScreen({ navigation }) {
+  // Main return
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeTitle}>
@@ -13,7 +23,7 @@ export default function QuestionnaireStartScreen({ navigation }) {
       </Text>
       <TouchableOpacity
         style={styles.nextButton}
-        onPress={() => navigation.navigate("Getting Started")} // go to "Questionnaire" for survey, "Answers" for test read
+        onPress={() => navigation.navigate("Location Question")} // navigate to location question
       >
         <Text style={{ fontSize: 16 }}>Start Questionnaire</Text>
       </TouchableOpacity>
@@ -21,6 +31,9 @@ export default function QuestionnaireStartScreen({ navigation }) {
   );
 }
 
+/**
+ * StyleSheet for components.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
