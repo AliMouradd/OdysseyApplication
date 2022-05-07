@@ -160,8 +160,29 @@ const UserItineraryScreen = ({ navigation }) => {
       });
   };
 
+  // doesnt work.
   const editEvent = () => {
     console.log("editEvent called!");
+    // delete event
+    // add event
+    // uses editTitle, pickerdate, selectedPlace
+    deleteEvent(); // first delete old event
+    const data = {
+      title: selectedEventModal.item?.title,
+      datetime: pickerdate,
+      place: selectedPlace,
+      id: Math.random(),
+    };
+    const newEventsArray = [...events, data];
+    console.log(newEventsArray);
+    updateDoc(userSchedDocRef, { events: newEventsArray }, { merge: true })
+      .then(() => {
+        ToastAndroid.show("Event edited", ToastAndroid.SHORT);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+    //setEditTitle("");
   };
 
   // datetimepicker functions
@@ -221,25 +242,21 @@ const UserItineraryScreen = ({ navigation }) => {
       <View>
         <TouchableOpacity
           style={styles.eventcontainer}
-          onPress={() =>
-            // navigation.navigate("Itinerary Event View", {
-            //   userevents: events,
-            //   title: event.item.title,
-            //   datetime: event.item.datetime,
-            //   place: event.item.place,
-            //   id: event.item.id,
-            // })
-            [setEventModalVisible(true), setSelectedEventModal(event)]
-          }
+          onPress={() => [
+            setEventModalVisible(true),
+            setSelectedEventModal(event),
+          ]}
         >
-          <Text>title: {event.item.title}</Text>
-          <Text>
-            date: {moment(event.item.datetime.toDate()).format("MM/DD/YYYY")}
+          <Text style={{ fontWeight: "bold", fontSize: 17 }}>
+            {event.item.title}
           </Text>
-          <Text>
-            time: {moment(event.item.datetime.toDate()).format("hh:mm A")}
+          <Text style={{ fontSize: 15 }}>
+            {moment(event.item.datetime.toDate()).format("MM/DD/YYYY")}
           </Text>
-          <Text>place: {event.item.place}</Text>
+          <Text style={{ fontSize: 15 }}>
+            {moment(event.item.datetime.toDate()).format("hh:mm A")}
+          </Text>
+          <Text style={{ fontSize: 15 }}>Place: {event.item.place}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -256,8 +273,17 @@ const UserItineraryScreen = ({ navigation }) => {
           }
           onPress={() => setSelectedPlace(place.item.name)}
         >
-          <Text>{place.item.name}</Text>
-          <Text>{place.item.type}</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              marginHorizontal: 3,
+              marginVertical: 5,
+              flexWrap: "nowrap",
+            }}
+          >
+            {place.item.name}
+          </Text>
+          {/* <Text style={{ fontSize: 12 }}>{place.item.type}</Text> */}
         </TouchableOpacity>
       </View>
     );
@@ -282,10 +308,10 @@ const UserItineraryScreen = ({ navigation }) => {
             highlightColor: "#9265DC",
           }}
           style={{ height: 120, paddingTop: 20, paddingBottom: 10 }}
-          calendarHeaderStyle={{ color: "black" }}
+          calendarHeaderStyle={{ color: "black", fontSize: 15 }}
           calendarColor={"#FFD56D"}
-          dateNumberStyle={{ color: "black" }}
-          dateNameStyle={{ color: "black" }}
+          dateNumberStyle={{ color: "black", fontSize: 14 }}
+          dateNameStyle={{ color: "black", fontSize: 12 }}
           iconContainer={{ flex: 0.1 }}
           highlightDateNameStyle={{ color: "white" }}
           highlightDateNumberStyle={{ color: "white" }}
@@ -299,7 +325,7 @@ const UserItineraryScreen = ({ navigation }) => {
           maxDate={tripEndDate}
         />
 
-        <Text style={{ fontSize: 24 }}>Selected Date: {selectedDate}</Text>
+        {/* <Text style={{ fontSize: 24 }}>Selected Date: {selectedDate}</Text> */}
 
         <View style={styles.eventslistcontainer}>
           <FlatList
@@ -327,8 +353,10 @@ const UserItineraryScreen = ({ navigation }) => {
           }}
         >
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={{ fontSize: 19, fontWeight: "bold" }}>
+            <View style={styles.addModalView}>
+              <Text
+                style={{ fontSize: 21, fontWeight: "bold", marginBottom: 10 }}
+              >
                 Enter new event details:
               </Text>
               <TextInput
@@ -338,24 +366,26 @@ const UserItineraryScreen = ({ navigation }) => {
                 placeholder="Enter title..."
               />
               <Text
-                style={{ fontSize: 17, fontWeight: "bold" }}
+                style={{ fontSize: 18, fontWeight: "bold" }}
                 onPress={() => showDatePicker()}
               >
                 {moment(pickerdate).format("MM/DD/YYYY")}
               </Text>
               <Text
-                style={{ fontSize: 17, fontWeight: "bold" }}
+                style={{ fontSize: 18, fontWeight: "bold" }}
                 onPress={() => showTimePicker()}
               >
                 {moment(pickerdate).format("hh:mm A")}
               </Text>
-              <View style={{ height: "55%", margin: 10 }}>
-                <Text>Choose a place from your list:</Text>
-                <Text>Selected place: {selectedPlace}</Text>
+              <Text style={{ marginTop: 10, fontSize: 15 }}>
+                Choose a place from your list:
+              </Text>
+              <View style={{ height: "44%", marginBottom: 10 }}>
                 <FlatList
                   data={places}
                   renderItem={(item) => <PlacesListItem place={item} />}
                 />
+                <Text>Selected place: {selectedPlace}</Text>
               </View>
               <View style={styles.modalbuttonsview}>
                 <TouchableOpacity
@@ -400,10 +430,32 @@ const UserItineraryScreen = ({ navigation }) => {
           }}
         >
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text>{selectedEventModal.item?.title}</Text>
-              <Text>{selectedEventModal.item?.datetime.toString()}</Text>
-              <Text>{selectedEventModal.item?.place}</Text>
+            <View style={styles.eventModalView}>
+              <Text
+                style={{ fontWeight: "bold", fontSize: 19, marginBottom: 20 }}
+              >
+                Event
+              </Text>
+              <View style={{ width: "100%", marginBottom: 20 }}>
+                <Text style={{ fontSize: 16 }}>
+                  Event Title: {selectedEventModal.item?.title}
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  Event Date:{" "}
+                  {moment(selectedEventModal.item?.datetime.toDate()).format(
+                    "MM/DD/YYYY"
+                  )}
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  Event Time:{" "}
+                  {moment(selectedEventModal.item?.datetime.toDate()).format(
+                    "hh:mm A"
+                  )}
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  Event Place: {selectedEventModal.item?.place}
+                </Text>
+              </View>
               <View style={styles.modalbuttonsview}>
                 <TouchableOpacity
                   style={styles.modalbutton}
@@ -417,7 +469,7 @@ const UserItineraryScreen = ({ navigation }) => {
                 >
                   <Text>Delete Event</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={styles.modalbutton}
                   onPress={() => [
                     setEventModalVisible(false),
@@ -425,13 +477,13 @@ const UserItineraryScreen = ({ navigation }) => {
                   ]}
                 >
                   <Text>Edit Event</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </View>
         </Modal>
 
-        {/* Edit Event Modal: */}
+        {/* Edit Event Modal: (not used)*/}
         <Modal
           animationType="fade"
           transparent={true}
@@ -481,17 +533,14 @@ const UserItineraryScreen = ({ navigation }) => {
               <View style={styles.modalbuttonsview}>
                 <TouchableOpacity
                   style={styles.modalbutton}
-                  onPress={() => [
-                    setEditModalVisible(false),
-                    console.log(selectedEventModal.item?.datetime),
-                  ]}
+                  onPress={() => [setEditModalVisible(false)]}
                 >
                   <Text>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.modalbutton}
                   onPress={() => [
-                    addEventToDatabase(),
+                    editEvent(),
                     getEventsFromDatabase(),
                     setAddModalVisible(false),
                   ]}
@@ -524,11 +573,13 @@ const styles = StyleSheet.create({
   },
   eventslistcontainer: {
     flex: 1,
+    marginTop: 7,
   },
   eventcontainer: {
     backgroundColor: "#FFD56D",
     borderRadius: 7,
-    padding: 20,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     marginVertical: 8,
     marginHorizontal: 16,
   },
@@ -551,8 +602,25 @@ const styles = StyleSheet.create({
     marginTop: 56,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  modalView: {
-    height: "88%",
+  addModalView: {
+    height: "90%",
+    width: "90%",
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  eventModalView: {
+    height: "40%",
     width: "90%",
     margin: 20,
     backgroundColor: "white",
@@ -574,8 +642,8 @@ const styles = StyleSheet.create({
   },
   modalbutton: {
     backgroundColor: "#FFD56D",
-    height: 40,
-    width: 100,
+    height: 45,
+    width: 120,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
