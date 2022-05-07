@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The ProfileScreen displays a user's profile screen.
+ * The profile contains every schedule the user
+ * has made.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -19,6 +29,11 @@ const ProfileScreen = ({ navigation, route }) => {
   const [likes, setLikes] = useState(0);
   const [schedules, setSchedules] = useState([]);
 
+  /**
+   * After rendering, get the name of the user through the database.
+   * Also, get how many number of likes the user has.
+   * Finally, get the schedules that the user has made.
+   */
   useEffect(async () => {
     if (route.params.id === 0) {
       setName("Guest");
@@ -41,6 +56,9 @@ const ProfileScreen = ({ navigation, route }) => {
     }
   }, []);
 
+  /**
+   * Renders the profile screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.background}>

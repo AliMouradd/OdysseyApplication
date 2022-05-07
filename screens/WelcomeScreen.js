@@ -23,6 +23,9 @@ import Background from "../assets/blob-haikei2.svg";
 import BackgroundTwo from "../assets/blob-haikei3.svg";
 
 const WelcomeScreen = ({ navigation }) => {
+  /**
+   * Renders the welcome screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Background style={{ position: "absolute" }} />

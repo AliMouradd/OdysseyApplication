@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The GoalScreen displays a screen for a user to input goals they
+ * want to accomplish during their trip. They can add, delete, and
+ * update their goals.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState } from "react";
 import {
   Platform,

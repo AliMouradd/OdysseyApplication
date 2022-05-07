@@ -1,3 +1,14 @@
+/**
+ * Description:
+ *
+ * The HomepageScreen displays a screen for a user to see what
+ * they can do on the application. The buttons on the screen
+ * will allow users to access the different functionalities
+ * of the application.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -12,6 +23,7 @@ import { getAuth } from "firebase/auth";
 import { app } from "../Config";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
+// Import the Lato Fonts
 import {
   useFonts,
   Lato_400Regular,
@@ -33,6 +45,9 @@ const HomepageScreen = ({ navigation, route }) => {
   const user = auth.currentUser;
   const uid = user.uid;
 
+  /**
+   * After rendering, get the name of the user through the database.
+   */
   useEffect(async () => {
     const infoRef = doc(db, "users", uid);
     const info = await getDoc(infoRef);
@@ -49,6 +64,9 @@ const HomepageScreen = ({ navigation, route }) => {
     return <AppLoading />;
   }
 
+  /**
+   * Renders the home page screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Background style={{ position: "absolute" }} />
@@ -122,8 +140,9 @@ const HomepageScreen = ({ navigation, route }) => {
           />
           <Text style={styles.p}>Questionnaire</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btn}
-        onPress={() => navigation.navigate("Budget Planner")}
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Budget Planner")}
         >
           <Image
             style={{ height: 55, width: 55, borderRadius: 15, marginBottom: 5 }}
@@ -154,7 +173,6 @@ const HomepageScreen = ({ navigation, route }) => {
           />
           <Text style={styles.p}>Routes</Text>
         </TouchableOpacity>
-        
       </View>
     </SafeAreaView>
   );

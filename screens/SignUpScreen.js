@@ -33,6 +33,13 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  /**
+   * Sign Up function.
+   * Creates an account based on user input.
+   * Add new documents into database.
+   * Also, alert user if something goes wrong
+   * during the account creation process
+   */
   const signup = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -62,6 +69,9 @@ const SignUpScreen = () => {
     }
   };
 
+  /**
+   * Renders the sign up screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logo}>

@@ -1,3 +1,15 @@
+/**
+ * Description:
+ *
+ * The Carousel Component. Displays basic information
+ * about the application.
+ *
+ * Library used:
+ * https://github.com/meliorence/react-native-snap-carousel
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 
@@ -10,25 +22,25 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 const CarouselComponent = () => {
   const [index, setIndex] = useState(0);
 
-  //placeholder data
+  // data contains the picture and information that will be shown.
   let data = [
     {
       picture: FirstImg,
-      title:
-        "Plan your vacation!",
+      title: "Plan your vacation!",
     },
     {
       picture: SecondImg,
-      title:
-        "Get your routes!",
+      title: "Get your routes!",
     },
     {
       picture: ThirdImg,
-      title:
-        "Set your goals and budget!",
+      title: "Set your goals and budget!",
     },
   ];
 
+  /**
+   * Renders an item of the carousel
+   */
   CarouselItem = ({ item, index }) => {
     return (
       <View>
@@ -40,6 +52,9 @@ const CarouselComponent = () => {
     );
   };
 
+  /**
+   * Renders the carousel
+   */
   return (
     <View style={styles.carousel}>
       <Carousel

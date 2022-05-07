@@ -1,3 +1,12 @@
+/**
+ * Description:
+ *
+ * The LookUpScreen displays a screen for a user to
+ * input a location.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -31,6 +40,9 @@ const LookUpScreen = ({ navigation }) => {
     });
   };
 
+  /**
+   * Renders the Look Up Screen.
+   */
   return (
     <View style={styles.container}>
       <Background style={{ position: "absolute" }} />

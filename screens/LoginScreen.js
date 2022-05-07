@@ -34,6 +34,11 @@ const LoginScreen = ({ navigation }) => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
+  /**
+   * Login function.
+   * Log in an user using their inputted credentials.
+   * Alerts the user if the information is invalid.
+   */
   const login = () => {
     signInWithEmailAndPassword(auth, username, password)
       .then((userCredential) => {
@@ -50,12 +55,19 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
+  /**
+   * Login as Guest function.
+   * Logs an user in as a Guest.
+   */
   const loginAnon = () => {
     signInAnonymously(auth).then(() => {
       navigation.navigate("Home", { id: 0 });
     });
   };
 
+  /**
+   * Renders the Login Screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Background style={{ position: "absolute" }} />

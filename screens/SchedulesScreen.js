@@ -1,3 +1,13 @@
+/**
+ * Description:
+ *
+ * The SchedulesScreen displays public schedules
+ * that other users has made. It will also display
+ * schedules that the user has made too.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
@@ -30,6 +40,11 @@ const SchedulesScreen = ({ navigation }) => {
   const auth = getAuth();
   const user = auth.currentUser;
   const uid = user.uid;
+
+  /**
+   * After rendering, get the user's schedules.
+   * Also, get the public schedules.
+   */
   useEffect(async () => {
     const docRef = doc(db, "UserSchedules", uid);
     const schedulesInfo = await getDoc(docRef);
@@ -48,6 +63,10 @@ const SchedulesScreen = ({ navigation }) => {
     });
     setPublicSchedules(s);
   }, []);
+
+  /**
+   * Renders the Schedule Screen.
+   */
   return (
     <SafeAreaView style={style.container}>
       <ScrollView>
