@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 //JSON.stringify(routesteps.apisteps[0].html_instructions

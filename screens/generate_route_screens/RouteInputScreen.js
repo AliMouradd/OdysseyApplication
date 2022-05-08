@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 const RouteInputScreen = ({ navigation, route }) => {
@@ -27,7 +27,7 @@ const RouteInputScreen = ({ navigation, route }) => {
           }
         }}
         query={{
-          key: "INSERTKEYHERE",
+          key: "AIzaSyAlQmVRL7LxjWepNA8PvOO-2hYIOvkrAeU",
           language: "en",
         }}
         debounce={500}
