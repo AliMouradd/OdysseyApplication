@@ -201,7 +201,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
           return expense;
         })
       );
-      calculateTotal(costInput);
+      calculateTotal();
       set;
       setToggleSubmit(true);
       setTextInput("");
@@ -231,6 +231,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
           updateDoc(docRef, { Expenses: recentExpenseList }, { merge: true });
         }
       });
+      calculateTotal();
     }
     updateDoc(
       docRef,
@@ -239,6 +240,9 @@ const BudgetPlannerV2 = ({ navigation }) => {
       { Dates: Dates },
       { merge: true }
     );
+
+    //addPreviousExpenses()
+    calculateTotal()
   };
 
   const deleteExpense = (expenseId) => {
