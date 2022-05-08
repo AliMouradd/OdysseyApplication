@@ -202,7 +202,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
         })
       );
       calculateTotal();
-      set;
+      //set;
       setToggleSubmit(true);
       setTextInput("");
       setCostInput("");
@@ -279,9 +279,9 @@ const BudgetPlannerV2 = ({ navigation }) => {
       <View>
         <Text style={styles.budgetTitle}>Your Max budget: ${Budget}</Text>
       </View>
-      <View>
+      {/* <View>
         <Text style={styles.budgetTitle}>Total Spent: ${total}</Text>
-      </View>
+      </View> */}
 
       {/* should display  total/numOfDays */}
       <View>
