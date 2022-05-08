@@ -59,7 +59,7 @@ const PlacesScreen = ({ navigation, route }) => {
       }
     }
     setNewAliasList(aliasData);
-    setTempPlaces(route.params.schedule.places);
+    setTempPlaces(places);
   }, []);
 
   /**
@@ -215,7 +215,7 @@ const PlacesScreen = ({ navigation, route }) => {
       <View style={styles.background}>
         <ImageBackground
           style={{ flex: 1 }}
-          source={{ uri: places[0].picture }}
+          source={{ uri: route.params.schedule.places[0].picture }}
         >
           <View style={styles.btns}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -302,7 +302,7 @@ const PlacesScreen = ({ navigation, route }) => {
       <View style={{ width: "90%", alignSelf: "center" }}>
         {places.map((place) => (
           <PlacesComponent
-            key={place.name}
+            key={place.title}
             place={place}
             index={place.number}
             ui={false}
