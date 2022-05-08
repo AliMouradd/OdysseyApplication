@@ -65,7 +65,7 @@ const UserItineraryScreen = ({ navigation }) => {
   // Firestore document references
   const userSchedDocRef = doc(db, "GenSchedules", uid); // where Itinerary info is stored
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
-  const placesListDocRef = doc(db, "UserSchedules", uid); // for getting user's places list
+  const placesListDocRef = doc(db, "UserSchedules", "1236"); // for getting user's places list
 
   /*
    * useEffect functions are called when the screen first renders

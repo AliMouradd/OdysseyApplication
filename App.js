@@ -55,7 +55,10 @@ export default function App() {
           component={RouteInputScreen}
           options={{ title: "Location Search" }}
         />
-        <Stack.Screen name="User Itinerary" component={UserItineraryScreen} />
+        <Stack.Screen
+          name="Personal Schedule"
+          component={UserItineraryScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

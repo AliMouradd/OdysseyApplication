@@ -82,9 +82,9 @@ const HomepageScreen = ({ navigation, route }) => {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => navigation.navigate("User Itinerary")}
+          onPress={() => navigation.navigate("Personal Schedule")}
         >
-          <Text>User Itinerary</Text>
+          <Text>Personal Schedule</Text>
         </TouchableOpacity>
       </View>
     </View>
