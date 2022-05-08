@@ -41,6 +41,7 @@ const PlacesScreen = ({ navigation, route }) => {
   const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
   const [newAliasList, setNewAliasList] = useState([]);
+  const [tempPlaces, setTempPlaces] = useState([]);
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -49,9 +50,16 @@ const PlacesScreen = ({ navigation, route }) => {
   useEffect(() => {
     let aliasData = [];
     for (let i = 0; i < route.params.schedule.places.length; i++) {
-      aliasData = [...aliasData, route.params.schedule.places[i].alias];
+      if (
+        !aliasData.find(
+          (element) => element == route.params.schedule.places[i].alias
+        )
+      ) {
+        aliasData = [...aliasData, route.params.schedule.places[i].alias];
+      }
     }
     setNewAliasList(aliasData);
+    setTempPlaces(route.params.schedule.places);
   }, []);
 
   /**
@@ -122,10 +130,11 @@ const PlacesScreen = ({ navigation, route }) => {
    */
   const filterPlaces = (t) => {
     if (t === "All") {
-      return;
+      setPlaces(tempPlaces);
+    } else {
+      const filteredPlaces = [...tempPlaces].filter((p) => p.alias === t);
+      setPlaces(filteredPlaces);
     }
-    const filteredPlaces = [...places].filter((p) => p.alias == t);
-    setPlaces(filteredPlaces);
   };
 
   /**
