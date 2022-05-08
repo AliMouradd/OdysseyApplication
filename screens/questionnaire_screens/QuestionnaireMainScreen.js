@@ -12,7 +12,7 @@ import { db } from "./../../Config";
 import { getAuth } from "firebase/auth";
 import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
-// Survey array of question objects will contain all questions and possible answers:
+// Array of survey question objects will contain all questions and possible answers:
 const survey = [
   {
     questionType: "TextInput",
@@ -161,6 +161,7 @@ export default class SurveyScreen extends Component {
     this.state = { answersSoFar: "" };
   }
 
+  // Function to render survey previous button
   renderPreviousButton(onPress, enabled) {
     return (
       <View
@@ -177,6 +178,7 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  // Function to render survey next button
   renderNextButton(onPress, enabled) {
     return (
       <View
@@ -196,6 +198,7 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  // Function to render survey finished button
   renderFinishedButton(onPress, enabled) {
     return (
       <View
@@ -212,10 +215,10 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  // Function to render survey question text
   renderQuestionText(questionText) {
     return (
       <View style={{ marginLeft: 10, marginRight: 10 }}>
-        {/* add a question counter here with states? (text with variable) */}
         <Text numLines={1} style={styles.questionText}>
           {questionText}
         </Text>
@@ -223,6 +226,7 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  // Function to render multiple selection buttons
   renderButton(data, index, isSelected, onPress) {
     return (
       <View
@@ -244,16 +248,21 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  /**
+   * Function that is called when survey is finished.
+   * This function prepares all the answers from the survey and adds them to one object.
+   * The object containing the user's survey answers is then saved to the database.
+   */
   async onSurveyFinished(answers) {
-    console.log("User finished questionnaire!");
+    //console.log("User finished questionnaire!");
     const infoQuestionsRemoved = [...answers];
 
     // convert from array to object:
     const answersAsObject = {};
     for (const elem of infoQuestionsRemoved) {
       answersAsObject[elem.questionId] = elem.value;
-      console.log(elem.questionId);
-      console.log(elem.value[0]);
+      //console.log(elem.questionId);
+      //console.log(elem.value[0]);
     }
 
     // setup for getting current user's ID:
@@ -263,9 +272,9 @@ export default class SurveyScreen extends Component {
 
     //console.log("finished, user id is: ", uid);
 
-    console.log(answersAsObject.startDate);
-    console.log(answersAsObject.travelMethods);
-    console.log(answersAsObject.travelMethods[0].value);
+    //console.log(answersAsObject.startDate);
+    //console.log(answersAsObject.travelMethods);
+    //console.log(answersAsObject.travelMethods[0].value);
 
     var travelMethodsArrayLength = answersAsObject.travelMethods.length;
     var interestsArrayLength = answersAsObject.interests.length;
@@ -274,7 +283,7 @@ export default class SurveyScreen extends Component {
     // doc reference
     const userAnswersDocRef = doc(db, "UserQuestionnaireAnswers", uid);
 
-    // maybe add user ID's to documents?
+    // all the survey answers data that will be added to the database:
     const docData = {
       startDate: answersAsObject.startDate,
       endDate: answersAsObject.endDate,
@@ -284,16 +293,16 @@ export default class SurveyScreen extends Component {
       foodInterests: [],
     };
 
-    // update the doc
+    // Update the doc with startDate, endDate, budget answers + empty answers for the rest
     setDoc(userAnswersDocRef, docData, { merge: true })
       .then(() => {
-        ToastAndroid.show("Document Updated", ToastAndroid.SHORT);
+        ToastAndroid.show("Questionnaire Saved", ToastAndroid.SHORT);
       })
       .catch((error) => {
         alert(error.message);
       });
 
-    // loop through the multiple selection answers array, adding them to the database
+    // loop through the each of the multiple selection answer arrays, adding them to the database
     for (var i = 0; i < travelMethodsArrayLength; i++) {
       console.log(answersAsObject.travelMethods[i].value);
       await updateDoc(userAnswersDocRef, {
@@ -315,12 +324,13 @@ export default class SurveyScreen extends Component {
       });
     }
 
+    // After saving to database, return to home screen.
     this.props.navigation.navigate("Home");
   }
 
+  // Function called when an answer is submitted.
   onAnswerSubmitted(answer) {
-    // do input validation here
-    console.log(answer);
+    //console.log(answer);
 
     // if (answer.questionId == "startDate" || "endDate") {
     //   this.renderNextButton()
@@ -328,9 +338,10 @@ export default class SurveyScreen extends Component {
 
     this.setState({
       answersSoFar: JSON.stringify(this.surveyRef.getAnswers(), 2),
-    });
+    }); // Update the answers so far.
   }
 
+  // Function to render question text input boxes.
   renderTextBox(onChange, value, placeholder, onBlur) {
     return (
       <View>
@@ -351,6 +362,7 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  // Function to render survey information text.
   renderInfoText(infoText) {
     return (
       <View style={styles.infoContainer}>
@@ -359,9 +371,11 @@ export default class SurveyScreen extends Component {
     );
   }
 
+  // Main render:
   render() {
     return (
       <View style={styles.container}>
+        {/* Simple Survey component, handles rendering of survey questions and answers. */}
         <SimpleSurvey
           ref={(s) => {
             this.surveyRef = s;
@@ -377,7 +391,7 @@ export default class SurveyScreen extends Component {
           renderNext={this.renderNextButton.bind(this)}
           renderFinished={this.renderFinishedButton.bind(this)}
           renderQuestionText={this.renderQuestionText}
-          renderSelector={this.renderButton.bind(this)} // for selection buttons
+          renderSelector={this.renderButton.bind(this)} // for multiple selection buttons
           onSurveyFinished={(answers) => this.onSurveyFinished(answers)}
           onAnswerSubmitted={(answer) => this.onAnswerSubmitted(answer)}
           renderTextInput={this.renderTextBox}
@@ -411,7 +425,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "flex-start",
-    //borderRadius: 10,
     flex: 1,
   },
   answersContainer: {
@@ -432,8 +445,6 @@ const styles = StyleSheet.create({
     padding: 5,
     height: "70%",
     flex: 1,
-    //flexGrow: 1,
-    //elevation: 20,
   },
   selectionGroupContainer: {
     flexDirection: "row",
@@ -455,7 +466,6 @@ const styles = StyleSheet.create({
     height: 45,
     width: 150,
     borderRadius: 10,
-    //elevation: 3
   },
   selectionButtonSelected: {
     alignItems: "center",
@@ -466,7 +476,6 @@ const styles = StyleSheet.create({
     height: 45,
     width: 150,
     borderRadius: 10,
-    //elevation: 3
   },
   navButtonText: {
     margin: 10,
@@ -478,9 +487,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFD56D",
     padding: 15,
-    width: 100, //maybe make these 150 and fix formatting
+    width: 100,
     borderRadius: 10,
-    //elevation: 3,
   },
   surveyNavButtonDisabled: {
     alignItems: "center",
