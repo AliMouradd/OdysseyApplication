@@ -1,14 +1,20 @@
+/**
+ * Description:
+ *
+ * The BudgetPlanner displays a screen for a user to input
+ * a description and a cost of expenses that they might
+ * make during the trip.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState } from "react";
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   TextInput,
-  KeyboardAvoidingView,
-  Keyboard,
   TouchableOpacity,
-  ScrollView,
   FlatList,
   Alert,
 } from "react-native";
@@ -16,19 +22,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
-import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  addDoc,
-  Firestore,
-  getDoc,
-} from "firebase/firestore";
-import { TextPath } from "react-native-svg";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 
 const BudgetPlannerV2 = ({ navigation }) => {
   const [textInput, setTextInput] = React.useState("");
@@ -61,14 +56,15 @@ const BudgetPlannerV2 = ({ navigation }) => {
   };
 
   const getNumOfDays = () => {
-    getDoc(docBudgetRef)
-    .then((doc) => {
-        var num = moment(doc.get("endDate"),'MM-DD-YYYY').diff(moment(doc.get("startDate"),'MM-DD-YYYY'),'days');
-        setnumOfDays(num);
-        return num;
-    }
-    )
-};
+    getDoc(docBudgetRef).then((doc) => {
+      var num = moment(doc.get("endDate"), "MM-DD-YYYY").diff(
+        moment(doc.get("startDate"), "MM-DD-YYYY"),
+        "days"
+      );
+      setnumOfDays(num);
+      return num;
+    });
+  };
 
   const calculateTotal = () => {
     let total = 0;
@@ -242,7 +238,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
     );
 
     //addPreviousExpenses()
-    calculateTotal()
+    calculateTotal();
   };
 
   const deleteExpense = (expenseId) => {

@@ -1,3 +1,11 @@
+/**
+ * Description:
+ * The Nearby Place screen displays a list of nearby places
+ * after a user inputs a location.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   View,

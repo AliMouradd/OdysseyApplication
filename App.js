@@ -1,6 +1,15 @@
+/**
+ * Description:
+ * The starting point of the Odyssey Mobile Application
+ *
+ * Built by: Quacky Coders
+ */
+
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+//Import the odyssey application screens
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -21,8 +30,9 @@ import { LogBox } from "react-native";
 
 LogBox.ignoreAllLogs(true);
 
+// Wrap the whole application in Navigation Container,
+// so that the application can use React Navigation
 const Stack = createNativeStackNavigator();
-
 export default function App() {
   return (
     <NavigationContainer>
