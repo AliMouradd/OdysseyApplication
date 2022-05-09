@@ -201,7 +201,7 @@ const PlacesListScreen = ({ navigation, route }) => {
     }
     setPlaces(placesData);
     setNewAliasList(aliasData);
-    setTempPlaces(places);
+    setTempPlaces(placesData);
   };
 
   /**
