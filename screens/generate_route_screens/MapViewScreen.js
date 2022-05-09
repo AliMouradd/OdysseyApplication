@@ -11,7 +11,9 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const MapViewScreen = ({ navigation, route }) => {
-  const [coords, setCoords] = useState([]);
+  const [coords, setCoords] = useState([
+    { latitude: 34.0522, longitude: -118.2437 },
+  ]);
   const [origintext, onChangeOrigin] = useState(route.params?.originparam);
   const [destinationtext, onChangeDestination] = useState(
     route.params?.destinationparam
@@ -22,7 +24,7 @@ const MapViewScreen = ({ navigation, route }) => {
   async function getDirections(startLoc, destinationLoc) {
     try {
       let response = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=INSERTKEYHERE`
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=AIzaSyAlQmVRL7LxjWepNA8PvOO-2hYIOvkrAeU`
       );
       let responseJson = await response.json();
       let points = polyline.decode(
@@ -64,7 +66,7 @@ const MapViewScreen = ({ navigation, route }) => {
       >
         <MapView.Polyline
           coordinates={coords}
-          strokeWidth={2}
+          strokeWidth={3}
           strokeColor="red"
         />
       </MapView>
