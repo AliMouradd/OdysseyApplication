@@ -133,6 +133,10 @@ const PlacesScreen = ({ navigation, route }) => {
       setPlaces(tempPlaces);
     } else {
       const filteredPlaces = [...tempPlaces].filter((p) => p.alias === t);
+      // console.log('Filtered places: ')
+      // for(let i = 0; i < filteredPlaces.length; i ++){
+      //   console.log(filteredPlaces[i])
+      // }
       setPlaces(filteredPlaces);
     }
   };

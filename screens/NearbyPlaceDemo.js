@@ -119,6 +119,7 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
         <View>
           <NearbyPlaceComponentDemo
             place={place}
+            key = {place.title}
             //aliasList = {aliasList}
             addPlace={addPlace}
             delPlace={delPlace}
