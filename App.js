@@ -19,6 +19,7 @@ import SchedulesScreen from "./screens/SchedulesScreen";
 import GoalScreen from "./screens/GoalScreen";
 import QuestionnaireMainScreen from "./screens/questionnaire_screens/QuestionnaireMainScreen";
 import QuestionnaireStartScreen from "./screens/questionnaire_screens/QuestionnaireStartScreen";
+import LocationQuestionScreen from "./screens/questionnaire_screens/LocationQuestionScreen";
 import MapViewScreen from "./screens/generate_route_screens/MapViewScreen";
 import RouteStepsScreen from "./screens/generate_route_screens/RouteStepsScreen";
 import LookUpScreen from "./screens/LookUpScreen";
@@ -51,6 +52,10 @@ export default function App() {
         <Stack.Screen
           name="Travel Questionnaire"
           component={QuestionnaireStartScreen}
+        />
+        <Stack.Screen
+          name="Location Question"
+          component={LocationQuestionScreen}
         />
         <Stack.Screen
           name="Questionnaire"
