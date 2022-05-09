@@ -50,16 +50,20 @@ const BudgetPlannerV2 = ({ navigation }) => {
   const user = auth.currentUser;
   const uid = user.uid;
 
+  //References document saved in database for budgetplanner
   const myDoc = doc(db, "BudgetPlanner", uid);
   const docRef = doc(db, "BudgetPlanner", uid);
   const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
 
+  //Retrieves the budget answered in the questionaire from the database
   const getBudget = () => {
     getDoc(docBudgetRef).then((doc) => {
       setBudget(doc.get("budget"));
     });
   };
 
+  //Retrieves the start date and end date of the users' vacation from the database.
+  //Calculates the days in between start date and end date
   const getNumOfDays = () => {
     getDoc(docBudgetRef)
     .then((doc) => {
@@ -70,13 +74,13 @@ const BudgetPlannerV2 = ({ navigation }) => {
     )
 };
 
+  //Calculates the total from all expenses
   const calculateTotal = () => {
     let total = 0;
     for (let i = 0; i < Expenses.length; i++) {
       console.log(Expenses[i].Costs);
       total = parseInt(total) + parseInt(Expenses[i].Costs);
     }
-    //total = parseInt(total) + parseInt(costInput)
     setTotal(total);
     console.log("TOTAL: ");
     console.log(total);
@@ -116,9 +120,6 @@ const BudgetPlannerV2 = ({ navigation }) => {
   }, []);
 
   const ListItem = ({ expense }) => {
-    //console.log(expense)
-    // console.log("BUDGET: ")
-    // console.log(Budget)
     return (
       <View style={styles.listItem}>
         {/*The view that holds the expense */}

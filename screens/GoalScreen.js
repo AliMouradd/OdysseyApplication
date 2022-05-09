@@ -26,7 +26,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { db } from "../Config";
 import { getAuth } from "firebase/auth";
-//import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   collection,
   doc,
@@ -58,25 +58,12 @@ const GoalScreen = ({ navigation }) => {
     });
   };
 
-  //If doesnt work on new account, relog.
-  //Issue is snap.exists is always true.
-  //Issue is that when doc is created it can not be written too right away. User has to interact with app in another way first or restart.
-  // const createDoc = async () => {
-  //     const snap = await getDoc(docRef);
-  //     if (!snap.exists()) {
-  //       const docRef = doc(db, "Goals", uid);
-  //       const docData = {
-  //         todos: [],
-  //       };
-  //       setDoc(docRef, docData);
-  //     }
-  //   };
-
+  //Takes Todos saved in database and adds them to the list
   React.useEffect(() => {
     addPreviousTodos();
   }, []);
 
-  //set current todos to past todos...
+  //Set current todos to past todos...
   //save from firebase doc to local
   const ListItem = ({ todo }) => {
     return (
@@ -128,11 +115,11 @@ const GoalScreen = ({ navigation }) => {
     /*Add todo, mark todo done, edit todo, and delete todo functions*/
   }
   const addTodo = () => {
-    //gets users doc then updates it after user adds a todo.
+    //Gets users doc then updates it after user adds a todo.
     if (textInput == "") {
       Alert.alert("Error", "Please input a goal");
-      //For editing todo
     }
+    //For editing todo
     if (textInput && !toggleSubmit) {
       setTodos(
         todos.map((todo) => {
@@ -163,7 +150,7 @@ const GoalScreen = ({ navigation }) => {
   };
 
   const markTodoComplete = (todoId) => {
-    //finds selected todo and markes it as complete, which crosses it out
+    //finds selected todo and marks it as complete, which crosses it out
     const newTodos = todos.map((item) => {
       if (item.id == todoId) {
         return { ...item, completed: true };
@@ -182,6 +169,7 @@ const GoalScreen = ({ navigation }) => {
   };
 
   const editTodo = (todoId) => {
+    //finds todo to be edited and sets it state to be edited
     let newEditItem = todos.find((todo) => {
       return todo.id === todoId;
     });
