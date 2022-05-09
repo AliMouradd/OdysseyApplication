@@ -12,9 +12,13 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const PlacesComponent = (props) => {
+  // The name of the place
   const [title, setTitle] = useState(props.place.title);
+  // The address of the place
   const [address, setAddress] = useState(props.place.address);
+  // A picture of the place
   const [picture, setPicture] = useState(props.place.picture);
+  // Order of the place
   const [number, setNumber] = useState(props.index);
 
   /**

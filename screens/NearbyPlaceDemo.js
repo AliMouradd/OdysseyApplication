@@ -17,13 +17,13 @@ import {
 import NearbyPlaceComponentDemo from "./NearbyPlaceComponentDemo";
 import yelp from "./yelp_api/yelp";
 
-//import { HERE_API_KEY } from "@env";
-
 const NearbyPlaceDemo = ({ navigation, route }) => {
+  // The nearby places
   const [places, setPlaces] = useState([]);
+  // User's chosen places
   const [finalPlaces, setFinalPlaces] = useState([]);
+  // An array of possible categories
   const [aliasList, setAliasList] = useState([]);
-  //const API_KEY = HERE_API_KEY;
 
   /**
    * After rendering, call a function
@@ -119,7 +119,7 @@ const NearbyPlaceDemo = ({ navigation, route }) => {
         <View>
           <NearbyPlaceComponentDemo
             place={place}
-            key = {place.title}
+            key={place.title}
             //aliasList = {aliasList}
             addPlace={addPlace}
             delPlace={delPlace}

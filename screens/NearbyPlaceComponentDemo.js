@@ -14,9 +14,13 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import CheckBox from "expo-checkbox";
 
 const NearbyPlaceComponentDemo = (props) => {
+  // The name of the place
   const [title, setTitle] = useState(props.place.title);
+  // The address of the place
   const [address, setAddress] = useState(props.place.address);
+  // A picture of the place
   const [picture, setPicture] = useState(props.place.picture);
+  // Status of the checkbox
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
   /**

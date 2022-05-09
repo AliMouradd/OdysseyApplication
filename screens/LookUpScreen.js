@@ -20,6 +20,7 @@ import Background from "../assets/blob-haikei.svg";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const LookUpScreen = ({ navigation }) => {
+  // User input text, the starting location
   const [text, onChangeText] = useState("");
 
   /**
