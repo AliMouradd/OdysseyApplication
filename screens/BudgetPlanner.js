@@ -28,17 +28,23 @@ import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 const BudgetPlannerV2 = ({ navigation }) => {
   const [textInput, setTextInput] = React.useState("");
   const [costInput, setCostInput] = React.useState("");
+  // The cost of the expense
   const [Costs, setCosts] = React.useState([]);
+  // The name or description of the expense
   const [Expenses, setExpenses] = React.useState([]);
+  // The date the expense was made
   const [Dates, setDates] = React.useState([]);
   const [toggleSubmit, setToggleSubmit] = useState(true);
   const [isEditItem, setIsEditItem] = useState(null);
   const [userDoc, setUserDoc] = useState(null);
+  // The budget the user answered in the questionaire
   const [Budget, setBudget] = React.useState([]);
   const [text, setText] = useState("");
   const [total, setTotal] = useState("");
+  // The start and end date the user answered in the questionaire for their vacation
   const [startDate, setstartDate] = useState("");
   const [endDate, setendDate] = useState("");
+  // The number of the days of the user's vacation calculated from the start day and end day
   const [numOfDays, setnumOfDays] = useState("");
 
   const auth = getAuth();

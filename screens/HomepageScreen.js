@@ -39,6 +39,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 const db = getFirestore(app);
 const HomepageScreen = ({ navigation, route }) => {
+  //The name of the user
   const [name, setName] = useState("");
 
   const auth = getAuth();
@@ -79,9 +80,7 @@ const HomepageScreen = ({ navigation, route }) => {
             size={35}
           />
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Profile", { id: route.params.id })
-            }
+            onPress={() => navigation.navigate("Profile", { id: uid })}
           >
             <Image source={require("../assets/icon.png")} style={styles.img} />
           </TouchableOpacity>

@@ -25,8 +25,11 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 const db = getFirestore(app);
 
 const ProfileScreen = ({ navigation, route }) => {
+  // Name of the user
   const [name, setName] = useState("");
+  // Number of likes the user has
   const [likes, setLikes] = useState(0);
+  // Array of personal schedules that the user has
   const [schedules, setSchedules] = useState([]);
 
   /**

@@ -39,16 +39,25 @@ import { getAuth } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 const PlacesListScreen = ({ navigation, route }) => {
+  // The name of the schedule
   const [scheduleName, setScheduleName] = useState("Name of the Schedule");
+  // A short description of the schedule
   const [description, setDescription] = useState(
     "Short Description of the Trip"
   );
+  // The places the user will visit in the schedule
   const [places, setPlaces] = useState([]);
+  // Whether the sort modal is visible on the screen
   const [sortModalVisible, setSortModalVisible] = useState(false);
+  // Whether the filter modal is visible on the screen
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  // Whether the name input modal is visible on the screen
   const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
+  // Whether the description input modal is visible on the screen
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+  // The possible categories of the places
   const [newAliasList, setNewAliasList] = useState([]);
+  // Temporary array of all the places
   const [tempPlaces, setTempPlaces] = useState([]);
 
   const auth = getAuth();

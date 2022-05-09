@@ -31,7 +31,9 @@ import Background from "../assets/blob-haikei.svg";
 const auth = getAuth(app);
 
 const LoginScreen = ({ navigation }) => {
+  // The username of the user
   const [username, setUserName] = useState("");
+  // The password of the user
   const [password, setPassword] = useState("");
 
   /**
