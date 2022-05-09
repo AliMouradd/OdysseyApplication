@@ -90,13 +90,13 @@ const BudgetPlannerV2 = ({ navigation }) => {
     console.log(total);
   };
 
-
+  //Takes expenses stored in database and adds them to the list
   const addPreviousExpenses = () => {
     getDoc(docRef).then((doc) => {
       setExpenses(doc.get("Expenses"));
     });
   };
-
+  //Creates document for userdata to be stored in firebase database
   const createDoc = async () => {
     const snap = await getDoc(docRef);
     if (!snap.exists()) {
@@ -250,7 +250,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
   };
 
     /**
-    * 
+    * Takes expense chosen by the user and deletes it from the database by filtering it out of the user's list.
     */
   const deleteExpense = (expenseId) => {
     const newExpenses = Expenses.filter((expense) => expense.id != expenseId);
@@ -258,7 +258,10 @@ const BudgetPlannerV2 = ({ navigation }) => {
     calculateTotal();
     updateDoc(docRef, { Expenses: newExpenses }, { merge: true });
   };
-
+  /**
+   * Takes expense chosen by the user and edits it by pulling the original 
+   * data from the database and allowing the user to change that data
+   */
   const editExpense = (expenseId) => {
     let newEditItem = Expenses.find((expense) => {
       return expense.id === expenseId;
