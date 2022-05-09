@@ -52,27 +52,34 @@ export default function App() {
         <Stack.Screen name="Add Places" component={LookUpScreen} />
         <Stack.Screen name="Budget Planner" component={BudgetPlanner} />
         <Stack.Screen
-          name="Travel Questionnaire"
+          name="Questionnaire Welcome"
           component={QuestionnaireStartScreen}
+          options={{ title: "Travel Questionnaire", headerShown: true }}
         />
         <Stack.Screen
           name="Location Question"
           component={LocationQuestionScreen}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Questionnaire"
           component={QuestionnaireMainScreen}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Generate Route"
           component={MapViewScreen}
-          options={{ title: "Find Routes" }}
+          options={{ title: "Find Routes", headerShown: true }}
         />
-        <Stack.Screen name="Route Steps" component={RouteStepsScreen} />
+        <Stack.Screen
+          name="Route Steps"
+          component={RouteStepsScreen}
+          options={{ headerShown: true }}
+        />
         <Stack.Screen
           name="Route Input"
           component={RouteInputScreen}
-          options={{ title: "Location Search" }}
+          options={{ title: "Location Search", headerShown: true }}
         />
         <Stack.Screen name="PlacesListScreen" component={PlacesListScreen} />
         <Stack.Screen name="PlacesScreen" component={PlacesScreen} />
@@ -81,6 +88,7 @@ export default function App() {
         <Stack.Screen
           name="Personal Schedule"
           component={UserItineraryScreen}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>

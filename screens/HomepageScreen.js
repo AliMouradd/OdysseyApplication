@@ -132,7 +132,7 @@ const HomepageScreen = ({ navigation, route }) => {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => navigation.navigate("Travel Questionnaire")}
+          onPress={() => navigation.navigate("Questionnaire Welcome")}
         >
           <Image
             style={{ height: 55, width: 55, borderRadius: 15, marginBottom: 5 }}

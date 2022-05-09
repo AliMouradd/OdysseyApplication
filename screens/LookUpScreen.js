@@ -53,6 +53,14 @@ const LookUpScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.btn} onPress={lookUp}>
         <Text>Submit</Text>
       </TouchableOpacity>
+      <View style={{ margin: 10 }}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate("Personal Schedule")}
+        >
+          <Text>View Personal Schedule</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
