@@ -45,20 +45,26 @@ const BudgetPlannerV2 = ({ navigation }) => {
   const user = auth.currentUser;
   const uid = user.uid;
 
-  //References document saved in database for budgetplanner
+  /**
+   * References document saved in database for budgetplanner
+   */
   const myDoc = doc(db, "BudgetPlanner", uid);
   const docRef = doc(db, "BudgetPlanner", uid);
   const docBudgetRef = doc(db, "UserQuestionnaireAnswers", uid);
-
-  //Retrieves the budget answered in the questionaire from the database
+  
+  /**
+   * Retrieves the budget answered in the questionaire from the database
+   */
   const getBudget = () => {
     getDoc(docBudgetRef).then((doc) => {
       setBudget(doc.get("budget"));
     });
   };
 
-  //Retrieves the start date and end date of the users' vacation from the database.
-  //Calculates the days in between start date and end date
+  /**
+   * Retrieves the start date and end date of the users' vacation from the database.
+   * Calculates the days in between start date and end date
+   */
   const getNumOfDays = () => {
     getDoc(docBudgetRef).then((doc) => {
       var num = moment(doc.get("endDate"), "MM-DD-YYYY").diff(
@@ -70,7 +76,9 @@ const BudgetPlannerV2 = ({ navigation }) => {
     });
   };
 
-  //Calculates the total from all expenses
+  /**
+   * Calculates the total from all expenses.
+   */
   const calculateTotal = () => {
     let total = 0;
     for (let i = 0; i < Expenses.length; i++) {
@@ -81,6 +89,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
     console.log("TOTAL: ");
     console.log(total);
   };
+
 
   const addPreviousExpenses = () => {
     getDoc(docRef).then((doc) => {
@@ -237,11 +246,12 @@ const BudgetPlannerV2 = ({ navigation }) => {
       { Dates: Dates },
       { merge: true }
     );
-
-    //addPreviousExpenses()
     calculateTotal();
   };
 
+    /**
+    * 
+    */
   const deleteExpense = (expenseId) => {
     const newExpenses = Expenses.filter((expense) => expense.id != expenseId);
     setExpenses(newExpenses);

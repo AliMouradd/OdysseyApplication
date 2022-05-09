@@ -46,25 +46,28 @@ const GoalScreen = ({ navigation }) => {
   const [userDoc, setUserDoc] = useState(null);
   const [text, setText] = useState("");
 
-  //save current goals to myDoc first.
   const auth = getAuth();
   const user = auth.currentUser;
   const uid = user.uid;
   const docRef = doc(db, "Goals", uid);
 
+    /**
+    * Takes Todos saved in database and adds them to list
+    */
   const addPreviousTodos = () => {
     getDoc(docRef).then((doc) => {
       setTodos(doc.get("todos"));
     });
   };
 
-  //Takes Todos saved in database and adds them to the list
   React.useEffect(() => {
     addPreviousTodos();
   }, []);
 
-  //Set current todos to past todos...
-  //save from firebase doc to local
+    /**
+    * Set current todos to past todos...
+    * save from firebase doc to local
+    */
   const ListItem = ({ todo }) => {
     return (
       <View style={styles.listItem}>
@@ -149,6 +152,10 @@ const GoalScreen = ({ navigation }) => {
     }
   };
 
+    /**
+    * Marks a todo complete by drawing a line across the text
+    * Changes state of todo to complete
+    */
   const markTodoComplete = (todoId) => {
     //finds selected todo and marks it as complete, which crosses it out
     const newTodos = todos.map((item) => {
@@ -161,6 +168,9 @@ const GoalScreen = ({ navigation }) => {
     updateDoc(docRef, { todos: newTodos }, { merge: true });
   };
 
+    /**
+    * Deletes todo from database and list
+    */
   const deleteTodo = (todoId) => {
     //filters out selected todo and removes it
     const newTodos = todos.filter((item) => item.id != todoId);
@@ -168,6 +178,9 @@ const GoalScreen = ({ navigation }) => {
     updateDoc(docRef, { todos: newTodos }, { merge: true });
   };
 
+    /**
+    * Edits todo and asks for new input
+    */
   const editTodo = (todoId) => {
     //finds todo to be edited and sets it state to be edited
     let newEditItem = todos.find((todo) => {
