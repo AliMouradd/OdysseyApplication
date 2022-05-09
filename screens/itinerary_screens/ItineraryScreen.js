@@ -23,7 +23,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
  * The Itinerary screen shows the user their own user-created itinerary,
  * where they can add events to the different days of their vacation
  * and specify where the event will take place based on the user's list
- * of saved places.
+ * of saved schedules.
  *
  * Built by: Quacky Coders
  */
@@ -44,8 +44,9 @@ const UserItineraryScreen = ({ navigation }) => {
    */
   const [addModalVisible, setAddModalVisible] = useState(false); // visibility toggle for add event modal
   const [newTitle, setNewTitle] = useState(""); // holds the event's new title
-  const [places, setPlaces] = useState([]); // array of places from the user's list of places
-  const [selectedPlace, setSelectedPlace] = useState(""); // holds the selected place from user's list of places
+  const [schedules, setSchedules] = useState([]); // array of schedules from the user's list of schedules
+  const [places, setPlaces] = useState([]); // array of places from the user's list of schedules
+  const [selectedPlace, setSelectedPlace] = useState(""); // holds the selected place from user's list of schedules
   const [pickerdate, setPickerDate] = useState(new Date()); // holds datetime from the date/time picker
   const [pickermode, setPickerMode] = useState("date"); // holds date/time picker mode setting
   const [pickershow, setPickerShow] = useState(false); // show date/time picker toggle
@@ -65,7 +66,7 @@ const UserItineraryScreen = ({ navigation }) => {
   // Firestore document references
   const userSchedDocRef = doc(db, "GenSchedules", uid); // where Itinerary info is stored
   const userSurveyDocRef = doc(db, "UserQuestionnaireAnswers", uid); // for getting questionnaire data
-  const placesListDocRef = doc(db, "UserSchedules", uid); // for getting user's places list
+  const placesListDocRef = doc(db, "UserSchedules", uid); // for getting user's schedules list
 
   /*
    * useEffect functions are called when the screen first renders
@@ -74,7 +75,7 @@ const UserItineraryScreen = ({ navigation }) => {
     getTripStartEndDates(); // get trip start/end dates from questionnaire
     createSchedDoc(); // create user's Itinerary document if not already created
     getEventsFromDatabase(); // retrieve user's Itinerary events from database
-    getFromPlacesList(); // retrieve user's list of places
+    getFromPlacesList(); // retrieve user's list of schedules
   }, []);
 
   /**
@@ -132,9 +133,18 @@ const UserItineraryScreen = ({ navigation }) => {
     //console.log("getFromPlacesList called!");
 
     getDoc(placesListDocRef).then((doc) => {
-      setPlaces(doc.get("places")); // gets array of places and saves to places state
+      setSchedules(doc.get("schedules")); // gets array of schedules and saves to schedules state
     });
-    //console.log(places);
+
+    var placesArray = [];
+    schedules.forEach(
+      (sched) => (placesArray = placesArray.concat(sched.places))
+    );
+
+    setPlaces(placesArray);
+
+    //console.log(schedules);
+    //console.log(placesArray);
   };
 
   /**
@@ -315,18 +325,18 @@ const UserItineraryScreen = ({ navigation }) => {
   };
 
   /**
-   * Places List Item component, renders each event in the agenda FlatList.
+   * Places List Item component, renders each place option in the Add Event modal.
    */
   const PlacesListItem = ({ place }) => {
     return (
       <View>
         <TouchableOpacity
           style={
-            place.item.name == selectedPlace
+            place.item.title == selectedPlace
               ? styles.selectedplacecontainer
               : styles.unselectedplacecontainer
           }
-          onPress={() => setSelectedPlace(place.item.name)}
+          onPress={() => setSelectedPlace(place.item.title)}
         >
           <Text
             style={{
@@ -336,7 +346,7 @@ const UserItineraryScreen = ({ navigation }) => {
               flexWrap: "nowrap",
             }}
           >
-            {place.item.name}
+            {place.item.title}
           </Text>
           {/* <Text style={{ fontSize: 12 }}>{place.item.type}</Text> */}
         </TouchableOpacity>
@@ -585,7 +595,7 @@ const UserItineraryScreen = ({ navigation }) => {
                 <Text>Choose a place from your list:</Text>
                 <Text>Selected place: {selectedPlace}</Text>
                 <FlatList
-                  data={places}
+                  data={schedules}
                   renderItem={(item) => <PlacesListItem place={item} />}
                 />
               </View>
