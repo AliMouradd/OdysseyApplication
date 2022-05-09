@@ -1,26 +1,40 @@
-import React, { useState, useRef } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import React, { useRef } from "react";
+import { StyleSheet, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 navigator.geolocation = require("react-native-geolocation-service");
 
+/**
+ * Description:
+ *
+ * The Route Input screen is where the user will search for an origin or destination, which
+ * will then be passed to the Map View screen for use in getting directions. The Route Input screen
+ * features a Google Places autocomplete text box that searches for and displays Google Places
+ * based on what the user types in.
+ *
+ * Built by: Quacky Coders
+ */
 const RouteInputScreen = ({ navigation, route }) => {
   const ref = useRef();
 
+  // Main return:
   return (
     <View style={styles.container}>
+      {/* Google Places Autocomplete component, renders search box and results: */}
       <GooglePlacesAutocomplete
         ref={ref}
         placeholder={"Search for a location..."}
         onPress={(data) => {
-          // gets autocomplete result and passes back to mapview screen
+          // When a autocomplete result is selected, pass it back to MapViewScreen and navigate back.
           if (route.params?.navigateFrom == "origininput") {
+            // If navigated from origin input box, save to origin param and navigate back.
             navigation.navigate({
               name: "Generate Route",
               params: { originparam: data.description },
               merge: true,
             });
           } else if (route.params?.navigateFrom == "destinationinput") {
+            // If navigated from destination input box, save to destination param and navigate back.
             navigation.navigate({
               name: "Generate Route",
               params: { destinationparam: data.description },
@@ -32,11 +46,11 @@ const RouteInputScreen = ({ navigation, route }) => {
           key: "AIzaSyAlQmVRL7LxjWepNA8PvOO-2hYIOvkrAeU",
           language: "en",
         }}
-        debounce={500}
+        debounce={500} // How long to wait to display results after user stops typing.
+        // Google Places Autocomplete styles:
         styles={{
           container: {
             flex: 1,
-            //backgroundColor: "blue",
             padding: 7,
           },
           textInputContainer: {
@@ -47,10 +61,7 @@ const RouteInputScreen = ({ navigation, route }) => {
             backgroundColor: "white",
             height: 44,
             borderRadius: 10,
-            // paddingVertical: 5,
-            // paddingHorizontal: 10,
             fontSize: 15,
-            //elevation: 5,
             borderWidth: 2,
             borderColor: "gainsboro",
           },
@@ -65,8 +76,6 @@ const RouteInputScreen = ({ navigation, route }) => {
           powered: {},
           listView: {
             borderRadius: 10,
-            //marginBottom: 10,
-            // backgroundColor: "red",
           },
           row: {
             backgroundColor: "#FFFFFF",
@@ -93,6 +102,9 @@ const RouteInputScreen = ({ navigation, route }) => {
   );
 };
 
+/**
+ * StyleSheet for all components:
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -113,7 +125,6 @@ const styles = StyleSheet.create({
   },
   imgcontainer: {
     alignItems: "center",
-    //backgroundColor: "red",
   },
   img: {
     height: 300,
