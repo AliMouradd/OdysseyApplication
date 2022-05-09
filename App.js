@@ -28,6 +28,7 @@ import PlacesListScreen from "./screens/PlacesListScreen";
 import PlacesScreen from "./screens/PlacesScreen";
 import NearbyPlaceDemo from "./screens/NearbyPlaceDemo";
 import BudgetPlanner from "./screens/BudgetPlanner";
+import UserItineraryScreen from "./screens/itinerary_screens/ItineraryScreen";
 import { LogBox } from "react-native";
 
 LogBox.ignoreAllLogs(true);
@@ -77,6 +78,10 @@ export default function App() {
         <Stack.Screen name="PlacesScreen" component={PlacesScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Nearby Place Demo" component={NearbyPlaceDemo} />
+        <Stack.Screen
+          name="Personal Schedule"
+          component={UserItineraryScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
