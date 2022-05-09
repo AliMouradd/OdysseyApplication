@@ -1,3 +1,12 @@
+/**
+ * Description:
+ *
+ * The Questionnaire screen displays a screen
+ * that will asks users a series of question.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { Component } from "react";
 import {
   StyleSheet,
@@ -19,7 +28,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 
-// this will contain all questions and possible answers
+// survey contains all questions and possible answers
 const survey = [
   {
     questionType: "TextInput",

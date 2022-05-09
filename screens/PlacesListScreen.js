@@ -48,6 +48,8 @@ const PlacesListScreen = ({ navigation, route }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+  const [newAliasList, setNewAliasList] = useState([]);
+  const [tempPlaces, setTempPlaces] = useState([]);
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -130,12 +132,12 @@ const PlacesListScreen = ({ navigation, route }) => {
    * A function that filters the list of places by a category.
    */
   const filterPlaces = (t) => {
-    getPlacesTest();
     if (t === "All") {
-      return;
+      setPlaces(tempPlaces);
+    } else {
+      const filteredPlaces = [...tempPlaces].filter((p) => p.alias === t);
+      setPlaces(filteredPlaces);
     }
-    const filteredPlaces = [...places].filter((p) => p.alias == t);
-    setPlaces(filteredPlaces);
   };
 
   /**
@@ -178,6 +180,7 @@ const PlacesListScreen = ({ navigation, route }) => {
    */
   const getPlacesTest = () => {
     let placesData = [];
+    let aliasData = [];
     console.log(route.params.places);
     for (let i = 0; i < route.params.places.length; i++) {
       placesData = [
@@ -190,8 +193,15 @@ const PlacesListScreen = ({ navigation, route }) => {
           alias: route.params.places[i].alias,
         },
       ];
+      if (
+        !aliasData.find((element) => element == route.params.places[i].alias)
+      ) {
+        aliasData = [...aliasData, route.params.places[i].alias];
+      }
     }
     setPlaces(placesData);
+    setNewAliasList(aliasData);
+    setTempPlaces(places);
   };
 
   /**
@@ -332,7 +342,7 @@ const PlacesListScreen = ({ navigation, route }) => {
         <ListFilterModal
           toggleFilterModalVisible={toggleFilterModalVisible}
           filterModalVisible={filterModalVisible}
-          aliasList={route.params.aliasList}
+          aliasList={newAliasList}
           filterPlaces={(text) => filterPlaces(text)}
         />
       </ScrollView>

@@ -30,6 +30,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import ScheduleComponent from "../components/ScheduleComponent";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const db = getFirestore(app);
 
@@ -71,6 +72,12 @@ const SchedulesScreen = ({ navigation }) => {
     <SafeAreaView style={style.container}>
       <ScrollView>
         <View style={{ flex: 1, backgroundColor: "#FFD56D" }}>
+          <TouchableOpacity
+            style={{ marginTop: 30, marginLeft: 15 }}
+            onPress={() => navigation.goBack()}
+          >
+            <Icon name="arrow-back" size={30} color="black" />
+          </TouchableOpacity>
           <Text style={style.h1}>Schedules</Text>
         </View>
 
@@ -133,7 +140,7 @@ const style = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 25,
     marginLeft: 10,
-    marginTop: 50,
+    marginTop: 25,
     marginBottom: 15,
   },
   title: {
