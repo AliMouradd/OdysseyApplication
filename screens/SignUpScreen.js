@@ -55,6 +55,9 @@ const SignUpScreen = ({ navigation }) => {
       await setDoc(doc(db, "UserSchedules", auth.currentUser.uid), {
         schedules: [],
       });
+      await setDoc(doc(db, "GenSchedules", auth.currentUser.uid), {
+        events: [],
+      });
       navigation.navigate("Questionnaire Welcome");
     } catch (error) {
       if (error.code === "auth/weak-password") {

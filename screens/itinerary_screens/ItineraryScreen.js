@@ -155,13 +155,18 @@ const UserItineraryScreen = ({ navigation }) => {
     //console.log("addEventToDatabase called!");
 
     // create data object with all new event info
-    const data = {
-      title: newTitle,
-      datetime: pickerdate,
-      place: selectedPlace,
-      id: Math.random(),
-    };
-    const newEventsArray = [...events, data]; // add new data object to locally saved array of events
+    const data = [
+      {
+        title: newTitle,
+        datetime: pickerdate,
+        place: selectedPlace,
+        id: Math.random(),
+      },
+    ];
+
+    //const newEventsArray = [...events, data];
+    const newEventsArray = events.concat(data); // add new data object to locally saved array of events
+    //console.log(newEventsArray);
 
     // updates user's Itinerary database with newEventsArray
     updateDoc(userSchedDocRef, { events: newEventsArray }, { merge: true })
@@ -174,6 +179,7 @@ const UserItineraryScreen = ({ navigation }) => {
 
     // clear title input box after adding an event
     setNewTitle("");
+    getEventsFromDatabase();
   };
 
   /**
@@ -407,7 +413,11 @@ const UserItineraryScreen = ({ navigation }) => {
         {/* Renders Add Event button. */}
         <TouchableOpacity
           style={styles.addeventbutton}
-          onPress={() => [setAddModalVisible(true), setSelectedPlace("")]}
+          onPress={() => [
+            setAddModalVisible(true),
+            setSelectedPlace(""),
+            getFromPlacesList(),
+          ]}
         >
           <Icon name="add" size={33} color="black" />
         </TouchableOpacity>
