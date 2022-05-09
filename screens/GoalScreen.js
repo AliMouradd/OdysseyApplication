@@ -40,8 +40,11 @@ import {
 
 const GoalScreen = ({ navigation }) => {
   const [textInput, setTextInput] = React.useState("");
+  // The todos the user creates
   const [todos, setTodos] = React.useState([]);
+  // Condition set for checking when to edit a todo
   const [toggleSubmit, setToggleSubmit] = useState(true);
+  // The id of the todo to be edited
   const [isEditItem, setIsEditItem] = useState(null);
   const [userDoc, setUserDoc] = useState(null);
   const [text, setText] = useState("");
