@@ -302,7 +302,7 @@ const BudgetPlannerV2 = ({ navigation }) => {
       {/* should display  total/numOfDays */}
       <View>
         <Text style={styles.budgetTitle}>
-          Estimate Cost per Day: ${Budget / numOfDays}
+          Estimate Cost per Day: ${(Budget / numOfDays).toFixed(2)}
         </Text>
       </View>
 
