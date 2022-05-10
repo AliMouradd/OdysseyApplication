@@ -27,12 +27,19 @@ import {
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const SignUpScreen = () => {
+const SignUpScreen = ({ navigation }) => {
   const [fullName, setfullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  /**
+   * Sign Up function.
+   * Creates an account based on user input.
+   * Add new documents into database.
+   * Also, alert user if something goes wrong
+   * during the account creation process
+   */
   const signup = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -42,6 +49,16 @@ const SignUpScreen = () => {
         likes: 0,
         followers: 0,
       });
+      await setDoc(doc(db, "Goals", auth.currentUser.uid), {
+        todos: [],
+      });
+      await setDoc(doc(db, "UserSchedules", auth.currentUser.uid), {
+        schedules: [],
+      });
+      await setDoc(doc(db, "GenSchedules", auth.currentUser.uid), {
+        events: [],
+      });
+      navigation.navigate("Questionnaire Welcome");
     } catch (error) {
       if (error.code === "auth/weak-password") {
         alert(
@@ -55,6 +72,9 @@ const SignUpScreen = () => {
     }
   };
 
+  /**
+   * Renders the sign up screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logo}>
@@ -85,12 +105,14 @@ const SignUpScreen = () => {
           onChangeText={(value) => setPassword(value)}
           value={password}
           placeholder="Password"
+          secureTextEntry={true}
         />
         <TextInput
           style={styles.input}
           onChangeText={(value) => setConfirmPassword(value)}
           value={confirmPassword}
           placeholder="Confirm Password"
+          secureTextEntry={true}
         />
       </View>
 

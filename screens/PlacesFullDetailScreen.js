@@ -1,6 +1,9 @@
 /**
  * Description:
  *
+ * The Places Full Detail screen displays
+ * more information about a specific place
+ *
  * Built by: Quacky Coders
  */
 

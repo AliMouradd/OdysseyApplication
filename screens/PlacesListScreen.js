@@ -1,95 +1,295 @@
+/**
+ * Description:
+ *
+ * The Places List Screen displays a list
+ * of places that the user has decided they might want
+ * to go. The user can sort the order of the places,
+ * as well as delete places they might not want to go anymore.
+ *
+ * Library used for the draggable flatlist:
+ * https://github.com/computerjazz/react-native-draggable-flatlist
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   ScrollView,
   View,
+  ImageBackground,
 } from "react-native";
 import PlacesComponent from "./PlacesComponent";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const PlacesListScreen = ({ navigation }) => {
-  const [places, setPlaces] = useState([]);
+import DraggableFlatList, {
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import ScheduleNameInputModal from "../modals/ScheduleNameInputModal";
+import ScheduleDescriptionInputModal from "../modals/ScheduleDescriptionInputModal";
+import ListSortModal from "../modals/ListSortModal";
+import ListFilterModal from "../modals/ListFilterModal";
+
+import { db } from "../Config";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+
+const PlacesListScreen = ({ navigation, route }) => {
+  // The name of the schedule
+  const [scheduleName, setScheduleName] = useState("Name of the Schedule");
+  // A short description of the schedule
+  const [description, setDescription] = useState(
+    "Short Description of the Trip"
+  );
+  // The places the user will visit in the schedule
+  const [places, setPlaces] = useState([]);
+  // Whether the sort modal is visible on the screen
+  const [sortModalVisible, setSortModalVisible] = useState(false);
+  // Whether the filter modal is visible on the screen
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  // Whether the name input modal is visible on the screen
+  const [nameInputModalVisible, setNameInputModalVisible] = useState(false);
+  // Whether the description input modal is visible on the screen
+  const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+  // The possible categories of the places
+  const [newAliasList, setNewAliasList] = useState([]);
+  // Temporary array of all the places
+  const [tempPlaces, setTempPlaces] = useState([]);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const uid = user.uid;
+  const docRef = doc(db, "UserSchedules", uid);
+
+  /**
+   * After rendering, call a function
+   * to get the list of places the user
+   * decided they might want to visit.
+   */
   useEffect(() => {
     getPlacesTest();
   }, []);
 
-  const getPlacesTest = () => {
-    let sampleData = [
-      {
-        number: 1,
-        name: "Place One",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-      {
-        number: 2,
-        name: "Place Two",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-      {
-        number: 3,
-        name: "Place Three",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-      {
-        number: 4,
-        name: "Place Four",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-      {
-        number: 5,
-        name: "Place Five",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-      {
-        number: 6,
-        name: "Place Six",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-      {
-        number: 7,
-        name: "Place Seven",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-      },
-    ];
-    setPlaces(sampleData);
+  /**
+   * Toggle function for the Name Input modal
+   * Set true for the boolean if it's false.
+   * Set false for the boolean if it's true.
+   * Displays the modal if true.
+   */
+  const toggleNameInputModalVisible = () => {
+    setNameInputModalVisible(!nameInputModalVisible);
   };
 
+  /**
+   * Toggle function for the Description Input modal
+   */
+  const toggleDescriptionInputModalVisible = () => {
+    setDescriptionModalVisible(!descriptionModalVisible);
+  };
+
+  /**
+   * Toggle function for the Sort modal
+   */
+  const toggleSortModalVisible = () => {
+    setSortModalVisible(!sortModalVisible);
+  };
+
+  /**
+   * Toggle function for the Filter modal
+   */
+  const toggleFilterModalVisible = () => {
+    setFilterModalVisible(!filterModalVisible);
+  };
+
+  /**
+   * A function that sorts the list of places in ascending order.
+   */
+  const sortPlacesAsc = () => {
+    const sortedPlaces = [...places].sort(function (a, b) {
+      if (a.title.toLowerCase() < b.title.toLowerCase()) {
+        return -1;
+      }
+      if (a.title.toLowerCase() > b.title.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+    });
+    setPlaces(sortedPlaces);
+  };
+
+  /**
+   * A function that sorts the list of places in descending order.
+   */
+  const sortPlacesDes = () => {
+    const sortedPlaces = [...places].sort(function (a, b) {
+      if (a.title.toLowerCase() < b.title.toLowerCase()) {
+        return 1;
+      }
+      if (a.title.toLowerCase() > b.title.toLowerCase()) {
+        return -1;
+      }
+      return 0;
+    });
+    setPlaces(sortedPlaces);
+  };
+
+  /**
+   * A function that filters the list of places by a category.
+   */
+  const filterPlaces = (t) => {
+    if (t === "All") {
+      setPlaces(tempPlaces);
+    } else {
+      const filteredPlaces = [...tempPlaces].filter((p) => p.alias === t);
+      setPlaces(filteredPlaces);
+    }
+  };
+
+  /**
+   * A function that deletes a place from the list.
+   */
+  const deletePlace = (num) => {
+    const newPlaces = [...places].filter((p) => p.number !== num);
+    setPlaces(newPlaces);
+  };
+
+  /**
+   * A function that saves a schedule into the database.
+   */
+  const generateSchedule = async () => {
+    const docSnap = await getDoc(docRef);
+
+    let newPlaces = [...places];
+    for (let i = 0; i < newPlaces.length; i++) {
+      newPlaces[i] = {
+        ...newPlaces[i],
+        number: i + 1,
+      };
+    }
+
+    const newSchedulesList = [
+      ...docSnap.data().schedules,
+      {
+        scheduleName: scheduleName,
+        description: description,
+        places: newPlaces,
+      },
+    ];
+
+    updateDoc(docRef, { schedules: newSchedulesList }, { merge: true });
+  };
+
+  /**
+   * Looping through the list of places the user might want to visit,
+   * add it to an array, while extracting out the needed information.
+   */
+  const getPlacesTest = () => {
+    let placesData = [];
+    let aliasData = [];
+    console.log(route.params.places);
+    for (let i = 0; i < route.params.places.length; i++) {
+      placesData = [
+        ...placesData,
+        {
+          number: i + 1,
+          title: route.params.places[i].title,
+          address: route.params.places[i].address,
+          picture: route.params.places[i].picture,
+          alias: route.params.places[i].alias,
+        },
+      ];
+      if (
+        !aliasData.find((element) => element == route.params.places[i].alias)
+      ) {
+        aliasData = [...aliasData, route.params.places[i].alias];
+      }
+    }
+    setPlaces(placesData);
+    setNewAliasList(aliasData);
+    setTempPlaces(placesData);
+  };
+
+  /**
+   * Renders an item of the list of places.
+   * Makes use of the PlacesComponent.
+   */
+  const renderItem = ({ item, index, drag, isActive }) => {
+    return (
+      <ScaleDecorator>
+        <TouchableOpacity onLongPress={drag} disabled={isActive}>
+          <PlacesComponent
+            key={item.number}
+            place={item}
+            index={index + 1}
+            navigation={navigation}
+            delFunction={deletePlace}
+            ui={true}
+          />
+        </TouchableOpacity>
+      </ScaleDecorator>
+    );
+  };
+
+  /**
+   * Renders the Places List screen.
+   */
   return (
-    <SafeAreaView style={styles.container}>
+    <GestureHandlerRootView>
       <ScrollView>
         <View style={styles.background}>
-          <View style={styles.btns}>
-            <TouchableOpacity>
-              <Text style={{ textAlign: "right" }}>Share</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.infoWrapper}>
-            <View style={styles.info}>
-              <Text style={styles.h1}>Name Of the Schedule</Text>
+          <ImageBackground
+            style={{ flex: 1 }}
+            source={require("../assets/maarten-van-den-heuvel-gZXx8lKAb7Y-unsplash.jpg")}
+          >
+            <View style={styles.btns}>
               <TouchableOpacity>
-                <Icon name="edit" size={20} color="black" />
+                <Icon
+                  style={{ textAlign: "right", padding: 10 }}
+                  name="more-vert"
+                  size={20}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
-            <View style={styles.info}>
-              <Text style={styles.p}>Short Description of the Trip</Text>
-              <TouchableOpacity>
-                <Icon name="edit" size={20} color="black" />
-              </TouchableOpacity>
+            <View style={styles.infoWrapper}>
+              <View style={styles.info}>
+                <Text style={styles.h1}>{scheduleName}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setNameInputModalVisible(!nameInputModalVisible)
+                  }
+                >
+                  <Icon name="edit" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.info}>
+                <Text style={styles.p}>{description}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setDescriptionModalVisible(!descriptionModalVisible)
+                  }
+                >
+                  <Icon name="edit" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </ImageBackground>
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            backgroundColor: "white",
+            borderBottomWidth: 2,
+            borderColor: "#FFD56D",
+            paddingTop: 7,
+          }}
+        >
           <Text
             style={{
               textAlign: "center",
@@ -100,68 +300,104 @@ const PlacesListScreen = ({ navigation }) => {
           >
             Schedule
           </Text>
-          <TouchableOpacity>
-            <Icon name="edit" size={20} color="black" />
+          <TouchableOpacity
+            onPress={() => setSortModalVisible(!sortModalVisible)}
+          >
+            <Text>Sort</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Sort/Filter</Text>
+          <TouchableOpacity
+            onPress={() => setFilterModalVisible(!filterModalVisible)}
+          >
+            <Text>Filter</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.wrapper}>
-          {places.map((place) => (
-            <PlacesComponent
-              key={place.name}
-              place={place}
-              navigation={navigation}
-            />
-          ))}
+        <View style={{ width: "90%", alignSelf: "center" }}>
+          <DraggableFlatList
+            data={places}
+            onDragEnd={({ data }) => setPlaces(data)}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+            scrollEnabled={false}
+          />
         </View>
-      </ScrollView>
-      <View style={styles.bar}>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity onPress={generateSchedule} style={styles.btn}>
           <Text style={{ fontWeight: "bold", fontSize: 16 }}>Generate</Text>
         </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+
+        <ScheduleNameInputModal
+          toggleNameInputModalVisible={toggleNameInputModalVisible}
+          scheduleName={scheduleName}
+          onChangeText={(text) => setScheduleName(text)}
+          nameInputModalVisible={nameInputModalVisible}
+        />
+
+        <ScheduleDescriptionInputModal
+          toggleDescriptionInputModalVisible={
+            toggleDescriptionInputModalVisible
+          }
+          description={description}
+          onChangeText={(text) => setDescription(text)}
+          descriptionModalVisible={descriptionModalVisible}
+        />
+
+        <ListSortModal
+          toggleSortModalVisible={toggleSortModalVisible}
+          sortModalVisible={sortModalVisible}
+          sortPlacesAsc={sortPlacesAsc}
+          sortPlacesDes={sortPlacesDes}
+        />
+
+        <ListFilterModal
+          toggleFilterModalVisible={toggleFilterModalVisible}
+          filterModalVisible={filterModalVisible}
+          aliasList={newAliasList}
+          filterPlaces={(text) => filterPlaces(text)}
+        />
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "white",
-  },
   background: {
+    flex: 1,
     backgroundColor: "#FFD56D",
-    height: 125,
-    justifyContent: "space-between",
-    marginBottom: 5,
-    padding: 5,
+    width: "100%",
+    height: 150,
+  },
+  infoWrapper: {
+    paddingLeft: 10,
+    paddingTop: 55,
   },
   info: {
     flexDirection: "row",
   },
+  btns: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
   h1: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "white",
   },
   p: {
     fontSize: 16,
+    color: "white",
   },
   bar: {
-    position: "absolute",
     alignSelf: "center",
     bottom: 20,
   },
   btn: {
     backgroundColor: "#FFD56D",
     borderRadius: 50,
-    marginBottom: 25,
+    margin: 10,
     padding: 10,
-    paddingLeft: 50,
-    paddingRight: 50,
+    width: "45%",
+    alignSelf: "center",
+    alignItems: "center",
   },
 });
 

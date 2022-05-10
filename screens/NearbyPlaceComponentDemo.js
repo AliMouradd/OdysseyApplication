@@ -1,57 +1,64 @@
 /**
  * Description:
- * The Places Component displays a small card that
+ * The Nearby Place Component displays a small card that
  * displays picture, name, and a short description
- * of a place in a list of places
+ * of a place in a list of places. It also includes a checkbox
+ * that a user can click on if they are interested in visiting
+ * that place.
  *
  * Built by: Quacky Coders
  */
 
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import CheckBox from "expo-checkbox";
 
-const PlacesComponent = (props) => {
+const NearbyPlaceComponentDemo = (props) => {
   // The name of the place
   const [title, setTitle] = useState(props.place.title);
   // The address of the place
   const [address, setAddress] = useState(props.place.address);
   // A picture of the place
   const [picture, setPicture] = useState(props.place.picture);
-  // Order of the place
-  const [number, setNumber] = useState(props.index);
+  // Status of the checkbox
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
   /**
-   * Renders the Places component
+   * Toggles the checkbox.
+   * Also, calls a function to add
+   * or delete a place from a list of places
+   * user wants to visit.
+   */
+  const toggleBox = (newValue) => {
+    if (newValue) {
+      props.addPlace(props.place);
+    } else {
+      props.delPlace(props.place);
+    }
+    setToggleCheckBox(newValue);
+  };
+
+  /**
+   * Renders the Nearby Place Component
    */
   return (
-    <View
-      style={styles.container}
-      onPress={() =>
-        props.navigation.navigate("PlacesFullDetailScreen", {
-          title: title,
-          address: address,
-        })
-      }
-    >
-      {props.ui && <Icon name="drag-handle" size={25} color="black" />}
-
-      <Image style={styles.img} source={{ uri: picture }} />
+    <View style={styles.container}>
+      <Image
+        style={styles.img}
+        source={{
+          uri: picture,
+        }}
+      />
       <View style={styles.content}>
         <Text>{title}</Text>
         <Text>{address}</Text>
       </View>
-      <View>
-        <View style={{ marginTop: 5, marginBottom: 10 }}>
-          <Text style={styles.num}>{number}</Text>
-        </View>
-        <TouchableOpacity
-          style={{ alignItems: "center" }}
-          onPress={() => props.delFunction(props.place.number)}
-        >
-          {props.ui && <Icon name="delete" size={20} color="black" />}
-        </TouchableOpacity>
-      </View>
+      <CheckBox
+        style={{ alignSelf: "center" }}
+        disabled={false}
+        value={toggleCheckBox}
+        onValueChange={toggleBox}
+      />
     </View>
   );
 };
@@ -69,9 +76,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   img: {
-    width: "35%",
-    height: 100,
-    width: 100,
+    width: "25%",
+    height: 50,
+    width: 50,
     marginRight: 10,
   },
   content: {
@@ -88,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlacesComponent;
+export default NearbyPlaceComponentDemo;

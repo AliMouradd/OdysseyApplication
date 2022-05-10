@@ -1,42 +1,71 @@
-import React, { useState } from "react";
+/**
+ * Description:
+ *
+ * The Schedule Component displays a card that
+ * shows a picture, name, and a short description
+ * of a user-generated schedule in the Schedules screen.
+ *
+ * Built by: Quacky Coders
+ */
+
+import React from "react";
 import {
   Text,
   View,
-  Image,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
 
-const ScheduleComponent = () => {
+const ScheduleComponent = (props) => {
+  /**
+   * Renders a Schedule Component.
+   */
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        props.navigation.navigate("PlacesScreen", {
+          schedule: props.schedule,
+          owned: true,
+        })
+      }
+    >
       <ImageBackground
-        source={require("../assets/logo.png")}
+        source={{ uri: props.schedule.places[0].picture }}
         resizeMode="cover"
-        imageStyle={{ opacity: 0.3 }}
         style={styles.img}
       >
-        <TouchableOpacity style={styles.container}>
-          <Text style={styles.h2}>Place</Text>
-          <Text>Lorem ipsum dolor sit amet...</Text>
-        </TouchableOpacity>
+        <View>
+          <Text style={styles.h2}>{props.schedule.scheduleName}</Text>
+          <Text style={styles.p}>{props.schedule.description}</Text>
+        </View>
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    marginTop: 15,
+    marginRight: 25,
   },
   img: {
-    justifyContent: "center",
-    height: 150,
-    width: 100,
+    height: 200,
+    width: 200,
+    padding: 10,
+    borderRadius: 10,
+    overflow: "hidden",
   },
   h2: {
+    color: "white",
+    fontSize: 18,
     fontWeight: "bold",
+    marginTop: 5,
+  },
+  p: {
+    color: "white",
+    marginBottom: 5,
   },
 });
 

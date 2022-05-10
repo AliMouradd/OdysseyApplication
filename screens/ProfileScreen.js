@@ -1,13 +1,42 @@
+/**
+ * Description:
+ *
+ * The ProfileScreen displays a user's profile screen.
+ * The profile contains every schedule the user
+ * has made.
+ *
+ * Built by: Quacky Coders
+ */
+
 import React, { useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView, View, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { app } from "../Config";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
-import ScheduleComponent from "../components/ScheduleComponent";
+import ProfileScheduleComponent from "../components/ProfileScheduleComponent";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const db = getFirestore(app);
 
 const ProfileScreen = ({ navigation, route }) => {
+  // Name of the user
   const [name, setName] = useState("");
+  // Number of likes the user has
+  const [likes, setLikes] = useState(0);
+  // Array of personal schedules that the user has
+  const [schedules, setSchedules] = useState([]);
+
+  /**
+   * After rendering, get the name of the user through the database.
+   * Also, get how many number of likes the user has.
+   * Finally, get the schedules that the user has made.
+   */
   useEffect(async () => {
     if (route.params.id === 0) {
       setName("Guest");
@@ -16,15 +45,33 @@ const ProfileScreen = ({ navigation, route }) => {
       const info = await getDoc(infoRef);
       if (info.exists()) {
         setName(info.data().name);
+        setLikes(info.data().likes);
+      } else {
+        alert("Something went wrong!");
+      }
+      const docRef = doc(db, "UserSchedules", route.params.id);
+      const schedulesInfo = await getDoc(docRef);
+      if (schedulesInfo.exists()) {
+        setSchedules(schedulesInfo.data().schedules);
       } else {
         alert("Something went wrong!");
       }
     }
   }, []);
 
+  /**
+   * Renders the profile screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.background}></View>
+      <View style={styles.background}>
+        <TouchableOpacity
+          style={{ marginTop: 30, marginLeft: 15 }}
+          onPress={() => navigation.goBack()}
+        >
+          <Icon name="arrow-back" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.profile}>
         <View style={styles.imageContainer}>
           <Image source={require("../assets/icon.png")} style={styles.img} />
@@ -35,7 +82,7 @@ const ProfileScreen = ({ navigation, route }) => {
         </Text>
         <View style={styles.information}>
           <View style={styles.info}>
-            <Text style={{ textAlign: "center" }}>0</Text>
+            <Text style={{ textAlign: "center" }}>{likes}</Text>
             <Text style={{ textAlign: "center" }}>Likes</Text>
           </View>
           <View style={styles.info}>
@@ -57,9 +104,13 @@ const ProfileScreen = ({ navigation, route }) => {
             flexDirection: "row",
           }}
         >
-          <ScheduleComponent />
-          <ScheduleComponent />
-          <ScheduleComponent />
+          {schedules.map((schedule) => (
+            <ProfileScheduleComponent
+              navigation={navigation}
+              key={schedule.number}
+              schedule={schedule}
+            />
+          ))}
         </View>
       </View>
     </SafeAreaView>

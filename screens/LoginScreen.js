@@ -23,21 +23,41 @@ import {
   signInWithEmailAndPassword,
   signInAnonymously,
 } from "firebase/auth";
-
-import { app } from "../Config";
+import { doc, getDoc } from "firebase/firestore";
+import { db, app } from "../Config";
 
 import Background from "../assets/blob-haikei.svg";
 
 const auth = getAuth(app);
 
 const LoginScreen = ({ navigation }) => {
+  // The username of the user
   const [username, setUserName] = useState("");
+  // The password of the user
   const [password, setPassword] = useState("");
 
+  /**
+   * Login function.
+   * Log in an user using their inputted credentials.
+   * Alerts the user if the information is invalid.
+   */
   const login = () => {
     signInWithEmailAndPassword(auth, username, password)
-      .then((userCredential) => {
-        navigation.navigate("Home", { id: auth.currentUser.uid });
+      .then(async (userCredential) => {
+        // Check if the user has already completed the questionnaire.
+        // If they have not, navigate them to the questionnaire screen.
+        // Otherwise, navigate the user to the Home screen.
+        const userAnswersDocRef = doc(
+          db,
+          "UserQuestionnaireAnswers",
+          auth.currentUser.uid
+        );
+        const userAnswersDocSnap = await getDoc(userAnswersDocRef);
+        if (userAnswersDocSnap.exists()) {
+          navigation.navigate("Home", { id: auth.currentUser.uid });
+        } else {
+          navigation.navigate("Travel Questionnaire");
+        }
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
@@ -50,12 +70,19 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
+  /**
+   * Login as Guest function.
+   * Logs an user in as a Guest.
+   */
   const loginAnon = () => {
     signInAnonymously(auth).then(() => {
       navigation.navigate("Home", { id: 0 });
     });
   };
 
+  /**
+   * Renders the Login Screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Background style={{ position: "absolute" }} />
@@ -73,13 +100,14 @@ const LoginScreen = ({ navigation }) => {
           style={styles.input}
           onChangeText={(value) => setUserName(value)}
           value={username}
-          placeholder="Username"
+          placeholder="Email"
         />
         <TextInput
           style={styles.input}
           onChangeText={(value) => setPassword(value)}
           value={password}
           placeholder="Password"
+          secureTextEntry={true}
         />
       </View>
 

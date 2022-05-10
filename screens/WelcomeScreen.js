@@ -23,6 +23,9 @@ import Background from "../assets/blob-haikei2.svg";
 import BackgroundTwo from "../assets/blob-haikei3.svg";
 
 const WelcomeScreen = ({ navigation }) => {
+  /**
+   * Renders the welcome screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Background style={{ position: "absolute" }} />
@@ -30,8 +33,11 @@ const WelcomeScreen = ({ navigation }) => {
       <Text style={styles.h1}>Odyssey</Text>
       <CarouselComponent />
       <View style={styles.buttons}>
-        <TouchableOpacity style={[styles.btn, styles.btnBigger]}>
-          <Text onPress={() => navigation.navigate("Log In")}>Log In</Text>
+        <TouchableOpacity
+          style={[styles.btn, styles.btnBigger]}
+          onPress={() => navigation.navigate("Log In")}
+        >
+          <Text>Log In</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btn}
