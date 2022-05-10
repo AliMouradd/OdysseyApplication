@@ -43,7 +43,7 @@ const RouteInputScreen = ({ navigation, route }) => {
           }
         }}
         query={{
-          key: "AIzaSyAlQmVRL7LxjWepNA8PvOO-2hYIOvkrAeU",
+          key: "Google API KEY ",
           language: "en",
         }}
         debounce={500} // How long to wait to display results after user stops typing.
