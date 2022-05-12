@@ -81,7 +81,7 @@ const LocationQuestionScreen = ({ navigation }) => {
           //console.log("details", details);
         }}
         query={{
-          key: "AIzaSyAlQmVRL7LxjWepNA8PvOO-2hYIOvkrAeU",
+          key: "Google API Key",
           language: "en",
         }}
         debounce={500}
